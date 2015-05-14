@@ -1,18 +1,18 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks;
+using NeuralStocks.SqlDatabase;
 
 namespace NeuralStocksTests
 {
     [TestClass]
-    public class NeuralStocksLauncherTest
+    public class SqlDatabaseManagerTest
     {
         [TestMethod]
         public void TestImplementsInterface()
         {
-            var interfaces = typeof (NeuralStocksLauncher).GetInterfaces();
+            var interfaces = typeof (SqlDatabaseManager).GetInterfaces();
             Assert.AreEqual(1, interfaces.Count());
-            Assert.IsTrue(interfaces.Contains(typeof (INeuralStocksLauncher)));
+            Assert.IsTrue(interfaces.Contains(typeof (ISqlDatabaseManager)));
         }
     }
 }
