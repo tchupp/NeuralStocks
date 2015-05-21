@@ -1,6 +1,6 @@
 ﻿namespace NeuralStocks.ApiCommunication
 {
-    public interface IStocksApiCommunicator
+    public interface IStockMarketApiCommunicator
     {
     }
 }

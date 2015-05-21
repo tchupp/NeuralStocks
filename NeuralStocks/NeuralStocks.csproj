@@ -44,8 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiCommunication\IStocksApiCommunicator.cs" />
-    <Compile Include="ApiCommunication\StocksApiCommunicator.cs" />
+    <Compile Include="ApiCommunication\IStockMarketApiCommunicator.cs" />
+    <Compile Include="ApiCommunication\StockMarketApi.cs" />
+    <Compile Include="ApiCommunication\StockMarketApiCommunicator.cs" />
     <Compile Include="INeuralStocksLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDatabase\ISqlDatabaseManager.cs" />
