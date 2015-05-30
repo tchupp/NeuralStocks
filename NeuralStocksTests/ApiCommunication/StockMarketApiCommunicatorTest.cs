@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks.ApiCommunication;
+using NeuralStocksTests.Testing;
 
 namespace NeuralStocksTests.ApiCommunication
 {
@@ -10,9 +10,7 @@ namespace NeuralStocksTests.ApiCommunication
         [TestMethod]
         public void TestImplementsInterface()
         {
-            var interfaces = typeof (StockMarketApiCommunicator).GetInterfaces();
-            Assert.AreEqual(1, interfaces.Count());
-            Assert.IsTrue(interfaces.Contains(typeof (IStockMarketApiCommunicator)));
+            MoreAssert.ImplementsInterface(typeof (IStockMarketApiCommunicator), typeof (StockMarketApiCommunicator));
         }
 
         [TestMethod]

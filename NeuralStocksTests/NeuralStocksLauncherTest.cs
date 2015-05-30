@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks;
+using NeuralStocksTests.Testing;
 
 namespace NeuralStocksTests
 {
@@ -10,9 +10,7 @@ namespace NeuralStocksTests
         [TestMethod]
         public void TestImplementsInterface()
         {
-            var interfaces = typeof (NeuralStocksLauncher).GetInterfaces();
-            Assert.AreEqual(1, interfaces.Count());
-            Assert.IsTrue(interfaces.Contains(typeof (INeuralStocksLauncher)));
+            MoreAssert.ImplementsInterface(typeof (INeuralStocksLauncher), typeof (NeuralStocksLauncher));
         }
     }
 }
