@@ -19,8 +19,8 @@ namespace NeuralStocks.ApiCommunication
             var streamReader = new StreamReader(responseStream, Encoding.UTF8);
 
             var read = streamReader.ReadToEnd();
-            read = read.Remove(0, 19);
-            read = read.Remove(read.Length - 2, 2);
+            read = read.Remove(0, 18);
+            read = read.Remove(read.Length - 1, 1);
 
             response.Close();
             streamReader.Close();
@@ -28,7 +28,7 @@ namespace NeuralStocks.ApiCommunication
             return read;
         }
 
-        public string StockQuote(string company)
+        public string QuoteLookup(string company)
         {
             var url = "http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=" + company;
 
@@ -50,7 +50,7 @@ namespace NeuralStocks.ApiCommunication
             return read;
         }
 
-        public string StockRange(string parameters)
+        public string RangeLookup(string parameters)
         {
             return "";
         }

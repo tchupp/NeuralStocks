@@ -3,7 +3,7 @@
     public interface IStockMarketApi
     {
         string CompanyLookup(string company);
-        string StockQuote(string company);
-        string StockRange(string parameters);
+        string QuoteLookup(string company);
+        string RangeLookup(string parameters);
     }
 }

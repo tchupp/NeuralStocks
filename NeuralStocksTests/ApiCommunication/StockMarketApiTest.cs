@@ -22,12 +22,12 @@ namespace NeuralStocksTests.ApiCommunication
         {
             var stockMarketApi = new StockMarketApi();
 
-            var expectedLookupNetflix = GetUrlResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=NFLX");
+            var expectedLookupNetflix = GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=NFLX");
             var actualLookupNetflix = stockMarketApi.CompanyLookup("NFLX");
 
             Assert.AreEqual(expectedLookupNetflix, actualLookupNetflix);
 
-            var expectedLookupApple = GetUrlResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=AAPL");
+            var expectedLookupApple = GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=AAPL");
             var actualLookupApple = stockMarketApi.CompanyLookup("AAPL");
 
             Assert.AreEqual(expectedLookupApple, actualLookupApple);
@@ -38,13 +38,13 @@ namespace NeuralStocksTests.ApiCommunication
         {
             var stockMarketApi = new StockMarketApi();
 
-            var expectedQuoteNetflix = GetUrlResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=NFLX");
-            var actualQuoteNetflix = stockMarketApi.StockQuote("NFLX");
+            var expectedQuoteNetflix = GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=NFLX");
+            var actualQuoteNetflix = stockMarketApi.QuoteLookup("NFLX");
 
             Assert.AreEqual(expectedQuoteNetflix, actualQuoteNetflix);
 
-            var expectedQuoteApple = GetUrlResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=AAPL");
-            var actualQuoteApple = stockMarketApi.StockQuote("AAPL");
+            var expectedQuoteApple = GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=AAPL");
+            var actualQuoteApple = stockMarketApi.QuoteLookup("AAPL");
 
             Assert.AreEqual(expectedQuoteApple, actualQuoteApple);
         }
@@ -52,10 +52,11 @@ namespace NeuralStocksTests.ApiCommunication
         [TestMethod]
         public void TestStockRange()
         {
-            Assert.IsTrue(true, "Unimplemented");
+            var stockMarketApi = new StockMarketApi();
+            Assert.AreEqual("", stockMarketApi.RangeLookup(""));
         }
 
-        private static string GetUrlResponse(string url)
+        private static string GetCompanyLookupResponse(string url)
         {
             WebResponse response = null;
             var streamReader = StreamReader.Null;
@@ -70,13 +71,52 @@ namespace NeuralStocksTests.ApiCommunication
                 if (responseStream == null)
                 {
                     Assert.Fail("Response Stream was null");
-                    return "";
                 }
 
                 streamReader = new StreamReader(responseStream, Encoding.UTF8);
 
                 var read = streamReader.ReadToEnd();
 
+                read = read.Remove(0, 18);
+                read = read.Remove(read.Length - 1, 1);
+
+                return read;
+            }
+            catch (WebException ex)
+            {
+                Assert.Fail(ex.StackTrace + ". " + ex.Message);
+            }
+            finally
+            {
+                if (response != null)
+                {
+                    response.Close();
+                }
+                streamReader.Close();
+            }
+            return "";
+        }
+        
+        private static string GetQuoteLookupResponse(string url)
+        {
+            WebResponse response = null;
+            var streamReader = StreamReader.Null;
+            try
+            {
+                var request = WebRequest.Create(url);
+
+                Thread.Sleep(100);
+                response = request.GetResponse();
+                var responseStream = response.GetResponseStream();
+
+                if (responseStream == null)
+                {
+                    Assert.Fail("Response Stream was null");
+                }
+
+                streamReader = new StreamReader(responseStream, Encoding.UTF8);
+
+                var read = streamReader.ReadToEnd();
 
                 read = read.Remove(0, 19);
                 read = read.Remove(read.Length - 2, 2);
@@ -95,7 +135,6 @@ namespace NeuralStocksTests.ApiCommunication
                 }
                 streamReader.Close();
             }
-
             return "";
         }
     }

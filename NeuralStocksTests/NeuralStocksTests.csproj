@@ -35,6 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=4.2.1502.911, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.2.1502.0911\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\JsonParsing\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.79.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
@@ -55,8 +63,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ApiCommunication\CompanyLookupRequestTest.cs" />
+    <Compile Include="ApiCommunication\CompanyLookupResponseTest.cs" />
+    <Compile Include="ApiCommunication\QuoteLookupResponseTest.cs" />
     <Compile Include="ApiCommunication\StockMarketApiCommunicatorTest.cs" />
     <Compile Include="ApiCommunication\StockMarketApiTest.cs" />
+    <Compile Include="ApiCommunication\StockQuoteRequestTest.cs" />
     <Compile Include="NeuralStocksLauncherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseManagerTest.cs" />
@@ -67,6 +79,9 @@
       <Project>{4FF2EECD-E119-4297-873D-D2952016148A}</Project>
       <Name>NeuralStocks</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
