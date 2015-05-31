@@ -4,7 +4,7 @@ using NeuralStocks.ApiCommunication;
 namespace NeuralStocksTests.ApiCommunication
 {
     [TestClass]
-    public class StockQuoteRequestTest
+    public class QuoteLookupRequestTest
     {
         [TestMethod]
         public void TestStockQuoteRequestConstructedWithCorrectCompany()
