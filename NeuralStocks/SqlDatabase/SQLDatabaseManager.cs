@@ -6,7 +6,7 @@ namespace NeuralStocks.SqlDatabase
     {
         public void InitializeDatabase()
         {
-            SQLiteConnection.CreateFile("StocksDatabase.sqlite");
+            SQLiteConnection.CreateFile("TestStocksDatabase.sqlite");
         }
     }
 }

@@ -20,7 +20,7 @@ namespace NeuralStocksTests.SqlDatabase
             var sqlDatabaseManager = new SqlDatabaseManager();
             sqlDatabaseManager.InitializeDatabase();
 
-            Assert.IsTrue(File.Exists("StocksDatabase.sqlite"));
+            Assert.IsTrue(File.Exists("TestStocksDatabase.sqlite"));
         }
     }
 }
