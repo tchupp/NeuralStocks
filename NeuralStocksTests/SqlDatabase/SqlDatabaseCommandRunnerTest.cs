@@ -25,6 +25,20 @@ namespace NeuralStocksTests.SqlDatabase
         }
 
         [TestMethod]
+        public void TestCreateDatabase()
+        {
+            const string databaseFileName = "TestStocksDatabase.sqlite";
+
+            if (File.Exists(databaseFileName)) File.Delete(databaseFileName);
+            Assert.IsFalse(File.Exists(databaseFileName));
+
+            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            commandRunner.CreateDatabase(databaseFileName);
+
+            Assert.IsTrue(File.Exists(databaseFileName));
+        }
+
+        [TestMethod]
         public void TestCreateCompanyTable()
         {
             const string databaseFileName = "TestStocksDatabase.sqlite";

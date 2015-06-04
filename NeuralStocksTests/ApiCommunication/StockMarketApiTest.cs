@@ -1,16 +1,43 @@
-﻿using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks.ApiCommunication;
 using NeuralStocksTests.Testing;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 
 namespace NeuralStocksTests.ApiCommunication
 {
     [TestClass]
     public class StockMarketApiTest
     {
+        private const string JsonSchemaLookup =
+            "{\"$schema\":\"http://json-schema.org/draft-04/schema#\"," +
+            "\"id\":\"\",\"type\":\"array\"," +
+            "\"items\":{\"id\":\"/2\",\"type\":\"object\"," +
+            "\"properties\":{" +
+            "\"Symbol\":{\"id\":\"/2/Symbol\",\"type\":\"string\"}," +
+            "\"Name\":{\"id\":\"/2/Name\",\"type\":\"string\"}," +
+            "\"Exchange\":{\"id\":\"/2/Exchange\",\"type\":\"string\"}}}}";
+
+        private const string JsonSchemaQuote =
+            "{\"$schema\":\"http://json-schema.org/draft-04/schema#\"," +
+            "\"id\":\"\",\"type\":\"object\"," +
+            "\"properties\":{" +
+            "\"Status\":{\"id\":\"/Status\",\"type\":\"string\"}," +
+            "\"Name\":{\"id\":\"/Name\",\"type\":\"string\"}," +
+            "\"Symbol\":{\"id\":\"/Symbol\",\"type\":\"string\"}," +
+            "\"LastPrice\":{\"id\":\"/LastPrice\",\"type\":\"number\"}," +
+            "\"Change\":{\"id\":\"/Change\",\"type\":\"number\"}," +
+            "\"ChangePercent\":{\"id\":\"/ChangePercent\",\"type\":\"number\"}," +
+            "\"Timestamp\":{\"id\":\"/Timestamp\",\"type\":\"string\"}," +
+            "\"MSDate\":{\"id\":\"/MSDate\",\"type\":\"number\"}," +
+            "\"MarketCap\":{\"id\":\"/MarketCap\",\"type\":\"integer\"}," +
+            "\"Volume\":{\"id\":\"/Volume\",\"type\":\"integer\"}," +
+            "\"ChangeYTD\":{\"id\":\"/ChangeYTD\",\"type\":\"number\"}," +
+            "\"ChangePercentYTD\":{\"id\":\"/ChangePercentYTD\",\"type\":\"number\"}," +
+            "\"High\":{\"id\":\"/High\",\"type\":\"number\"}," +
+            "\"Low\":{\"id\":\"/Low\",\"type\":\"number\"}," +
+            "\"Open\":{\"id\":\"/Open\",\"type\":\"number\"}}}";
+
         [TestMethod]
         public void TestImplementsInterface()
         {
@@ -20,37 +47,37 @@ namespace NeuralStocksTests.ApiCommunication
         [TestMethod]
         public void TestCompanyLookup()
         {
+            var schema = JsonSchema.Parse(JsonSchemaLookup);
+
             var stockMarketApi = new StockMarketApi();
 
-            var expectedLookupNetflix =
-                GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=NFLX");
-            var actualLookupNetflix = stockMarketApi.CompanyLookup("NFLX");
-
-            Assert.AreEqual(expectedLookupNetflix, actualLookupNetflix);
-
-            var expectedLookupApple =
-                GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=AAPL");
             var actualLookupApple = stockMarketApi.CompanyLookup("AAPL");
+            var parsedLookupApple = JArray.Parse(actualLookupApple);
 
-            Assert.AreEqual(expectedLookupApple, actualLookupApple);
+            Assert.IsTrue(parsedLookupApple.IsValid(schema));
+
+            var actualLookupNetflix = stockMarketApi.CompanyLookup("NFLX");
+            var parsedLookupNetflix = JArray.Parse(actualLookupNetflix);
+
+            Assert.IsTrue(parsedLookupNetflix.IsValid(schema));
         }
 
         [TestMethod]
         public void TestStockQuote()
         {
+            var schema = JsonSchema.Parse(JsonSchemaQuote);
+
             var stockMarketApi = new StockMarketApi();
 
-            var expectedQuoteApple =
-                GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=AAPL");
             var actualQuoteApple = stockMarketApi.QuoteLookup("AAPL");
+            var parsedQuoteApple = JObject.Parse(actualQuoteApple);
 
-            Assert.AreEqual(expectedQuoteApple, actualQuoteApple);
+            Assert.IsTrue(parsedQuoteApple.IsValid(schema));
 
-            var expectedQuoteNetflix =
-                GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=NFLX");
             var actualQuoteNetflix = stockMarketApi.QuoteLookup("NFLX");
+            var parsedQuoteNetflix = JObject.Parse(actualQuoteNetflix);
 
-            Assert.AreEqual(expectedQuoteNetflix, actualQuoteNetflix);
+            Assert.IsTrue(parsedQuoteNetflix.IsValid(schema));
         }
 
         [TestMethod]
@@ -58,87 +85,6 @@ namespace NeuralStocksTests.ApiCommunication
         {
             var stockMarketApi = new StockMarketApi();
             Assert.AreEqual("", stockMarketApi.RangeLookup(""));
-        }
-
-        private static string GetCompanyLookupResponse(string url)
-        {
-            WebResponse response = null;
-            var streamReader = StreamReader.Null;
-            try
-            {
-                var request = WebRequest.Create(url);
-
-                Thread.Sleep(100);
-                response = request.GetResponse();
-                var responseStream = response.GetResponseStream();
-
-                if (responseStream == null)
-                {
-                    Assert.Fail("Response Stream was null");
-                }
-
-                streamReader = new StreamReader(responseStream, Encoding.UTF8);
-
-                var read = streamReader.ReadToEnd();
-
-                read = read.Remove(0, 18);
-                read = read.Remove(read.Length - 1, 1);
-
-                return read;
-            }
-            catch (WebException ex)
-            {
-                Assert.Fail(ex.StackTrace + ". " + ex.Message);
-            }
-            finally
-            {
-                if (response != null)
-                {
-                    response.Close();
-                }
-                streamReader.Close();
-            }
-            return "";
-        }
-
-        private static string GetQuoteLookupResponse(string url)
-        {
-            WebResponse response = null;
-            var streamReader = StreamReader.Null;
-            try
-            {
-                var request = WebRequest.Create(url);
-
-                Thread.Sleep(100);
-                response = request.GetResponse();
-                var responseStream = response.GetResponseStream();
-
-                if (responseStream == null)
-                {
-                    Assert.Fail("Response Stream was null");
-                }
-
-                streamReader = new StreamReader(responseStream, Encoding.UTF8);
-
-                var read = streamReader.ReadToEnd();
-                read = read.Remove(0, 19);
-                read = read.Remove(read.Length - 2, 2);
-
-                return read;
-            }
-            catch (WebException ex)
-            {
-                Assert.Fail(ex.StackTrace + ". " + ex.Message);
-            }
-            finally
-            {
-                if (response != null)
-                {
-                    response.Close();
-                }
-                streamReader.Close();
-            }
-            return "";
         }
     }
 }

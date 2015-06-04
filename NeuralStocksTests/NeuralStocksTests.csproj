@@ -72,7 +72,7 @@
     <Compile Include="NeuralStocksLauncherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseCommandRunnerTest.cs" />
-    <Compile Include="SqlDatabase\SqlDatabaseManagerTest.cs" />
+    <Compile Include="SqlDatabase\SqlDatabaseSetupManagerTest.cs" />
     <Compile Include="Testing\MoreAssert.cs" />
   </ItemGroup>
   <ItemGroup>

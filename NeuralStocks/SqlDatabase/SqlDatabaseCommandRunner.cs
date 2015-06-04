@@ -11,6 +11,11 @@ namespace NeuralStocks.SqlDatabase
         {
         }
 
+        public void CreateDatabase(string databaseName)
+        {
+            SQLiteConnection.CreateFile(databaseName);
+        }
+
         public void CreateCompanyTable(SQLiteConnection connection)
         {
             const string createCompanyTableCommandString =

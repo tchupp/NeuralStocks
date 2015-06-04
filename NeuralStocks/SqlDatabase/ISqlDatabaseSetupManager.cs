@@ -1,6 +1,6 @@
 ﻿namespace NeuralStocks.SqlDatabase
 {
-    public interface ISqlDatabaseManager
+    public interface ISqlDatabaseSetupManager
     {
     }
 }

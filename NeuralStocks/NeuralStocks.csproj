@@ -62,10 +62,10 @@
     <Compile Include="INeuralStocksLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDatabase\ISqlDatabaseCommandRunner.cs" />
-    <Compile Include="SqlDatabase\ISqlDatabaseManager.cs" />
+    <Compile Include="SqlDatabase\ISqlDatabaseSetupManager.cs" />
     <Compile Include="NeuralStocksLauncher.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseCommandRunner.cs" />
-    <Compile Include="SqlDatabase\SqlDatabaseManager.cs" />
+    <Compile Include="SqlDatabase\SqlDatabaseSetupSetupManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
