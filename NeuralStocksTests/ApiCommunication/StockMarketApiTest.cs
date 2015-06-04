@@ -22,12 +22,14 @@ namespace NeuralStocksTests.ApiCommunication
         {
             var stockMarketApi = new StockMarketApi();
 
-            var expectedLookupNetflix = GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=NFLX");
+            var expectedLookupNetflix =
+                GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=NFLX");
             var actualLookupNetflix = stockMarketApi.CompanyLookup("NFLX");
 
             Assert.AreEqual(expectedLookupNetflix, actualLookupNetflix);
 
-            var expectedLookupApple = GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=AAPL");
+            var expectedLookupApple =
+                GetCompanyLookupResponse("http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=AAPL");
             var actualLookupApple = stockMarketApi.CompanyLookup("AAPL");
 
             Assert.AreEqual(expectedLookupApple, actualLookupApple);
@@ -38,15 +40,17 @@ namespace NeuralStocksTests.ApiCommunication
         {
             var stockMarketApi = new StockMarketApi();
 
-            var expectedQuoteNetflix = GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=NFLX");
-            var actualQuoteNetflix = stockMarketApi.QuoteLookup("NFLX");
-
-            Assert.AreEqual(expectedQuoteNetflix, actualQuoteNetflix);
-
-            var expectedQuoteApple = GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=AAPL");
+            var expectedQuoteApple =
+                GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=AAPL");
             var actualQuoteApple = stockMarketApi.QuoteLookup("AAPL");
 
             Assert.AreEqual(expectedQuoteApple, actualQuoteApple);
+
+            var expectedQuoteNetflix =
+                GetQuoteLookupResponse("http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=NFLX");
+            var actualQuoteNetflix = stockMarketApi.QuoteLookup("NFLX");
+
+            Assert.AreEqual(expectedQuoteNetflix, actualQuoteNetflix);
         }
 
         [TestMethod]
@@ -96,7 +100,7 @@ namespace NeuralStocksTests.ApiCommunication
             }
             return "";
         }
-        
+
         private static string GetQuoteLookupResponse(string url)
         {
             WebResponse response = null;
@@ -117,7 +121,6 @@ namespace NeuralStocksTests.ApiCommunication
                 streamReader = new StreamReader(responseStream, Encoding.UTF8);
 
                 var read = streamReader.ReadToEnd();
-
                 read = read.Remove(0, 19);
                 read = read.Remove(read.Length - 2, 2);
 

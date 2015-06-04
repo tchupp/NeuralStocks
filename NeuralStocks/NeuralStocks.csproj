@@ -61,8 +61,10 @@
     <Compile Include="ApiCommunication\QuoteLookupRequest.cs" />
     <Compile Include="INeuralStocksLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlDatabase\ISqlDatabaseCommandRunner.cs" />
     <Compile Include="SqlDatabase\ISqlDatabaseManager.cs" />
     <Compile Include="NeuralStocksLauncher.cs" />
+    <Compile Include="SqlDatabase\SqlDatabaseCommandRunner.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseManager.cs" />
   </ItemGroup>
   <ItemGroup>

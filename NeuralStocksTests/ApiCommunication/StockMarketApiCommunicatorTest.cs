@@ -63,7 +63,6 @@ namespace NeuralStocksTests.ApiCommunication
             const float expectedChange = -0.0500000000000114f;
             const float expectedChangePercent = -0.0383788762665116f;
             const string expectedTimestamp = "Fri May 29 15:59:00 UTC-04:00 2015";
-            const float expectedMsDate = 42153.6659722222f;
             const float expectedMarketCap = 750258936900f;
             const float expectedVolume = 2996541f;
             const float expectedChangeYtd = 110.38f;
@@ -105,7 +104,6 @@ namespace NeuralStocksTests.ApiCommunication
             Assert.AreEqual(expectedChange, response.Change);
             Assert.AreEqual(expectedChangePercent, response.ChangePercent);
             Assert.AreEqual(expectedTimestamp, response.Timestamp);
-            Assert.AreEqual(expectedMsDate, response.MsDate);
             Assert.AreEqual(expectedMarketCap, response.MarketCap);
             Assert.AreEqual(expectedVolume, response.Volume);
             Assert.AreEqual(expectedChangeYtd, response.ChangeYtd);

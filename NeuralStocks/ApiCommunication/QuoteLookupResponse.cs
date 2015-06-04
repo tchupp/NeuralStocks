@@ -9,7 +9,6 @@
         public float Change { get; set; }
         public float ChangePercent { get; set; }
         public string Timestamp { get; set; }
-        public float MsDate { get; set; }
         public float MarketCap { get; set; }
         public float Volume { get; set; }
         public float ChangeYtd { get; set; }
@@ -27,7 +26,6 @@
             Change = 0f;
             ChangePercent = 0f;
             Timestamp = "";
-            MsDate = 0f;
             MarketCap = 0f;
             Volume = 0f;
             ChangeYtd = 0f;
