@@ -1,5 +1,4 @@
 ﻿using System.Data.SQLite;
-using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.SqlDatabase;
@@ -13,7 +12,7 @@ namespace NeuralStocksTests.SqlDatabase
         [TestMethod]
         public void TestImplementsInterface()
         {
-            MoreAssert.ImplementsInterface(typeof (ISqlDatabaseSetupManager), typeof (SqlDatabaseSetupSetupManager));
+            MoreAssert.ImplementsInterface(typeof (ISqlDatabaseSetupManager), typeof (SqlDatabaseSetupManager));
         }
 
         [TestMethod]
@@ -23,15 +22,16 @@ namespace NeuralStocksTests.SqlDatabase
             const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
 
             var mockCommandRunner = new Mock<ISqlDatabaseCommandRunner>();
-            var setupManager = new SqlDatabaseSetupSetupManager(mockCommandRunner.Object);
+            var setupManager = new SqlDatabaseSetupManager(mockCommandRunner.Object);
 
             mockCommandRunner.Verify(m => m.CreateDatabase(databaseFileName), Times.Never);
             mockCommandRunner.Verify(m => m.CreateCompanyTable(It.IsAny<SQLiteConnection>()), Times.Never);
-            
+
             setupManager.InitializeDatabase(databaseFileName);
 
             mockCommandRunner.Verify(m => m.CreateDatabase(databaseFileName), Times.Once);
-            mockCommandRunner.Verify(m => m.CreateCompanyTable(It.Is<SQLiteConnection>(n => n.ConnectionString == databaseConnectionString)), Times.Once);
+            mockCommandRunner.Verify(m => m.CreateCompanyTable(It.Is<SQLiteConnection>
+                (n => n.ConnectionString == databaseConnectionString)), Times.Once);
         }
     }
 }

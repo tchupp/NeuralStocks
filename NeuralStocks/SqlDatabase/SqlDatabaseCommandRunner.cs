@@ -23,8 +23,8 @@ namespace NeuralStocks.SqlDatabase
 
             connection.Open();
 
-            var createInitialTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
-            createInitialTableCommand.ExecuteNonQuery();
+            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            createCompanyTableCommand.ExecuteNonQuery();
 
             connection.Close();
         }
@@ -36,8 +36,28 @@ namespace NeuralStocks.SqlDatabase
 
             connection.Open();
 
-            var createInitialTableCommand = new SQLiteCommand(addCompanyToTableCommandString, connection);
-            createInitialTableCommand.ExecuteNonQuery();
+            var addCompanyToTableCommand = new SQLiteCommand(addCompanyToTableCommandString, connection);
+            addCompanyToTableCommand.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
+        public void UpdateCompanyTimestamp(QuoteLookupResponse response, SQLiteConnection connection)
+        {
+            var updateCompanyRecentDateCommandString = "UPDATE Company SET recentDate = '" + response.Timestamp +
+                                                       "' WHERE Symbol = '" + response.Symbol + "'";
+
+            var updateCompanyFirstDateCommandString = "UPDATE Company SET firstDate = '" + response.Timestamp +
+                                                      "' WHERE Symbol = '" + response.Symbol +
+                                                      "' AND firstDate = 'null'";
+
+            connection.Open();
+
+            var updateCompanyRecentDateCommand = new SQLiteCommand(updateCompanyRecentDateCommandString, connection);
+            updateCompanyRecentDateCommand.ExecuteNonQuery();
+
+            var updateCompanyFirstDateCommand = new SQLiteCommand(updateCompanyFirstDateCommandString, connection);
+            updateCompanyFirstDateCommand.ExecuteNonQuery();
 
             connection.Close();
         }

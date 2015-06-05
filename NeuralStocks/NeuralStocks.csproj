@@ -65,7 +65,7 @@
     <Compile Include="SqlDatabase\ISqlDatabaseSetupManager.cs" />
     <Compile Include="NeuralStocksLauncher.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseCommandRunner.cs" />
-    <Compile Include="SqlDatabase\SqlDatabaseSetupSetupManager.cs" />
+    <Compile Include="SqlDatabase\SqlDatabaseSetupManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

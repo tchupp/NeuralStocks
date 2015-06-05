@@ -2,7 +2,7 @@
 
 namespace NeuralStocks.SqlDatabase
 {
-    public class SqlDatabaseSetupSetupManager : ISqlDatabaseSetupManager
+    public class SqlDatabaseSetupManager : ISqlDatabaseSetupManager
     {
         private readonly ISqlDatabaseCommandRunner _commandRunner;
 
@@ -11,7 +11,7 @@ namespace NeuralStocks.SqlDatabase
             get { return _commandRunner; }
         }
 
-        public SqlDatabaseSetupSetupManager(ISqlDatabaseCommandRunner commandRunner)
+        public SqlDatabaseSetupManager(ISqlDatabaseCommandRunner commandRunner)
         {
             _commandRunner = commandRunner;
         }
