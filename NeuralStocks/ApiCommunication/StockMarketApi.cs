@@ -6,6 +6,12 @@ namespace NeuralStocks.ApiCommunication
 {
     public class StockMarketApi : IStockMarketApi
     {
+        public static StockMarketApi Singleton = new StockMarketApi();
+
+        private StockMarketApi()
+        {
+        }
+
         public string CompanyLookup(string company)
         {
             var url = "http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=" + company;

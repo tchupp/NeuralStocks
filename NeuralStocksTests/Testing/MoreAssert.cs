@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NeuralStocksTests.Testing
@@ -10,6 +9,7 @@ namespace NeuralStocksTests.Testing
         public static void ImplementsInterface(Type expectedInterface, Type expectedClass)
         {
             Assert.IsTrue(expectedClass.IsClass, "Class is not actually a class");
+            Assert.IsTrue(expectedInterface.IsInterface, "Interface is not actually an Interface");
 
             var interfaces = expectedClass.GetInterfaces();
             Assert.AreEqual(1, interfaces.Count(), "There is not exactly one interface");

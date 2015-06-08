@@ -45,11 +45,18 @@ namespace NeuralStocksTests.ApiCommunication
         }
 
         [TestMethod]
+        public void TestSingleton()
+        {
+            MoreAssert.PrivateContructor(typeof (StockMarketApi));
+            Assert.AreSame(StockMarketApi.Singleton, StockMarketApi.Singleton);
+        }
+
+        [TestMethod]
         public void TestCompanyLookup()
         {
             var schema = JsonSchema.Parse(JsonSchemaLookup);
 
-            var stockMarketApi = new StockMarketApi();
+            var stockMarketApi = StockMarketApi.Singleton;
 
             var actualLookupApple = stockMarketApi.CompanyLookup("AAPL");
             var parsedLookupApple = JArray.Parse(actualLookupApple);
@@ -67,7 +74,7 @@ namespace NeuralStocksTests.ApiCommunication
         {
             var schema = JsonSchema.Parse(JsonSchemaQuote);
 
-            var stockMarketApi = new StockMarketApi();
+            var stockMarketApi = StockMarketApi.Singleton;
 
             var actualQuoteApple = stockMarketApi.QuoteLookup("AAPL");
             var parsedQuoteApple = JObject.Parse(actualQuoteApple);
@@ -83,7 +90,7 @@ namespace NeuralStocksTests.ApiCommunication
         [TestMethod]
         public void TestStockRange()
         {
-            var stockMarketApi = new StockMarketApi();
+            var stockMarketApi = StockMarketApi.Singleton;
             Assert.AreEqual("", stockMarketApi.RangeLookup(""));
         }
     }
