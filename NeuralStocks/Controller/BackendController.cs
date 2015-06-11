@@ -11,16 +11,18 @@ namespace NeuralStocks.Controller
         public ISqlDatabaseCommandRunner CommandRunner { get; private set; }
         public string DatabaseFileName { get; private set; }
 
-        public BackendController(IStockMarketApiCommunicator communicator, ISqlDatabaseCommandRunner commandRunner)
+        public BackendController(IStockMarketApiCommunicator communicator, ISqlDatabaseCommandRunner commandRunner,
+            string databaseFileName)
         {
             Communicator = communicator;
             CommandRunner = commandRunner;
-            DatabaseFileName = "NeuralStocksDatabase.sqlite";
+            DatabaseFileName = databaseFileName;
         }
 
         public void UpdateCompanyQuotes()
         {
-            var connection = new SQLiteConnection(DatabaseFileName);
+            var databaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
+            var connection = new SQLiteConnection(databaseConnectionString);
             var lookupsFromTable = CommandRunner.GetQuoteLookupsFromTable(connection);
 
             foreach (var lookupResponse in lookupsFromTable.Select(

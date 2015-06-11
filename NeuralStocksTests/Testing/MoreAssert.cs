@@ -24,5 +24,14 @@ namespace NeuralStocksTests.Testing
             var constructors = expectedClass.GetConstructors();
             Assert.AreEqual(0, constructors.Length, "Class has at least one public constructor");
         }
+
+        public static T AssertIsOfTypeAndGet<T>(object obj)
+        {
+            Assert.IsNotNull(obj, "Object was null instead of type " + typeof (T));
+            Assert.IsInstanceOfType(obj, typeof (T),
+                "Object was type: " + obj.GetType() + ", not: " + typeof (T));
+
+            return (T) obj;
+        }
     }
 }
