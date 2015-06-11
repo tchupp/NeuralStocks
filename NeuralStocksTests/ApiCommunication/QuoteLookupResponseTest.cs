@@ -13,17 +13,17 @@ namespace NeuralStocksTests.ApiCommunication
 
             Assert.AreEqual("", response.Name);
             Assert.AreEqual("", response.Symbol);
-            Assert.AreEqual(0f, response.LastPrice);
-            Assert.AreEqual(0f, response.Change);
-            Assert.AreEqual(0f, response.ChangePercent);
+            Assert.AreEqual(0, response.LastPrice);
+            Assert.AreEqual(0, response.Change);
+            Assert.AreEqual(0, response.ChangePercent);
             Assert.AreEqual("", response.Timestamp);
-            Assert.AreEqual(0f, response.MarketCap);
-            Assert.AreEqual(0f, response.Volume);
-            Assert.AreEqual(0f, response.ChangeYtd);
-            Assert.AreEqual(0f, response.ChangePercentYtd);
-            Assert.AreEqual(0f, response.High);
-            Assert.AreEqual(0f, response.Low);
-            Assert.AreEqual(0f, response.Open);
+            Assert.AreEqual(0, response.MarketCap);
+            Assert.AreEqual(0, response.Volume);
+            Assert.AreEqual(0, response.ChangeYtd);
+            Assert.AreEqual(0, response.ChangePercentYtd);
+            Assert.AreEqual(0, response.High);
+            Assert.AreEqual(0, response.Low);
+            Assert.AreEqual(0, response.Open);
         }
 
         [TestMethod]
@@ -34,17 +34,17 @@ namespace NeuralStocksTests.ApiCommunication
             const string expectedStatus = "SUCCESS";
             const string expectedName = "Netflix Inc";
             const string expectedSymbol = "NFLX";
-            const float expectedLastPrice = 524.49f;
-            const float expectedChange = 15.6f;
-            const float expectedChangePercent = 3.0655f;
+            const double expectedLastPrice = 524.49;
+            const double expectedChange = 15.6;
+            const double expectedChangePercent = 3.0655;
             const string expectedTimestamp = "Wed Oct 23 13:39:19";
-            const float expectedMarketCap = 476497591530f;
-            const float expectedVolume = 397562f;
-            const float expectedChangeYtd = 532.1729f;
-            const float expectedChangePercentYtd = -1.443685f;
-            const float expectedHigh = 52499f;
-            const float expectedLow = 519.175f;
-            const float expectedOpen = 519.175f;
+            const double expectedMarketCap = 476497591530;
+            const double expectedVolume = 397562;
+            const double expectedChangeYtd = 532.1729;
+            const double expectedChangePercentYtd = -1.443685;
+            const double expectedHigh = 52499;
+            const double expectedLow = 519.175;
+            const double expectedOpen = 519.175;
 
             response.Status = expectedStatus;
             response.Name = expectedName;

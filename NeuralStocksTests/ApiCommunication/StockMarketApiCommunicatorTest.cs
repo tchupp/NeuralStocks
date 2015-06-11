@@ -59,17 +59,17 @@ namespace NeuralStocksTests.ApiCommunication
             const string expectedStatus = "SUCCESS";
             const string expectedName = "Apple Inc";
             const string expectedSymbol = "AAPL";
-            const float expectedLastPrice = 130.23f;
-            const float expectedChange = -0.0500000000000114f;
-            const float expectedChangePercent = -0.0383788762665116f;
+            const double expectedLastPrice = 130.23;
+            const double expectedChange = -0.0500000000000114;
+            const double expectedChangePercent = -0.0383788762665116;
             const string expectedTimestamp = "Fri May 29 15:59:00 UTC-04:00 2015";
-            const float expectedMarketCap = 750258936900f;
-            const float expectedVolume = 2996541f;
-            const float expectedChangeYtd = 110.38f;
-            const float expectedChangePercentYtd = 17.9833303134626f;
-            const float expectedHigh = 131.45f;
-            const float expectedLow = 129.9f;
-            const float expectedOpen = 131.26f;
+            const double expectedMarketCap = 750258936900;
+            const double expectedVolume = 2996541;
+            const double expectedChangeYtd = 110.38;
+            const double expectedChangePercentYtd = 17.9833303134626;
+            const double expectedHigh = 131.45;
+            const double expectedLow = 129.9;
+            const double expectedOpen = 131.26;
 
             const string expectedResponse =
                 "{\"Status\":\"SUCCESS\"" +
@@ -100,17 +100,17 @@ namespace NeuralStocksTests.ApiCommunication
             Assert.AreEqual(expectedStatus, response.Status);
             Assert.AreEqual(expectedName, response.Name);
             Assert.AreEqual(expectedSymbol, response.Symbol);
-            Assert.AreEqual(expectedLastPrice, response.LastPrice);
-            Assert.AreEqual(expectedChange, response.Change);
-            Assert.AreEqual(expectedChangePercent, response.ChangePercent);
+            Assert.AreEqual(expectedLastPrice, response.LastPrice, 0.001);
+            Assert.AreEqual(expectedChange, response.Change, 0.001);
+            Assert.AreEqual(expectedChangePercent, response.ChangePercent, 0.001);
             Assert.AreEqual(expectedTimestamp, response.Timestamp);
-            Assert.AreEqual(expectedMarketCap, response.MarketCap);
-            Assert.AreEqual(expectedVolume, response.Volume);
-            Assert.AreEqual(expectedChangeYtd, response.ChangeYtd);
-            Assert.AreEqual(expectedChangePercentYtd, response.ChangePercentYtd);
-            Assert.AreEqual(expectedHigh, response.High);
-            Assert.AreEqual(expectedLow, response.Low);
-            Assert.AreEqual(expectedOpen, response.Open);
+            Assert.AreEqual(expectedMarketCap, response.MarketCap, 0.001);
+            Assert.AreEqual(expectedVolume, response.Volume, 0.001);
+            Assert.AreEqual(expectedChangeYtd, response.ChangeYtd, 0.001);
+            Assert.AreEqual(expectedChangePercentYtd, response.ChangePercentYtd, 0.001);
+            Assert.AreEqual(expectedHigh, response.High, 0.001);
+            Assert.AreEqual(expectedLow, response.Low, 0.001);
+            Assert.AreEqual(expectedOpen, response.Open, 0.001);
         }
     }
 }

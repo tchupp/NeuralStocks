@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System.Collections.Generic;
+using System.Data.SQLite;
 using NeuralStocks.ApiCommunication;
 
 namespace NeuralStocks.SqlDatabase
@@ -29,27 +30,33 @@ namespace NeuralStocks.SqlDatabase
             connection.Close();
         }
 
-        public void AddCompanyToTable(CompanyLookupResponse company, SQLiteConnection connection)
+        public void AddCompanyToTable(SQLiteConnection connection, CompanyLookupResponse company)
         {
             var addCompanyToTableCommandString =
                 "INSERT INTO Company VALUES ('" + company.Name + "', '" + company.Symbol + "', 'null', 'null')";
+            var createCompanyTableCommandString =
+                "CREATE TABLE " + company.Symbol +
+                " (name TEXT, symbol TEXT, timestamp TEXT, lastPrice REAL, change REAL, changePercent REAL)";
 
             connection.Open();
 
             var addCompanyToTableCommand = new SQLiteCommand(addCompanyToTableCommandString, connection);
             addCompanyToTableCommand.ExecuteNonQuery();
 
+            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            createCompanyTableCommand.ExecuteNonQuery();
+
             connection.Close();
         }
 
-        public void UpdateCompanyTimestamp(QuoteLookupResponse response, SQLiteConnection connection)
+        public void UpdateCompanyTimestamp(SQLiteConnection connection, QuoteLookupResponse response)
         {
-            var updateCompanyRecentDateCommandString = "UPDATE Company SET recentDate = '" + response.Timestamp +
-                                                       "' WHERE Symbol = '" + response.Symbol + "'";
-
-            var updateCompanyFirstDateCommandString = "UPDATE Company SET firstDate = '" + response.Timestamp +
-                                                      "' WHERE Symbol = '" + response.Symbol +
-                                                      "' AND firstDate = 'null'";
+            var updateCompanyRecentDateCommandString =
+                "UPDATE Company SET recentDate = '" + response.Timestamp +
+                "' WHERE Symbol = '" + response.Symbol + "'";
+            var updateCompanyFirstDateCommandString =
+                "UPDATE Company SET firstDate = '" + response.Timestamp +
+                "' WHERE Symbol = '" + response.Symbol + "' AND firstDate = 'null'";
 
             connection.Open();
 
@@ -58,6 +65,42 @@ namespace NeuralStocks.SqlDatabase
 
             var updateCompanyFirstDateCommand = new SQLiteCommand(updateCompanyFirstDateCommandString, connection);
             updateCompanyFirstDateCommand.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
+        public List<QuoteLookupRequest> GetQuoteLookupsFromTable(SQLiteConnection connection)
+        {
+            const string selectFromCompanyCommandString = "SELECT symbol FROM Company";
+
+            connection.Open();
+
+            var selectFromCompanyCommand = new SQLiteCommand(selectFromCompanyCommandString, connection);
+            var selectFromCompanyCommandReader = selectFromCompanyCommand.ExecuteReader();
+
+            var lookupRequests = new List<QuoteLookupRequest>();
+            while (selectFromCompanyCommandReader.Read())
+            {
+                var companySymbol = selectFromCompanyCommandReader["symbol"] as string;
+                var companyLookupRequest = new QuoteLookupRequest(companySymbol);
+                lookupRequests.Add(companyLookupRequest);
+            }
+
+            connection.Close();
+            return lookupRequests;
+        }
+
+        public void AddQuoteResponseToTable(SQLiteConnection connection, QuoteLookupResponse response)
+        {
+            var addQuoteToTableCommandString =
+                "INSERT INTO " + response.Symbol + " VALUES ('" + response.Name +
+                "', '" + response.Symbol + "', '" + response.Timestamp + "', " + response.LastPrice + ", " +
+                response.Change + ", " + response.ChangePercent + ")";
+
+            connection.Open();
+
+            var addQuoteToTableCommand = new SQLiteCommand(addQuoteToTableCommandString, connection);
+            addQuoteToTableCommand.ExecuteNonQuery();
 
             connection.Close();
         }

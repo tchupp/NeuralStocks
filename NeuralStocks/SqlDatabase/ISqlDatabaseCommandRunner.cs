@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System.Collections.Generic;
+using System.Data.SQLite;
 using NeuralStocks.ApiCommunication;
 
 namespace NeuralStocks.SqlDatabase
@@ -7,8 +8,9 @@ namespace NeuralStocks.SqlDatabase
     {
         void CreateDatabase(string databaseName);
         void CreateCompanyTable(SQLiteConnection connection);
-        void AddCompanyToTable(CompanyLookupResponse company, SQLiteConnection connection);
-
-        void UpdateCompanyTimestamp(QuoteLookupResponse response, SQLiteConnection connection);
+        void AddCompanyToTable(SQLiteConnection connection, CompanyLookupResponse company);
+        void UpdateCompanyTimestamp(SQLiteConnection connection, QuoteLookupResponse response);
+        List<QuoteLookupRequest> GetQuoteLookupsFromTable(SQLiteConnection connection);
+        void AddQuoteResponseToTable(SQLiteConnection connection, QuoteLookupResponse response);
     }
 }
