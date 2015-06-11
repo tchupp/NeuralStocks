@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using NeuralStocks;
 using NeuralStocks.ApiCommunication;
 using NeuralStocks.Controller;
@@ -39,6 +41,71 @@ namespace NeuralStocksTests
             Assert.AreSame(SqlDatabaseCommandRunner.Singleton, backendController.CommandRunner);
 
             Assert.AreEqual("NeuralStocksDatabase.sqlite", backendController.DatabaseFileName);
+        }
+
+        [TestMethod]
+        public void TestStartBackendCallsInitializeDatabaseOnSetupManager_DatabaseDoesNotExist()
+        {
+            const string databaseFileName = "NeuralStocksDatabase.sqlite";
+            File.Delete(databaseFileName);
+            Assert.IsFalse(File.Exists(databaseFileName));
+
+            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockController = new Mock<IBackendController>();
+
+            var launcher = new NeuralStocksBackendLauncher
+            {
+                SetupManager = mockSetupManager.Object,
+                BackendController = mockController.Object
+            };
+
+            mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
+
+            launcher.StartBackend();
+
+            mockSetupManager.Verify(m => m.InitializeDatabase(databaseFileName), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestStartBackendDoesNotCallsInitializeDatabaseOnSetupManager_DatabaseExists()
+        {
+            const string databaseFileName = "NeuralStocksDatabase.sqlite";
+            File.Create(databaseFileName);
+            Assert.IsTrue(File.Exists(databaseFileName));
+
+            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockController = new Mock<IBackendController>();
+
+            var launcher = new NeuralStocksBackendLauncher
+            {
+                SetupManager = mockSetupManager.Object,
+                BackendController = mockController.Object
+            };
+
+            mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
+
+            launcher.StartBackend();
+
+            mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestStartBackendCallsUpdateCompanyQuotesOnBackendController()
+        {
+            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockController = new Mock<IBackendController>();
+
+            var launcher = new NeuralStocksBackendLauncher
+            {
+                SetupManager = mockSetupManager.Object,
+                BackendController = mockController.Object
+            };
+
+            mockController.Verify(m => m.UpdateCompanyQuotes(), Times.Never);
+
+            launcher.StartBackend();
+
+            mockController.Verify(m => m.UpdateCompanyQuotes(), Times.Once);
         }
     }
 }

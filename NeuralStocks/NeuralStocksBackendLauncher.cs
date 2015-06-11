@@ -1,4 +1,5 @@
-﻿using NeuralStocks.ApiCommunication;
+﻿using System.IO;
+using NeuralStocks.ApiCommunication;
 using NeuralStocks.Controller;
 using NeuralStocks.SqlDatabase;
 
@@ -17,8 +18,16 @@ namespace NeuralStocks
                 SqlDatabaseCommandRunner.Singleton, DatabaseFileName);
         }
 
+        public void StartBackend()
+        {
+            if (!File.Exists(DatabaseFileName)) SetupManager.InitializeDatabase(DatabaseFileName);
+            BackendController.UpdateCompanyQuotes();
+        }
+
         private static void Main(string[] args)
         {
+            var launcher = new NeuralStocksBackendLauncher();
+            launcher.StartBackend();
         }
     }
 }
