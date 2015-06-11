@@ -1,6 +1,5 @@
-﻿using System.IO;
-using System.Net;
-using System.Text;
+﻿using System;
+using System.Net.Http;
 
 namespace NeuralStocks.ApiCommunication
 {
@@ -31,19 +30,12 @@ namespace NeuralStocks.ApiCommunication
 
         private static string ReadUrl(string url)
         {
-            var request = WebRequest.Create(url);
-            using (var response = request.GetResponse())
+            using (var client = new HttpClient())
             {
-                var responseStream = response.GetResponseStream();
-                if (responseStream == null) return "";
-
-                using (var streamReader = new StreamReader(responseStream, Encoding.UTF8))
-                {
-                    var read = streamReader.ReadToEnd();
-                    read = read.Remove(0, 18);
-                    read = read.Remove(read.Length - 1, 1);
-                    return read;
-                }
+                var json = client.GetStringAsync(new Uri(url)).Result;
+                json = json.Remove(0, 18);
+                json = json.Remove(json.Length - 1, 1);
+                return json;
             }
         }
     }
