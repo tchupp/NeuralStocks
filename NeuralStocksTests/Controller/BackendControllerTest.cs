@@ -48,6 +48,37 @@ namespace NeuralStocksTests.Controller
         }
 
         [TestMethod]
+        public void TestConstructorSetsUpBackendTimer()
+        {
+            var controller = new BackendController(null, null, null);
+
+            var timer = MoreAssert.AssertIsOfTypeAndGet<BackendTimer>(controller.BackendTimer);
+            Assert.AreSame(controller, timer.Controller);
+        }
+
+        [TestMethod]
+        public void TestStartTimerCallsStartOnTimer()
+        {
+            var mockTimer = new Mock<IBackendTimer>();
+            var controller = new BackendController(null, null, null) {BackendTimer = mockTimer.Object};
+
+            mockTimer.Verify(t => t.Start(), Times.Never);
+            controller.StartTimer();
+            mockTimer.Verify(t => t.Start(), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestDisposeCallsStopOnTimer()
+        {
+            var mockTimer = new Mock<IBackendTimer>();
+            var controller = new BackendController(null, null, null) { BackendTimer = mockTimer.Object };
+
+            mockTimer.Verify(t => t.Stop(), Times.Never);
+            controller.Dispose();
+            mockTimer.Verify(t => t.Stop(), Times.Once);
+        }
+
+        [TestMethod]
         public void TestUpdateCompanyQuotes()
         {
             const string company1 = "NFLX";

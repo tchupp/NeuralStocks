@@ -21,7 +21,7 @@ namespace NeuralStocks
         public void StartBackend()
         {
             if (!File.Exists(DatabaseFileName)) SetupManager.InitializeDatabase(DatabaseFileName);
-            BackendController.UpdateCompanyQuotes();
+            BackendController.StartTimer();
         }
 
         private static void Main(string[] args)

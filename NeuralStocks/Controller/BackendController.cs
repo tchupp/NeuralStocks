@@ -10,6 +10,7 @@ namespace NeuralStocks.Controller
         public IStockMarketApiCommunicator Communicator { get; private set; }
         public ISqlDatabaseCommandRunner CommandRunner { get; private set; }
         public string DatabaseFileName { get; private set; }
+        public IBackendTimer BackendTimer { get; set; }
 
         public BackendController(IStockMarketApiCommunicator communicator, ISqlDatabaseCommandRunner commandRunner,
             string databaseFileName)
@@ -17,6 +18,7 @@ namespace NeuralStocks.Controller
             Communicator = communicator;
             CommandRunner = commandRunner;
             DatabaseFileName = databaseFileName;
+            BackendTimer = new BackendTimer(this);
         }
 
         public void UpdateCompanyQuotes()
@@ -31,6 +33,16 @@ namespace NeuralStocks.Controller
                 CommandRunner.UpdateCompanyTimestamp(connection, lookupResponse);
                 CommandRunner.AddQuoteResponseToTable(connection, lookupResponse);
             }
+        }
+
+        public void StartTimer()
+        {
+            BackendTimer.Start();
+        }
+
+        public void Dispose()
+        {
+            BackendTimer.Stop();
         }
     }
 }

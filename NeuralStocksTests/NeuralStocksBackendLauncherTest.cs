@@ -90,7 +90,7 @@ namespace NeuralStocksTests
         }
 
         [TestMethod]
-        public void TestStartBackendCallsUpdateCompanyQuotesOnBackendController()
+        public void TestStartBackendCallsStartTimerOnBackendController()
         {
             var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
@@ -101,11 +101,11 @@ namespace NeuralStocksTests
                 BackendController = mockController.Object
             };
 
-            mockController.Verify(m => m.UpdateCompanyQuotes(), Times.Never);
+            mockController.Verify(m => m.StartTimer(), Times.Never);
 
             launcher.StartBackend();
 
-            mockController.Verify(m => m.UpdateCompanyQuotes(), Times.Once);
+            mockController.Verify(m => m.StartTimer(), Times.Once);
         }
     }
 }
