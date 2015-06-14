@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks", "NeuralStocks\NeuralStocks.csproj", "{4FF2EECD-E119-4297-873D-D2952016148A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Backend", "NeuralStocks.Backend\NeuralStocks.Backend.csproj", "{4FF2EECD-E119-4297-873D-D2952016148A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocksTests", "NeuralStocksTests\NeuralStocksTests.csproj", "{77ACCBBF-E342-4289-9191-1BDD0CDE2B3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Backend.Tests", "NeuralStocks.Backend.Tests\NeuralStocks.Backend.Tests.csproj", "{77ACCBBF-E342-4289-9191-1BDD0CDE2B3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
