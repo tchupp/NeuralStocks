@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using NeuralStocks.ApiCommunication;
 
@@ -6,7 +7,7 @@ namespace NeuralStocks.SqlDatabase
 {
     public class SqlDatabaseCommandRunner : ISqlDatabaseCommandRunner
     {
-        public static SqlDatabaseCommandRunner Singleton = new SqlDatabaseCommandRunner();
+        public static readonly SqlDatabaseCommandRunner Singleton = new SqlDatabaseCommandRunner();
 
         private SqlDatabaseCommandRunner()
         {
@@ -47,6 +48,9 @@ namespace NeuralStocks.SqlDatabase
             createCompanyTableCommand.ExecuteNonQuery();
 
             connection.Close();
+
+            Console.WriteLine("Added {0} to company lookup table, " +
+                              "and added a quote history table : {1}.", company.Name, company.Symbol);
         }
 
         public void UpdateCompanyTimestamp(SQLiteConnection connection, QuoteLookupResponse response)
@@ -67,6 +71,8 @@ namespace NeuralStocks.SqlDatabase
             updateCompanyFirstDateCommand.ExecuteNonQuery();
 
             connection.Close();
+
+            Console.WriteLine("Updating Timestamp: Company: {0}. Time: {1}", response.Symbol, response.Timestamp);
         }
 
         public List<QuoteLookupRequest> GetQuoteLookupsFromTable(SQLiteConnection connection)
@@ -104,6 +110,9 @@ namespace NeuralStocks.SqlDatabase
             addQuoteToTableCommand.ExecuteNonQuery();
 
             connection.Close();
+
+            Console.WriteLine("Adding Quote: Company: {0}. Time: {1}. Amount: {2}.",
+                response.Symbol, response.Timestamp, response.LastPrice);
         }
     }
 }

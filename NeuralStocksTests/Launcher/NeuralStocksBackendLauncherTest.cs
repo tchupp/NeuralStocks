@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.ApiCommunication;
@@ -106,6 +107,27 @@ namespace NeuralStocksTests.Launcher
             launcher.StartBackend();
 
             mockController.Verify(m => m.StartTimer(), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestStartBackendWritesCorrectlyToConsole()
+        {
+            var mockWriter = new Mock<TextWriter>();
+            Console.SetOut(mockWriter.Object);
+
+            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockController = new Mock<IBackendController>();
+            var launcher = new NeuralStocksBackendLauncher
+            {
+                SetupManager = mockSetupManager.Object,
+                BackendController = mockController.Object
+            };
+
+            mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
+
+            launcher.StartBackend();
+
+            mockWriter.Verify(m => m.WriteLine("Backend Started"), Times.Once);
         }
     }
 }

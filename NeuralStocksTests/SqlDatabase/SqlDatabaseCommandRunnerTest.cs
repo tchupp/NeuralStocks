@@ -1,6 +1,8 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Data.SQLite;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using NeuralStocks.ApiCommunication;
 using NeuralStocks.SqlDatabase;
 using NeuralStocksTests.Testing;
@@ -201,6 +203,41 @@ namespace NeuralStocksTests.SqlDatabase
         }
 
         [TestMethod]
+        public void TestAddCompanyToTable_WritesToConsole()
+        {
+            const string createCompanyTableCommandString =
+                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
+            const string name = "Apple Inc";
+            const string symbol = "AAPL";
+            var companyLookupResponse = new CompanyLookupResponse
+            {
+                Name = name,
+                Symbol = symbol
+            };
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            var connection = new SQLiteConnection(DatabaseConnectionString);
+
+            connection.Open();
+            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            createCompanyTableCommand.ExecuteNonQuery();
+            connection.Close();
+
+            var mockWriter = new Mock<TextWriter>();
+            Console.SetOut(mockWriter.Object);
+
+            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+
+            mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
+
+            commandRunner.AddCompanyToTable(connection, companyLookupResponse);
+
+            mockWriter.Verify(m => m.WriteLine("Added {0} to company lookup table, " +
+                                               "and added a quote history table : {1}.", name, symbol), Times.Once);
+        }
+
+        [TestMethod]
         public void TestUpdateCompanyTimestamp_SetsRecentDateAsTimestampOfQuote_AndFirstDate_FirstDateNull()
         {
             const string expectedName1 = "Apple Inc";
@@ -377,6 +414,58 @@ namespace NeuralStocksTests.SqlDatabase
         }
 
         [TestMethod]
+        public void TestUpdateCompanyTimestamp_WritesToConsole()
+        {
+            const string expectedName = "Apple Inc";
+            const string expectedSymbol = "AAPL";
+            const string initialTimestamp = "Tues May 26 05:17:42 UTC-04:00 2015";
+            const string expectedTimestamp = "Thu Jun 4 00:00:00 UTC-04:00 2015";
+
+            var quoteLookupResponse = new QuoteLookupResponse
+            {
+                Name = expectedName,
+                Symbol = expectedSymbol,
+                Timestamp = expectedTimestamp
+            };
+
+            const string createCompanyTableCommandString =
+                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
+            var addCompanyToTableCommandString =
+                "INSERT INTO Company VALUES ('" +
+                quoteLookupResponse.Name + "', '" +
+                quoteLookupResponse.Symbol + "', '" +
+                initialTimestamp + "', '" +
+                initialTimestamp + "')";
+
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            var connection = new SQLiteConnection(DatabaseConnectionString);
+
+            connection.Open();
+
+            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            createCompanyTableCommand.ExecuteNonQuery();
+
+            var addCompanyToTableCommand = new SQLiteCommand(addCompanyToTableCommandString, connection);
+            addCompanyToTableCommand.ExecuteNonQuery();
+
+            connection.Close();
+
+            var mockWriter = new Mock<TextWriter>();
+            Console.SetOut(mockWriter.Object);
+
+            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+
+            mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
+
+            commandRunner.UpdateCompanyTimestamp(connection, quoteLookupResponse);
+
+            mockWriter.Verify(m => m.WriteLine("Updating Timestamp: Company: {0}. Time: {1}",
+                expectedSymbol, expectedTimestamp), Times.Once);
+        }
+
+        [TestMethod]
         public void TestGetCompanyLookupsFromTable_ReturnsCorrectCompanyLookupRequestList()
         {
             const string expectedSymbol1 = "AAPL";
@@ -523,6 +612,55 @@ namespace NeuralStocksTests.SqlDatabase
             {
                 connection.Close();
             }
+        }
+
+        [TestMethod]
+        public void TestAddQuoteResponseToTable_WriteToConsole()
+        {
+            const string expectedName = "Apple Inc";
+            const string expectedSymbol = "AAPL";
+            const string expectedTimestamp = "Thu Jun 4 00:00:00 UTC-04:00 2015";
+            const double expectedLastPrice = 127.1f;
+            const double expectedChange = 0.52f;
+            const double expectedChangePercent = 0.0062f;
+
+            const string createCompanyTableCommandString =
+                "CREATE TABLE " + expectedSymbol +
+                " (name TEXT, symbol TEXT, timestamp TEXT, lastPrice REAL, change REAL, changePercent REAL)";
+
+            var quoteLookupResponse = new QuoteLookupResponse
+            {
+                Name = expectedName,
+                Symbol = expectedSymbol,
+                Timestamp = expectedTimestamp,
+                LastPrice = expectedLastPrice,
+                Change = expectedChange,
+                ChangePercent = expectedChangePercent
+            };
+
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            var connection = new SQLiteConnection(DatabaseConnectionString);
+
+            connection.Open();
+
+            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            createCompanyTableCommand.ExecuteNonQuery();
+
+            connection.Close();
+
+            var mockWriter = new Mock<TextWriter>();
+            Console.SetOut(mockWriter.Object);
+
+            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+
+            mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
+
+            commandRunner.AddQuoteResponseToTable(connection, quoteLookupResponse);
+
+            mockWriter.Verify(m => m.WriteLine("Adding Quote: Company: {0}. Time: {1}. Amount: {2}.",
+                expectedSymbol, expectedTimestamp, expectedLastPrice), Times.Once);
         }
     }
 }
