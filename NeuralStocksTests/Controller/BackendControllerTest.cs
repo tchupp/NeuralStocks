@@ -81,19 +81,22 @@ namespace NeuralStocksTests.Controller
         }
 
         [TestMethod]
-        public void TestUpdateCompanyQuotes()
+        public void TestUpdateCompanyQuotes_RecentDateDifferentThanTimestamp()
         {
             const string company1 = "NFLX";
             const string company2 = "AAPL";
+            const string timestamp1 = "Tues Jun 16";
+            const string timestamp2 = "Wed Jun 17";
+
             const string databaseFileName = "TestStocksDatabase.sqlite";
             const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
 
-            var quoteRequest1 = new QuoteLookupRequest(company1);
-            var quoteRequest2 = new QuoteLookupRequest(company2);
+            var quoteRequest1 = new QuoteLookupRequest(company1, timestamp1);
+            var quoteRequest2 = new QuoteLookupRequest(company2, timestamp1);
             var quoteRequests = new List<QuoteLookupRequest> {quoteRequest1, quoteRequest2};
 
-            var quoteResponse1 = new QuoteLookupResponse {Name = company1};
-            var quoteResponse2 = new QuoteLookupResponse {Name = company2};
+            var quoteResponse1 = new QuoteLookupResponse {Name = company1, Timestamp = timestamp2};
+            var quoteResponse2 = new QuoteLookupResponse {Name = company2, Timestamp = timestamp2};
 
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
             var mockCommandRunner = new Mock<ISqlDatabaseCommandRunner>();
@@ -116,6 +119,49 @@ namespace NeuralStocksTests.Controller
                 c => c.ConnectionString == databaseConnectionString), quoteResponse1), Times.Once);
             mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(It.Is<SQLiteConnection>(
                 c => c.ConnectionString == databaseConnectionString), quoteResponse2), Times.Once);
+
+            mockCommunicator.VerifyAll();
+            mockCommandRunner.VerifyAll();
+        }
+
+        [TestMethod]
+        public void TestUpdateCompanyQuotes_RecentDateSameAsTimestamp()
+        {
+            const string company1 = "NFLX";
+            const string company2 = "AAPL";
+            const string timestamp = "Tues Jun 16";
+
+            const string databaseFileName = "TestStocksDatabase.sqlite";
+            const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
+
+            var quoteRequest1 = new QuoteLookupRequest(company1, timestamp);
+            var quoteRequest2 = new QuoteLookupRequest(company2, timestamp);
+            var quoteRequests = new List<QuoteLookupRequest> {quoteRequest1, quoteRequest2};
+
+            var quoteResponse1 = new QuoteLookupResponse {Name = company1, Timestamp = timestamp};
+            var quoteResponse2 = new QuoteLookupResponse {Name = company2, Timestamp = timestamp};
+
+            var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
+            var mockCommandRunner = new Mock<ISqlDatabaseCommandRunner>();
+
+            mockCommandRunner.Setup(m => m.GetQuoteLookupsFromTable(It.Is<SQLiteConnection>(
+                c => c.ConnectionString == databaseConnectionString))).Returns(quoteRequests);
+
+            mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest1)).Returns(quoteResponse1);
+            mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest2)).Returns(quoteResponse2);
+
+            var controller = new BackendController(mockCommunicator.Object, mockCommandRunner.Object, databaseFileName);
+            controller.UpdateCompanyQuotes();
+
+            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(It.Is<SQLiteConnection>(
+                c => c.ConnectionString == databaseConnectionString), quoteResponse1), Times.Never);
+            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(It.Is<SQLiteConnection>(
+                c => c.ConnectionString == databaseConnectionString), quoteResponse2), Times.Never);
+
+            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(It.Is<SQLiteConnection>(
+                c => c.ConnectionString == databaseConnectionString), quoteResponse1), Times.Never);
+            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(It.Is<SQLiteConnection>(
+                c => c.ConnectionString == databaseConnectionString), quoteResponse2), Times.Never);
 
             mockCommunicator.VerifyAll();
             mockCommandRunner.VerifyAll();

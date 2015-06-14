@@ -381,13 +381,15 @@ namespace NeuralStocksTests.SqlDatabase
         {
             const string expectedSymbol1 = "AAPL";
             const string expectedSymbol2 = "NFLX";
+            const string timestamp1 = "Tues Jun 16";
+            const string timestamp2 = "Tues Jun 16";
 
             const string createCompanyTableCommandString =
                 "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
             const string addCompanyToTableCommandString1 = "INSERT INTO Company VALUES ('null', '" +
-                                                           expectedSymbol1 + "', 'null', 'null')";
+                                                           expectedSymbol1 + "', 'null', '" + timestamp1 + "')";
             const string addCompanyToTableCommandString2 = "INSERT INTO Company VALUES ('null', '" +
-                                                           expectedSymbol2 + "', 'null', 'null')";
+                                                           expectedSymbol2 + "', 'null', '" + timestamp2 + "')";
 
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));
@@ -416,7 +418,10 @@ namespace NeuralStocksTests.SqlDatabase
             Assert.IsInstanceOfType(quoteLookupsFromTable[1], typeof (QuoteLookupRequest));
 
             Assert.AreEqual(expectedSymbol1, quoteLookupsFromTable[0].Company);
+            Assert.AreEqual(timestamp1, quoteLookupsFromTable[0].Timestamp);
+
             Assert.AreEqual(expectedSymbol2, quoteLookupsFromTable[1].Company);
+            Assert.AreEqual(timestamp2, quoteLookupsFromTable[1].Timestamp);
         }
 
         [TestMethod]

@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using NeuralStocks.ApiCommunication;
 using NeuralStocks.SqlDatabase;
@@ -27,11 +28,15 @@ namespace NeuralStocks.Controller
             var connection = new SQLiteConnection(databaseConnectionString);
             var lookupsFromTable = CommandRunner.GetQuoteLookupsFromTable(connection);
 
-            foreach (var lookupResponse in lookupsFromTable.Select(
-                lookupRequest => Communicator.QuoteLookup(lookupRequest)))
+            var responses =
+                from lookup in lookupsFromTable
+                let response = Communicator.QuoteLookup(lookup)
+                where response.Timestamp != lookup.Timestamp
+                select response;
+            foreach (var response in responses)
             {
-                CommandRunner.UpdateCompanyTimestamp(connection, lookupResponse);
-                CommandRunner.AddQuoteResponseToTable(connection, lookupResponse);
+                CommandRunner.UpdateCompanyTimestamp(connection, response);
+                CommandRunner.AddQuoteResponseToTable(connection, response);
             }
         }
 

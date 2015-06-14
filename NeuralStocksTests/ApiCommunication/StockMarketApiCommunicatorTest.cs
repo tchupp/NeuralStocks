@@ -94,7 +94,7 @@ namespace NeuralStocksTests.ApiCommunication
             mockApi.Setup(m => m.QuoteLookup(company)).Returns(expectedResponse);
             var communicator = new StockMarketApiCommunicator(mockApi.Object);
 
-            var response = communicator.QuoteLookup(new QuoteLookupRequest(company));
+            var response = communicator.QuoteLookup(new QuoteLookupRequest(company, null));
             mockApi.Verify(m => m.QuoteLookup(company), Times.Once());
 
             Assert.AreEqual(expectedStatus, response.Status);

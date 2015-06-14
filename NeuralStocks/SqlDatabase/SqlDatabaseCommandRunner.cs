@@ -71,7 +71,7 @@ namespace NeuralStocks.SqlDatabase
 
         public List<QuoteLookupRequest> GetQuoteLookupsFromTable(SQLiteConnection connection)
         {
-            const string selectFromCompanyCommandString = "SELECT symbol FROM Company";
+            const string selectFromCompanyCommandString = "SELECT symbol, recentDate FROM Company";
 
             connection.Open();
 
@@ -82,7 +82,8 @@ namespace NeuralStocks.SqlDatabase
             while (selectFromCompanyCommandReader.Read())
             {
                 var companySymbol = selectFromCompanyCommandReader["symbol"] as string;
-                var companyLookupRequest = new QuoteLookupRequest(companySymbol);
+                var companyTimestamp = selectFromCompanyCommandReader["recentDate"] as string;
+                var companyLookupRequest = new QuoteLookupRequest(companySymbol, companyTimestamp);
                 lookupRequests.Add(companyLookupRequest);
             }
 
