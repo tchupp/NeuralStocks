@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using NeuralStocks.ApiCommunication;
 using NeuralStocks.Controller;
 using NeuralStocks.SqlDatabase;
@@ -28,6 +29,10 @@ namespace NeuralStocks.Launcher
         {
             var launcher = new NeuralStocksBackendLauncher();
             launcher.StartBackend();
+
+            Console.WriteLine("Press the Enter key to exit the program... ");
+            Console.ReadLine();
+            Console.WriteLine("Terminating the application...");
         }
     }
 }
