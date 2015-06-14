@@ -1,13 +1,13 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using NeuralStocks;
 using NeuralStocks.ApiCommunication;
 using NeuralStocks.Controller;
+using NeuralStocks.Launcher;
 using NeuralStocks.SqlDatabase;
 using NeuralStocksTests.Testing;
 
-namespace NeuralStocksTests
+namespace NeuralStocksTests.Launcher
 {
     [TestClass]
     public class NeuralStocksBackendLauncherTest

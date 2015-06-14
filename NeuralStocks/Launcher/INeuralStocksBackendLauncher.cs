@@ -1,4 +1,4 @@
-﻿namespace NeuralStocks
+﻿namespace NeuralStocks.Launcher
 {
     public interface INeuralStocksBackendLauncher
     {

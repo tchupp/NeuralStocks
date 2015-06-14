@@ -3,7 +3,7 @@ using NeuralStocks.ApiCommunication;
 using NeuralStocks.Controller;
 using NeuralStocks.SqlDatabase;
 
-namespace NeuralStocks
+namespace NeuralStocks.Launcher
 {
     public class NeuralStocksBackendLauncher : INeuralStocksBackendLauncher
     {

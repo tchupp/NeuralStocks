@@ -54,6 +54,8 @@ namespace NeuralStocksTests.Controller
 
             var timer = MoreAssert.AssertIsOfTypeAndGet<BackendTimer>(controller.BackendTimer);
             Assert.AreSame(controller, timer.Controller);
+
+            Assert.AreEqual(300000, timer.Interval);
         }
 
         [TestMethod]
@@ -71,7 +73,7 @@ namespace NeuralStocksTests.Controller
         public void TestDisposeCallsStopOnTimer()
         {
             var mockTimer = new Mock<IBackendTimer>();
-            var controller = new BackendController(null, null, null) { BackendTimer = mockTimer.Object };
+            var controller = new BackendController(null, null, null) {BackendTimer = mockTimer.Object};
 
             mockTimer.Verify(t => t.Stop(), Times.Never);
             controller.Dispose();

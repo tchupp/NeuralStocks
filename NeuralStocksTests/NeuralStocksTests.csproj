@@ -71,7 +71,7 @@
     <Compile Include="ApiCommunication\QuoteLookupRequestTest.cs" />
     <Compile Include="Controller\BackendControllerTest.cs" />
     <Compile Include="Controller\BackendTimerTest.cs" />
-    <Compile Include="NeuralStocksBackendLauncherTest.cs" />
+    <Compile Include="Launcher\NeuralStocksBackendLauncherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseCommandRunnerTest.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseSetupManagerTest.cs" />

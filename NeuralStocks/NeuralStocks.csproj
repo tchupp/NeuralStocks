@@ -79,11 +79,11 @@
     <Compile Include="Controller\BackendTimer.cs" />
     <Compile Include="Controller\IBackendController.cs" />
     <Compile Include="Controller\IBackendTimer.cs" />
-    <Compile Include="INeuralStocksBackendLauncher.cs" />
+    <Compile Include="Launcher\INeuralStocksBackendLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDatabase\ISqlDatabaseCommandRunner.cs" />
     <Compile Include="SqlDatabase\ISqlDatabaseSetupManager.cs" />
-    <Compile Include="NeuralStocksBackendLauncher.cs" />
+    <Compile Include="Launcher\NeuralStocksBackendLauncher.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseCommandRunner.cs" />
     <Compile Include="SqlDatabase\SqlDatabaseSetupManager.cs" />
   </ItemGroup>
