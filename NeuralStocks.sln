@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Backend", "Neu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Backend.Tests", "NeuralStocks.Backend.Tests\NeuralStocks.Backend.Tests.csproj", "{77ACCBBF-E342-4289-9191-1BDD0CDE2B3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Frontend", "NeuralStocks.Frontend\NeuralStocks.Frontend.csproj", "{ED766530-D23C-40F7-ABD1-F91CD3EC3561}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Frontend.Tests", "NeuralStocks.Frontend.Tests\NeuralStocks.Frontend.Tests.csproj", "{1E3DBB8C-87F7-4EED-9833-7F579D207969}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{77ACCBBF-E342-4289-9191-1BDD0CDE2B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77ACCBBF-E342-4289-9191-1BDD0CDE2B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77ACCBBF-E342-4289-9191-1BDD0CDE2B3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED766530-D23C-40F7-ABD1-F91CD3EC3561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED766530-D23C-40F7-ABD1-F91CD3EC3561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED766530-D23C-40F7-ABD1-F91CD3EC3561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED766530-D23C-40F7-ABD1-F91CD3EC3561}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E3DBB8C-87F7-4EED-9833-7F579D207969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E3DBB8C-87F7-4EED-9833-7F579D207969}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E3DBB8C-87F7-4EED-9833-7F579D207969}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E3DBB8C-87F7-4EED-9833-7F579D207969}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
