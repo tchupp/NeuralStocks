@@ -12,7 +12,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
         [TestMethod]
         public void TestImplementsInterface()
         {
-            ImplementsInterface(typeof (ISqlDatabaseSetupManager), typeof (SqlDatabaseSetupManager));
+            AssertImplementsInterface(typeof (ISqlDatabaseSetupManager), typeof (SqlDatabaseSetupManager));
         }
 
         [TestMethod]

@@ -12,7 +12,7 @@ namespace NeuralStocks.Backend.Tests.Controller
         [TestMethod]
         public void TestImplementsInterface()
         {
-            ImplementsInterface(typeof (IBackendTimer), typeof (BackendTimer));
+            AssertImplementsInterface(typeof (IBackendTimer), typeof (BackendTimer));
         }
 
         [TestMethod]
@@ -30,8 +30,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             var timer = new BackendTimer(null);
             var wrappedTimer = timer.Timer;
 
-            Assert.AreEqual(300000, timer.Interval);
-            Assert.AreEqual(300000, wrappedTimer.Interval);
+            Assert.AreEqual(10000, timer.Interval);
+            Assert.AreEqual(10000, wrappedTimer.Interval);
 
             timer.Interval = 500;
 

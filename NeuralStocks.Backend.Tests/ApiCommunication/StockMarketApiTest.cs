@@ -41,13 +41,13 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
         [TestMethod]
         public void TestImplementsInterface()
         {
-            ImplementsInterface(typeof (IStockMarketApi), typeof (StockMarketApi));
+            AssertImplementsInterface(typeof (IStockMarketApi), typeof (StockMarketApi));
         }
 
         [TestMethod]
         public void TestSingleton()
         {
-            PrivateContructor(typeof (StockMarketApi));
+            AssertPrivateContructor(typeof (StockMarketApi));
             Assert.AreSame(StockMarketApi.Singleton, StockMarketApi.Singleton);
         }
 

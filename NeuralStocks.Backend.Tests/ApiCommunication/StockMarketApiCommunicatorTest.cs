@@ -11,7 +11,7 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
         [TestMethod]
         public void TestImplementsInterface()
         {
-            ImplementsInterface(typeof (IStockMarketApiCommunicator), typeof (StockMarketApiCommunicator));
+            AssertImplementsInterface(typeof (IStockMarketApiCommunicator), typeof (StockMarketApiCommunicator));
         }
 
         [TestMethod]

@@ -15,7 +15,7 @@ namespace NeuralStocks.Backend.Tests.Controller
         [TestMethod]
         public void TestImplementsInterface()
         {
-            ImplementsInterface(typeof (IBackendController), typeof (BackendController));
+            AssertImplementsInterface(typeof (IBackendController), typeof (BackendController));
         }
 
         [TestMethod]
@@ -55,7 +55,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var timer = AssertIsOfTypeAndGet<BackendTimer>(controller.BackendTimer);
             Assert.AreSame(controller, timer.Controller);
 
-            Assert.AreEqual(300000, timer.Interval);
+            Assert.AreEqual(10000, timer.Interval);
         }
 
         [TestMethod]

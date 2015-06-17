@@ -19,14 +19,14 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
         [TestMethod]
         public void TestImplementsInterface()
         {
-            ImplementsInterface(
+            AssertImplementsInterface(
                 typeof (ISqlDatabaseCommandRunner), typeof (SqlDatabaseCommandRunner));
         }
 
         [TestMethod]
         public void TestSqlDatabaseCommandRunnerIsSingleton()
         {
-            PrivateContructor(typeof (SqlDatabaseCommandRunner));
+            AssertPrivateContructor(typeof (SqlDatabaseCommandRunner));
             Assert.AreSame(SqlDatabaseCommandRunner.Singleton, SqlDatabaseCommandRunner.Singleton);
         }
 

@@ -70,6 +70,7 @@
     <Compile Include="ApiCommunication\StockMarketApiTest.cs" />
     <Compile Include="ApiCommunication\QuoteLookupRequestTest.cs" />
     <Compile Include="Controller\BackendControllerTest.cs" />
+    <Compile Include="Controller\BackendLockTest.cs" />
     <Compile Include="Controller\BackendTimerTest.cs" />
     <Compile Include="Launcher\NeuralStocksBackendLauncherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

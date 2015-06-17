@@ -76,8 +76,10 @@
     <Compile Include="ApiCommunication\StockMarketApiCommunicator.cs" />
     <Compile Include="ApiCommunication\QuoteLookupRequest.cs" />
     <Compile Include="Controller\BackendController.cs" />
+    <Compile Include="Controller\BackendLock.cs" />
     <Compile Include="Controller\BackendTimer.cs" />
     <Compile Include="Controller\IBackendController.cs" />
+    <Compile Include="Controller\IBackendLock.cs" />
     <Compile Include="Controller\IBackendTimer.cs" />
     <Compile Include="Launcher\INeuralStocksBackendLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

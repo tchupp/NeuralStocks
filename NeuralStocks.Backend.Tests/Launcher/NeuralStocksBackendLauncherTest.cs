@@ -16,7 +16,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
         [TestMethod]
         public void TestImplementsInterface()
         {
-            ImplementsInterface(typeof (INeuralStocksBackendLauncher), typeof (NeuralStocksBackendLauncher));
+            AssertImplementsInterface(typeof (INeuralStocksBackendLauncher), typeof (NeuralStocksBackendLauncher));
         }
 
         [TestMethod]
@@ -45,6 +45,16 @@ namespace NeuralStocks.Backend.Tests.Launcher
         }
 
         [TestMethod]
+        public void TestConstructorSetsUpBackendLockCorrectly()
+        {
+            var launcher = new NeuralStocksBackendLauncher();
+
+            var backendLock = AssertIsOfTypeAndGet<BackendLock>(launcher.BackendLock);
+
+            Assert.AreEqual(58525, backendLock.Port);
+        }
+
+        [TestMethod]
         public void TestStartBackendCallsInitializeDatabaseOnSetupManager_DatabaseDoesNotExist()
         {
             const string databaseFileName = "NeuralStocksDatabase.sqlite";
@@ -53,11 +63,14 @@ namespace NeuralStocks.Backend.Tests.Launcher
 
             var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
+            var mockBackendLock = new Mock<IBackendLock>();
+            mockBackendLock.Setup(m => m.Lock()).Returns(true);
 
             var launcher = new NeuralStocksBackendLauncher
             {
                 SetupManager = mockSetupManager.Object,
-                BackendController = mockController.Object
+                BackendController = mockController.Object,
+                BackendLock = mockBackendLock.Object
             };
 
             mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
@@ -65,6 +78,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             launcher.StartBackend();
 
             mockSetupManager.Verify(m => m.InitializeDatabase(databaseFileName), Times.Once);
+            mockBackendLock.VerifyAll();
         }
 
         [TestMethod]
@@ -76,11 +90,14 @@ namespace NeuralStocks.Backend.Tests.Launcher
 
             var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
+            var mockBackendLock = new Mock<IBackendLock>();
+            mockBackendLock.Setup(m => m.Lock()).Returns(true);
 
             var launcher = new NeuralStocksBackendLauncher
             {
                 SetupManager = mockSetupManager.Object,
-                BackendController = mockController.Object
+                BackendController = mockController.Object,
+                BackendLock = mockBackendLock.Object
             };
 
             mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
@@ -88,6 +105,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             launcher.StartBackend();
 
             mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
+            mockBackendLock.VerifyAll();
         }
 
         [TestMethod]
@@ -95,11 +113,14 @@ namespace NeuralStocks.Backend.Tests.Launcher
         {
             var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
+            var mockBackendLock = new Mock<IBackendLock>();
+            mockBackendLock.Setup(m => m.Lock()).Returns(true);
 
             var launcher = new NeuralStocksBackendLauncher
             {
                 SetupManager = mockSetupManager.Object,
-                BackendController = mockController.Object
+                BackendController = mockController.Object,
+                BackendLock = mockBackendLock.Object
             };
 
             mockController.Verify(m => m.StartTimer(), Times.Never);
@@ -107,6 +128,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             launcher.StartBackend();
 
             mockController.Verify(m => m.StartTimer(), Times.Once);
+            mockBackendLock.VerifyAll();
         }
 
         [TestMethod]
@@ -117,10 +139,14 @@ namespace NeuralStocks.Backend.Tests.Launcher
 
             var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
+            var mockBackendLock = new Mock<IBackendLock>();
+            mockBackendLock.Setup(m => m.Lock()).Returns(true);
+
             var launcher = new NeuralStocksBackendLauncher
             {
                 SetupManager = mockSetupManager.Object,
-                BackendController = mockController.Object
+                BackendController = mockController.Object,
+                BackendLock = mockBackendLock.Object
             };
 
             mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
@@ -128,6 +154,65 @@ namespace NeuralStocks.Backend.Tests.Launcher
             launcher.StartBackend();
 
             mockWriter.Verify(m => m.WriteLine("Backend Started"), Times.Once);
+            mockBackendLock.VerifyAll();
+        }
+
+        [TestMethod]
+        public void TestStartBackendDoesNotCallInitializeDatabase_StartTimer_OrWriteToConsole_BackendAlreadyLocked()
+        {
+            var mockWriter = new Mock<TextWriter>();
+            Console.SetOut(mockWriter.Object);
+
+            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockController = new Mock<IBackendController>();
+            var mockBackendLock = new Mock<IBackendLock>();
+
+            mockBackendLock.Setup(m => m.Lock()).Returns(false);
+
+            var launcher = new NeuralStocksBackendLauncher
+            {
+                SetupManager = mockSetupManager.Object,
+                BackendController = mockController.Object,
+                BackendLock = mockBackendLock.Object
+            };
+
+            mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
+            mockController.Verify(m => m.StartTimer(), Times.Never);
+            mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
+
+            launcher.StartBackend();
+
+            mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
+            mockController.Verify(m => m.StartTimer(), Times.Never);
+            mockWriter.Verify(m => m.WriteLine("Backend Started"), Times.Never);
+            mockBackendLock.VerifyAll();
+        }
+
+        [TestMethod]
+        public void TestStartBackendWritesToConsole_BackendAlreadyLocked()
+        {
+            var mockWriter = new Mock<TextWriter>();
+            Console.SetOut(mockWriter.Object);
+
+            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockController = new Mock<IBackendController>();
+            var mockBackendLock = new Mock<IBackendLock>();
+
+            mockBackendLock.Setup(m => m.Lock()).Returns(false);
+
+            var launcher = new NeuralStocksBackendLauncher
+            {
+                SetupManager = mockSetupManager.Object,
+                BackendController = mockController.Object,
+                BackendLock = mockBackendLock.Object
+            };
+
+            mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
+
+            launcher.StartBackend();
+
+            mockWriter.Verify(m => m.WriteLine("Backend already started. Application is locked"), Times.Once);
+            mockBackendLock.VerifyAll();
         }
     }
 }

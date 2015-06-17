@@ -6,7 +6,7 @@ namespace NeuralStocks.Backend.Tests.Testing
 {
     public class AssertTestClass
     {
-        public static void ImplementsInterface(Type expectedInterface, Type expectedClass)
+        protected static void AssertImplementsInterface(Type expectedInterface, Type expectedClass)
         {
             Assert.IsTrue(expectedClass.IsClass, "Class is not actually a class");
             Assert.IsTrue(expectedInterface.IsInterface, "Interface is not actually an Interface");
@@ -17,7 +17,7 @@ namespace NeuralStocks.Backend.Tests.Testing
             Assert.IsTrue(interfaces.Contains(expectedInterface), "");
         }
 
-        public static void PrivateContructor(Type expectedClass)
+        protected static void AssertPrivateContructor(Type expectedClass)
         {
             Assert.IsTrue(expectedClass.IsClass, "Class is not actually a class");
 
@@ -25,7 +25,7 @@ namespace NeuralStocks.Backend.Tests.Testing
             Assert.AreEqual(0, constructors.Length, "Class has at least one public constructor");
         }
 
-        public static T AssertIsOfTypeAndGet<T>(object obj)
+        protected static T AssertIsOfTypeAndGet<T>(object obj)
         {
             Assert.IsNotNull(obj, "Object was null instead of type " + typeof (T));
             Assert.IsInstanceOfType(obj, typeof (T),
