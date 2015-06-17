@@ -69,6 +69,7 @@
     <Compile Include="ApiCommunication\StockMarketApiCommunicatorTest.cs" />
     <Compile Include="ApiCommunication\StockMarketApiTest.cs" />
     <Compile Include="ApiCommunication\QuoteLookupRequestTest.cs" />
+    <Compile Include="ApiCommunication\TimestampParserTest.cs" />
     <Compile Include="Controller\BackendControllerTest.cs" />
     <Compile Include="Controller\BackendLockTest.cs" />
     <Compile Include="Controller\BackendTimerTest.cs" />

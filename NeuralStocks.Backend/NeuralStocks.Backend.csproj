@@ -75,6 +75,7 @@
     <Compile Include="ApiCommunication\StockMarketApi.cs" />
     <Compile Include="ApiCommunication\StockMarketApiCommunicator.cs" />
     <Compile Include="ApiCommunication\QuoteLookupRequest.cs" />
+    <Compile Include="ApiCommunication\TimestampParser.cs" />
     <Compile Include="Controller\BackendController.cs" />
     <Compile Include="Controller\BackendLock.cs" />
     <Compile Include="Controller\BackendTimer.cs" />
