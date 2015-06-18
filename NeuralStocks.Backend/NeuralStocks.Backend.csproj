@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiCommunication\ITimestampParser.cs" />
     <Compile Include="ApiCommunication\QuoteLookupResponse.cs" />
     <Compile Include="ApiCommunication\CompanyLookupRequest.cs" />
     <Compile Include="ApiCommunication\IStockMarketApi.cs" />

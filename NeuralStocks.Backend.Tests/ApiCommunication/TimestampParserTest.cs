@@ -8,6 +8,12 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
     public class TimestampParserTest : AssertTestClass
     {
         [TestMethod]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (ITimestampParser), typeof (TimestampParser));
+        }
+
+        [TestMethod]
         public void TestSingleton()
         {
             AssertPrivateContructor(typeof (TimestampParser));
@@ -23,9 +29,9 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
             var quoteLookupResponse = new QuoteLookupResponse {Timestamp = initialTimestamp};
 
             var parser = TimestampParser.Singleton;
-            parser.Parse(quoteLookupResponse);
+            var newResponse = parser.Parse(quoteLookupResponse);
 
-            Assert.AreEqual(expecetedTimestamp, quoteLookupResponse.Timestamp);
+            Assert.AreEqual(expecetedTimestamp, newResponse.Timestamp);
         }
 
         [TestMethod]

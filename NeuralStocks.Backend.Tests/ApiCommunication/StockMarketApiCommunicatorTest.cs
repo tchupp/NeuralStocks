@@ -15,6 +15,28 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
         }
 
         [TestMethod]
+        public void TestGetsStockMarketApiPassedIn()
+        {
+            var mockApi = new Mock<IStockMarketApi>();
+            var expectedApi = mockApi.Object;
+
+            var communicator = new StockMarketApiCommunicator(expectedApi, null);
+
+            Assert.AreSame(expectedApi, communicator.StockMarketApi);
+        }
+
+        [TestMethod]
+        public void TestGetsTimestampParserPassedIn()
+        {
+            var mockTimestampParser = new Mock<ITimestampParser>();
+            var expectedParser = mockTimestampParser.Object;
+
+            var communicator = new StockMarketApiCommunicator(null, expectedParser);
+
+            Assert.AreSame(expectedParser, communicator.TimestampParser);
+        }
+
+        [TestMethod]
         public void TestCompanyLookup()
         {
             const string company = "AAPL";
@@ -32,7 +54,7 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
             var mockApi = new Mock<IStockMarketApi>();
             mockApi.Setup(m => m.CompanyLookup(company)).Returns(expectedResponse);
 
-            var communicator = new StockMarketApiCommunicator(mockApi.Object);
+            var communicator = new StockMarketApiCommunicator(mockApi.Object, null);
 
             var response = communicator.CompanyLookup(new CompanyLookupRequest(company));
 
@@ -63,6 +85,7 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
             const double expectedChange = -0.0500000000000114;
             const double expectedChangePercent = -0.0383788762665116;
             const string expectedTimestamp = "Fri May 29 15:59:00 UTC-04:00 2015";
+            const string expectedParsedTimestamp = "D20150529T15:59:00";
             const double expectedMarketCap = 750258936900;
             const double expectedVolume = 2996541;
             const double expectedChangeYtd = 110.38;
@@ -88,14 +111,37 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
                 "\"Low\":129.9," +
                 "\"Open\":131.26}";
 
+            var lookupResponse = new QuoteLookupResponse
+            {
+                Status = expectedStatus,
+                Name = expectedName,
+                Symbol = expectedSymbol,
+                LastPrice = expectedLastPrice,
+                Change = expectedChange,
+                ChangePercent = expectedChangePercent,
+                Timestamp = expectedParsedTimestamp,
+                MarketCap = expectedMarketCap,
+                Volume = expectedVolume,
+                ChangeYtd = expectedChangeYtd,
+                ChangePercentYtd = expectedChangePercentYtd,
+                High = expectedHigh,
+                Low = expectedLow,
+                Open = expectedOpen
+            };
+
             const string company = "AAPL";
 
             var mockApi = new Mock<IStockMarketApi>();
+            var mockTimestampParser = new Mock<ITimestampParser>();
             mockApi.Setup(m => m.QuoteLookup(company)).Returns(expectedResponse);
-            var communicator = new StockMarketApiCommunicator(mockApi.Object);
+            mockTimestampParser.Setup(m => m.Parse(It.Is<QuoteLookupResponse>(
+                r => r.Timestamp == expectedTimestamp))).Returns(lookupResponse);
+
+            var communicator = new StockMarketApiCommunicator(mockApi.Object, mockTimestampParser.Object);
 
             var response = communicator.QuoteLookup(new QuoteLookupRequest(company, null));
             mockApi.Verify(m => m.QuoteLookup(company), Times.Once());
+            mockTimestampParser.VerifyAll();
 
             Assert.AreEqual(expectedStatus, response.Status);
             Assert.AreEqual(expectedName, response.Name);
@@ -103,7 +149,7 @@ namespace NeuralStocks.Backend.Tests.ApiCommunication
             Assert.AreEqual(expectedLastPrice, response.LastPrice, 0.001);
             Assert.AreEqual(expectedChange, response.Change, 0.001);
             Assert.AreEqual(expectedChangePercent, response.ChangePercent, 0.001);
-            Assert.AreEqual(expectedTimestamp, response.Timestamp);
+            Assert.AreEqual(expectedParsedTimestamp, response.Timestamp);
             Assert.AreEqual(expectedMarketCap, response.MarketCap, 0.001);
             Assert.AreEqual(expectedVolume, response.Volume, 0.001);
             Assert.AreEqual(expectedChangeYtd, response.ChangeYtd, 0.001);

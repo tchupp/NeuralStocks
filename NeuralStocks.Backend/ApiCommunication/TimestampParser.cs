@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace NeuralStocks.Backend.ApiCommunication
+﻿namespace NeuralStocks.Backend.ApiCommunication
 {
-    public class TimestampParser
+    public class TimestampParser : ITimestampParser
     {
         public static readonly TimestampParser Singleton = new TimestampParser();
 
@@ -10,7 +8,7 @@ namespace NeuralStocks.Backend.ApiCommunication
         {
         }
 
-        public void Parse(QuoteLookupResponse response)
+        public QuoteLookupResponse Parse(QuoteLookupResponse response)
         {
             var timestamp = response.Timestamp;
             var split = timestamp.Split(' ');
@@ -21,6 +19,8 @@ namespace NeuralStocks.Backend.ApiCommunication
             var time = split[3];
 
             response.Timestamp = string.Format("D{0}{1}{2}T{3}", year, month, day, time);
+
+            return response;
         }
 
         private static string MonthParse(string month)
