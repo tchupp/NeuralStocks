@@ -8,6 +8,8 @@ namespace NeuralStocks.Backend.Tests.Controller
     [TestClass]
     public class BackendLockTest : AssertTestClass
     {
+        private const int TestingPort = 52963;
+
         [TestMethod]
         public void TestImplementsInterface()
         {
@@ -17,17 +19,15 @@ namespace NeuralStocks.Backend.Tests.Controller
         [TestMethod]
         public void TestGetsPortPassedIn()
         {
-            const int expectedPort = 58525;
-            var backendLock = new BackendLock(expectedPort);
+            var backendLock = new BackendLock(TestingPort);
 
-            Assert.AreEqual(expectedPort, backendLock.Port);
+            Assert.AreEqual(TestingPort, backendLock.Port);
         }
 
         [TestMethod]
         public void TestLockReturnsTrue_FirstLockOnPort()
         {
-            const int expectedPort = 58525;
-            var backendLock = new BackendLock(expectedPort);
+            var backendLock = new BackendLock(TestingPort);
 
             try
             {
@@ -42,9 +42,8 @@ namespace NeuralStocks.Backend.Tests.Controller
         [TestMethod]
         public void TestLockReturnsFalse_LockExistsOnPort()
         {
-            const int expectedPort = 58525;
-            var backendLock1 = new BackendLock(expectedPort);
-            var backendLock2 = new BackendLock(expectedPort);
+            var backendLock1 = new BackendLock(TestingPort);
+            var backendLock2 = new BackendLock(TestingPort);
 
             try
             {
@@ -60,8 +59,7 @@ namespace NeuralStocks.Backend.Tests.Controller
         [TestMethod]
         public void TestCallingUnlockDoesNotThrowException_LockHasNotBeenCalled()
         {
-            const int expectedPort = 58525;
-            var backendLock = new BackendLock(expectedPort);
+            var backendLock = new BackendLock(TestingPort);
 
             try
             {
@@ -76,9 +74,8 @@ namespace NeuralStocks.Backend.Tests.Controller
         [TestMethod]
         public void TestUnlockAllowsOtherLocksToLockTheSocket()
         {
-            const int expectedPort = 58525;
-            var backendLock1 = new BackendLock(expectedPort);
-            var backendLock2 = new BackendLock(expectedPort);
+            var backendLock1 = new BackendLock(TestingPort);
+            var backendLock2 = new BackendLock(TestingPort);
 
             try
             {
