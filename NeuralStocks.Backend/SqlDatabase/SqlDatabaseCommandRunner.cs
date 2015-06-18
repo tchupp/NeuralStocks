@@ -21,7 +21,7 @@ namespace NeuralStocks.Backend.SqlDatabase
         public void CreateCompanyTable(SQLiteConnection connection)
         {
             const string createCompanyTableCommandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
+                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT, collect INTEGER)";
 
             connection.Open();
 
@@ -34,7 +34,7 @@ namespace NeuralStocks.Backend.SqlDatabase
         public void AddCompanyToTable(SQLiteConnection connection, CompanyLookupResponse company)
         {
             var addCompanyToTableCommandString =
-                "INSERT INTO Company VALUES ('" + company.Name + "', '" + company.Symbol + "', 'null', 'null')";
+                "INSERT INTO Company VALUES ('" + company.Name + "', '" + company.Symbol + "', 'null', 'null', 1)";
             var createCompanyTableCommandString =
                 "CREATE TABLE " + company.Symbol +
                 " (name TEXT, symbol TEXT, timestamp TEXT, lastPrice REAL, change REAL, changePercent REAL)";

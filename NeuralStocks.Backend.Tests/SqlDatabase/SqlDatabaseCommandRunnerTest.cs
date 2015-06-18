@@ -16,6 +16,9 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
         private const string DatabaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
         private const string SelectAllFromCompanyTableCommandString = "SELECT * FROM Company";
 
+        private const string CreateCompanyTableCommandString =
+            "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT, collect INT)";
+
         [TestMethod]
         public void TestImplementsInterface()
         {
@@ -45,7 +48,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
         }
 
         [TestMethod]
-        public void TestCreateCompanyTable()
+        public void TestCreateCompanyTable_CreatesTable()
         {
             const string selectAllTablesByNameCompanyCommandString =
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='Company'";
@@ -71,6 +74,44 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
                 Assert.AreEqual("Company", selectAllTablesByNameCompanyCommandReader["name"]);
 
                 Assert.IsFalse(selectAllTablesByNameCompanyCommandReader.Read());
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [TestMethod]
+        public void TestCreateCompanyTable_CreatesCorrectFields()
+        {
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            var connection = new SQLiteConnection(DatabaseConnectionString);
+
+            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            commandRunner.CreateCompanyTable(connection);
+
+            connection.Open();
+
+            var selectAllFromCompanyTableCommand = new SQLiteCommand(SelectAllFromCompanyTableCommandString,
+                connection);
+            var selectAllFromCompanyTableCommandReader = selectAllFromCompanyTableCommand.ExecuteReader();
+
+            try
+            {
+                Assert.IsFalse(selectAllFromCompanyTableCommandReader.Read());
+                Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
+                Assert.AreEqual("name", selectAllFromCompanyTableCommandReader.GetName(0));
+                Assert.AreEqual("TEXT", selectAllFromCompanyTableCommandReader.GetDataTypeName(0));
+                Assert.AreEqual("symbol", selectAllFromCompanyTableCommandReader.GetName(1));
+                Assert.AreEqual("TEXT", selectAllFromCompanyTableCommandReader.GetDataTypeName(1));
+                Assert.AreEqual("firstDate", selectAllFromCompanyTableCommandReader.GetName(2));
+                Assert.AreEqual("TEXT", selectAllFromCompanyTableCommandReader.GetDataTypeName(2));
+                Assert.AreEqual("recentDate", selectAllFromCompanyTableCommandReader.GetName(3));
+                Assert.AreEqual("TEXT", selectAllFromCompanyTableCommandReader.GetDataTypeName(3));
+                Assert.AreEqual("collect", selectAllFromCompanyTableCommandReader.GetName(4));
+                Assert.AreEqual("INTEGER", selectAllFromCompanyTableCommandReader.GetDataTypeName(4));
             }
             finally
             {
@@ -116,18 +157,20 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             try
             {
                 Assert.IsTrue(checkCompanyTableFieldsCommandReader.Read());
-                Assert.AreEqual(4, checkCompanyTableFieldsCommandReader.FieldCount);
+                Assert.AreEqual(5, checkCompanyTableFieldsCommandReader.FieldCount);
                 Assert.AreEqual(expectedName1, checkCompanyTableFieldsCommandReader["name"]);
                 Assert.AreEqual(expectedSymbol1, checkCompanyTableFieldsCommandReader["symbol"]);
                 Assert.AreEqual("null", checkCompanyTableFieldsCommandReader["firstDate"]);
                 Assert.AreEqual("null", checkCompanyTableFieldsCommandReader["recentDate"]);
+                Assert.AreEqual(1L, checkCompanyTableFieldsCommandReader["collect"]);
 
                 Assert.IsTrue(checkCompanyTableFieldsCommandReader.Read());
-                Assert.AreEqual(4, checkCompanyTableFieldsCommandReader.FieldCount);
+                Assert.AreEqual(5, checkCompanyTableFieldsCommandReader.FieldCount);
                 Assert.AreEqual(expectedName2, checkCompanyTableFieldsCommandReader["name"]);
                 Assert.AreEqual(expectedSymbol2, checkCompanyTableFieldsCommandReader["symbol"]);
                 Assert.AreEqual("null", checkCompanyTableFieldsCommandReader["firstDate"]);
                 Assert.AreEqual("null", checkCompanyTableFieldsCommandReader["recentDate"]);
+                Assert.AreEqual(1L, checkCompanyTableFieldsCommandReader["collect"]);
 
                 Assert.IsFalse(checkCompanyTableFieldsCommandReader.Read());
             }
@@ -140,8 +183,6 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
         [TestMethod]
         public void TestAddCompanyToTable_AlsoAddsNewQuoteHistoryTable()
         {
-            const string createCompanyTableCommandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
             const string selectAllTablesCommandString =
                 "SELECT * FROM sqlite_master WHERE type='table'";
 
@@ -168,7 +209,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Open();
 
-            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
 
             connection.Close();
@@ -205,8 +246,6 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
         [TestMethod]
         public void TestAddCompanyToTable_WritesToConsole()
         {
-            const string createCompanyTableCommandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
             const string name = "Apple Inc";
             const string symbol = "AAPL";
             var companyLookupResponse = new CompanyLookupResponse
@@ -220,7 +259,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
-            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
             connection.Close();
 
@@ -260,16 +299,14 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
                 Timestamp = expectedTimestamp2
             };
 
-            const string createCompanyTableCommandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
             var addCompanyToTableCommandString1 =
                 "INSERT INTO Company VALUES ('" +
                 quoteLookupResponse1.Name + "', '" +
-                quoteLookupResponse1.Symbol + "', 'null', 'null')";
+                quoteLookupResponse1.Symbol + "', 'null', 'null', 1)";
             var addCompanyToTableCommandString2 =
                 "INSERT INTO Company VALUES ('" +
                 quoteLookupResponse2.Name + "', '" +
-                quoteLookupResponse2.Symbol + "', 'null', 'null')";
+                quoteLookupResponse2.Symbol + "', 'null', 'null', 1)";
 
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));
@@ -278,7 +315,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Open();
 
-            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
 
             var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);
@@ -301,18 +338,20 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             try
             {
                 Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                Assert.AreEqual(4, selectAllFromCompanyTableCommandReader.FieldCount);
+                Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
                 Assert.AreEqual(expectedName1, selectAllFromCompanyTableCommandReader["name"]);
                 Assert.AreEqual(expectedSymbol1, selectAllFromCompanyTableCommandReader["symbol"]);
                 Assert.AreEqual(expectedTimestamp1, selectAllFromCompanyTableCommandReader["firstDate"]);
                 Assert.AreEqual(expectedTimestamp1, selectAllFromCompanyTableCommandReader["recentDate"]);
+                Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
 
                 Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                Assert.AreEqual(4, selectAllFromCompanyTableCommandReader.FieldCount);
+                Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
                 Assert.AreEqual(expectedName2, selectAllFromCompanyTableCommandReader["name"]);
                 Assert.AreEqual(expectedSymbol2, selectAllFromCompanyTableCommandReader["symbol"]);
                 Assert.AreEqual(expectedTimestamp2, selectAllFromCompanyTableCommandReader["firstDate"]);
                 Assert.AreEqual(expectedTimestamp2, selectAllFromCompanyTableCommandReader["recentDate"]);
+                Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
 
                 Assert.IsFalse(selectAllFromCompanyTableCommandReader.Read());
             }
@@ -347,20 +386,18 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
                 Timestamp = expectedTimestamp2
             };
 
-            const string createCompanyTableCommandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
             var addCompanyToTableCommandString1 =
                 "INSERT INTO Company VALUES ('" +
                 quoteLookupResponse1.Name + "', '" +
                 quoteLookupResponse1.Symbol + "', '" +
                 initialTimestamp1 + "', '" +
-                initialTimestamp1 + "')";
+                initialTimestamp1 + "', 1)";
             var addCompanyToTableCommandString2 =
                 "INSERT INTO Company VALUES ('" +
                 quoteLookupResponse2.Name + "', '" +
                 quoteLookupResponse2.Symbol + "', '" +
                 initialTimestamp2 + "', '" +
-                initialTimestamp2 + "')";
+                initialTimestamp2 + "', 0)";
 
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));
@@ -369,7 +406,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Open();
 
-            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
 
             var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);
@@ -392,18 +429,20 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             try
             {
                 Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                Assert.AreEqual(4, selectAllFromCompanyTableCommandReader.FieldCount);
+                Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
                 Assert.AreEqual(expectedName1, selectAllFromCompanyTableCommandReader["name"]);
                 Assert.AreEqual(expectedSymbol1, selectAllFromCompanyTableCommandReader["symbol"]);
                 Assert.AreEqual(initialTimestamp1, selectAllFromCompanyTableCommandReader["firstDate"]);
                 Assert.AreEqual(expectedTimestamp1, selectAllFromCompanyTableCommandReader["recentDate"]);
+                Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
 
                 Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                Assert.AreEqual(4, selectAllFromCompanyTableCommandReader.FieldCount);
+                Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
                 Assert.AreEqual(expectedName2, selectAllFromCompanyTableCommandReader["name"]);
                 Assert.AreEqual(expectedSymbol2, selectAllFromCompanyTableCommandReader["symbol"]);
                 Assert.AreEqual(initialTimestamp2, selectAllFromCompanyTableCommandReader["firstDate"]);
                 Assert.AreEqual(expectedTimestamp2, selectAllFromCompanyTableCommandReader["recentDate"]);
+                Assert.AreEqual(0, selectAllFromCompanyTableCommandReader["collect"]);
 
                 Assert.IsFalse(selectAllFromCompanyTableCommandReader.Read());
             }
@@ -428,14 +467,12 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
                 Timestamp = expectedTimestamp
             };
 
-            const string createCompanyTableCommandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
             var addCompanyToTableCommandString =
                 "INSERT INTO Company VALUES ('" +
                 quoteLookupResponse.Name + "', '" +
                 quoteLookupResponse.Symbol + "', '" +
                 initialTimestamp + "', '" +
-                initialTimestamp + "')";
+                initialTimestamp + "', 1)";
 
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));
@@ -444,7 +481,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Open();
 
-            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
 
             var addCompanyToTableCommand = new SQLiteCommand(addCompanyToTableCommandString, connection);
@@ -473,12 +510,10 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             const string timestamp1 = "Tues Jun 16";
             const string timestamp2 = "Tues Jun 16";
 
-            const string createCompanyTableCommandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT)";
             const string addCompanyToTableCommandString1 = "INSERT INTO Company VALUES ('null', '" +
-                                                           expectedSymbol1 + "', 'null', '" + timestamp1 + "')";
+                                                           expectedSymbol1 + "', 'null', '" + timestamp1 + "', 1)";
             const string addCompanyToTableCommandString2 = "INSERT INTO Company VALUES ('null', '" +
-                                                           expectedSymbol2 + "', 'null', '" + timestamp2 + "')";
+                                                           expectedSymbol2 + "', 'null', '" + timestamp2 + "', 0)";
 
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));
@@ -487,7 +522,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Open();
 
-            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
 
             var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);

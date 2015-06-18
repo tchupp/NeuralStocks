@@ -22,7 +22,7 @@ namespace NeuralStocks.Backend.Controller
         public BackendTimer(IBackendController controller)
         {
             Controller = controller;
-            _timer = new Timer(10000);
+            _timer = new Timer(60000);
             _timer.Elapsed += (sender, args) => Controller.UpdateCompanyQuotes();
         }
 

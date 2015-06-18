@@ -55,7 +55,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var timer = AssertIsOfTypeAndGet<BackendTimer>(controller.BackendTimer);
             Assert.AreSame(controller, timer.Controller);
 
-            Assert.AreEqual(10000, timer.Interval);
+            Assert.AreEqual(60000, timer.Interval);
         }
 
         [TestMethod]

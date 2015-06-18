@@ -30,8 +30,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             var timer = new BackendTimer(null);
             var wrappedTimer = timer.Timer;
 
-            Assert.AreEqual(10000, timer.Interval);
-            Assert.AreEqual(10000, wrappedTimer.Interval);
+            Assert.AreEqual(60000, timer.Interval);
+            Assert.AreEqual(60000, wrappedTimer.Interval);
 
             timer.Interval = 500;
 
