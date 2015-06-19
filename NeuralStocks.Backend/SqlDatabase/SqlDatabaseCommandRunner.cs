@@ -34,10 +34,11 @@ namespace NeuralStocks.Backend.SqlDatabase
         public void AddCompanyToTable(SQLiteConnection connection, CompanyLookupResponse company)
         {
             var addCompanyToTableCommandString =
-                "INSERT INTO Company VALUES ('" + company.Name + "', '" + company.Symbol + "', 'null', 'null', 1)";
+                string.Format("INSERT INTO Company VALUES ('{0}', '{1}', 'null', 'null', 1)",
+                    company.Name, company.Symbol);
             var createCompanyTableCommandString =
-                "CREATE TABLE " + company.Symbol +
-                " (name TEXT, symbol TEXT, timestamp TEXT, lastPrice REAL, change REAL, changePercent REAL)";
+                string.Format("CREATE TABLE {0} (name TEXT, symbol TEXT, timestamp TEXT, " +
+                              "lastPrice REAL, change REAL, changePercent REAL)", company.Symbol);
 
             connection.Open();
 
@@ -55,12 +56,12 @@ namespace NeuralStocks.Backend.SqlDatabase
 
         public void UpdateCompanyTimestamp(SQLiteConnection connection, QuoteLookupResponse response)
         {
-            var updateCompanyRecentDateCommandString =
-                "UPDATE Company SET recentDate = '" + response.Timestamp +
-                "' WHERE Symbol = '" + response.Symbol + "'";
-            var updateCompanyFirstDateCommandString =
-                "UPDATE Company SET firstDate = '" + response.Timestamp +
-                "' WHERE Symbol = '" + response.Symbol + "' AND firstDate = 'null'";
+            var updateCompanyRecentDateCommandString = string.Format(
+                "UPDATE Company SET recentDate = '{0}' WHERE Symbol = '{1}'",
+                response.Timestamp, response.Symbol);
+            var updateCompanyFirstDateCommandString = string.Format(
+                "UPDATE Company SET firstDate = '{0}' WHERE Symbol = '{1}' AND firstDate = 'null'",
+                response.Timestamp, response.Symbol);
 
             connection.Open();
 
@@ -99,10 +100,10 @@ namespace NeuralStocks.Backend.SqlDatabase
 
         public void AddQuoteResponseToTable(SQLiteConnection connection, QuoteLookupResponse response)
         {
-            var addQuoteToTableCommandString =
-                "INSERT INTO " + response.Symbol + " VALUES ('" + response.Name +
-                "', '" + response.Symbol + "', '" + response.Timestamp + "', " + response.LastPrice + ", " +
-                response.Change + ", " + response.ChangePercent + ")";
+            var addQuoteToTableCommandString = string.Format(
+                "INSERT INTO {0} VALUES ('{1}', '{2}', '{3}', {4}, {5}, {6})",
+                response.Symbol, response.Name, response.Symbol, response.Timestamp,
+                response.LastPrice, response.Change, response.ChangePercent);
 
             connection.Open();
 
