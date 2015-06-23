@@ -8,5 +8,30 @@ namespace NeuralStocks.Frontend.UI
         {
             InitializeComponent();
         }
+
+        private void newCompanySearchButton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void currentCompanySearchButton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void turnCollectionOnButton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void turnCollectionOffButton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void addNewCompaniesButton_Click(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }

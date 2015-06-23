@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Controller\FrontendController.cs" />
     <Compile Include="Controller\IFrontendController.cs" />
+    <Compile Include="Launcher\INeuralStocksFrontendLauncher.cs" />
     <Compile Include="UI\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

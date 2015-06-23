@@ -4,7 +4,7 @@ using NeuralStocks.Frontend.UI;
 
 namespace NeuralStocks.Frontend.Launcher
 {
-    public static class NeuralStocksFrontendLauncher
+    public class NeuralStocksFrontendLauncher : INeuralStocksFrontendLauncher
     {
         [STAThread]
         private static void Main()
