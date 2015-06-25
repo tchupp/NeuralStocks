@@ -7,15 +7,15 @@ namespace NeuralStocks.Backend.Controller
 {
     public class BackendController : IBackendController
     {
-        public IStockMarketApiCommunicator Communicator { get; private set; }
+        public IStockMarketApiCommunicator StockCommunicator { get; private set; }
         public ISqlDatabaseCommandRunner CommandRunner { get; private set; }
         public string DatabaseFileName { get; private set; }
         public IBackendTimer BackendTimer { get; set; }
 
-        public BackendController(IStockMarketApiCommunicator communicator, ISqlDatabaseCommandRunner commandRunner,
+        public BackendController(IStockMarketApiCommunicator stockCommunicator, ISqlDatabaseCommandRunner commandRunner,
             string databaseFileName)
         {
-            Communicator = communicator;
+            StockCommunicator = stockCommunicator;
             CommandRunner = commandRunner;
             DatabaseFileName = databaseFileName;
             BackendTimer = new BackendTimer(this);
@@ -29,7 +29,7 @@ namespace NeuralStocks.Backend.Controller
 
             var responses =
                 from lookup in lookupsFromTable
-                let response = Communicator.QuoteLookup(lookup)
+                let response = StockCommunicator.QuoteLookup(lookup)
                 where response.Timestamp != lookup.Timestamp
                 select response;
             foreach (var response in responses)

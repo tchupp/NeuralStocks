@@ -25,7 +25,7 @@ namespace NeuralStocks.Backend.Tests.Controller
 
             var controller = new BackendController(mockCommunicator.Object, null, null);
 
-            Assert.AreSame(mockCommunicator.Object, controller.Communicator);
+            Assert.AreSame(mockCommunicator.Object, controller.StockCommunicator);
         }
 
         [TestMethod]

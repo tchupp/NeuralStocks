@@ -36,7 +36,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             var backendController = AssertIsOfTypeAndGet<BackendController>(launcher.BackendController);
 
             var stockApiCommunicator =
-                AssertIsOfTypeAndGet<StockMarketApiCommunicator>(backendController.Communicator);
+                AssertIsOfTypeAndGet<StockMarketApiCommunicator>(backendController.StockCommunicator);
             Assert.AreSame(StockMarketApi.Singleton, stockApiCommunicator.StockMarketApi);
             Assert.AreSame(TimestampParser.Singleton, stockApiCommunicator.TimestampParser);
 
