@@ -1,22 +1,23 @@
 ﻿using System.Data.SQLite;
 using System.Linq;
 using NeuralStocks.Backend.ApiCommunication;
-using NeuralStocks.Backend.SqlDatabase;
+using NeuralStocks.Backend.Database;
 
 namespace NeuralStocks.Backend.Controller
 {
     public class BackendController : IBackendController
     {
         public IStockMarketApiCommunicator StockCommunicator { get; private set; }
-        public ISqlDatabaseCommandRunner CommandRunner { get; private set; }
+        public IDatabaseCommunicator DatabaseCommunicator { get; private set; }
         public string DatabaseFileName { get; private set; }
         public IBackendTimer BackendTimer { get; set; }
 
-        public BackendController(IStockMarketApiCommunicator stockCommunicator, ISqlDatabaseCommandRunner commandRunner,
+        public BackendController(IStockMarketApiCommunicator stockCommunicator,
+            IDatabaseCommunicator databaseCommunicator,
             string databaseFileName)
         {
             StockCommunicator = stockCommunicator;
-            CommandRunner = commandRunner;
+            DatabaseCommunicator = databaseCommunicator;
             DatabaseFileName = databaseFileName;
             BackendTimer = new BackendTimer(this);
         }
@@ -25,7 +26,7 @@ namespace NeuralStocks.Backend.Controller
         {
             var databaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
             var connection = new SQLiteConnection(databaseConnectionString);
-            var lookupsFromTable = CommandRunner.GetQuoteLookupsFromTable(connection);
+            var lookupsFromTable = DatabaseCommunicator.GetQuoteLookupsFromTable(connection);
 
             var responses =
                 from lookup in lookupsFromTable
@@ -34,8 +35,8 @@ namespace NeuralStocks.Backend.Controller
                 select response;
             foreach (var response in responses)
             {
-                CommandRunner.UpdateCompanyTimestamp(connection, response);
-                CommandRunner.AddQuoteResponseToTable(connection, response);
+                DatabaseCommunicator.UpdateCompanyTimestamp(connection, response);
+                DatabaseCommunicator.AddQuoteResponseToTable(connection, response);
             }
         }
 

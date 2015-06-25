@@ -4,8 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.ApiCommunication;
 using NeuralStocks.Backend.Controller;
+using NeuralStocks.Backend.Database;
 using NeuralStocks.Backend.Launcher;
-using NeuralStocks.Backend.SqlDatabase;
 using NeuralStocks.Backend.Tests.Testing;
 
 namespace NeuralStocks.Backend.Tests.Launcher
@@ -24,8 +24,8 @@ namespace NeuralStocks.Backend.Tests.Launcher
         {
             var launcher = new NeuralStocksBackendLauncher();
 
-            var setupManager = AssertIsOfTypeAndGet<SqlDatabaseSetupManager>(launcher.SetupManager);
-            Assert.AreSame(SqlDatabaseCommandRunner.Singleton, setupManager.CommandRunner);
+            var setupManager = AssertIsOfTypeAndGet<DatabaseSetupManager>(launcher.SetupManager);
+            Assert.AreSame(DatabaseCommunicator.Singleton, setupManager.DatabaseCommunicator);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             Assert.AreSame(StockMarketApi.Singleton, stockApiCommunicator.StockMarketApi);
             Assert.AreSame(TimestampParser.Singleton, stockApiCommunicator.TimestampParser);
 
-            Assert.AreSame(SqlDatabaseCommandRunner.Singleton, backendController.CommandRunner);
+            Assert.AreSame(DatabaseCommunicator.Singleton, backendController.DatabaseCommunicator);
 
             Assert.AreEqual("NeuralStocksDatabase.sqlite", backendController.DatabaseFileName);
         }
@@ -62,7 +62,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             File.Delete(databaseFileName);
             Assert.IsFalse(File.Exists(databaseFileName));
 
-            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
             var mockBackendLock = new Mock<IBackendLock>();
             mockBackendLock.Setup(m => m.Lock()).Returns(true);
@@ -89,7 +89,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             File.Create(databaseFileName);
             Assert.IsTrue(File.Exists(databaseFileName));
 
-            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
             var mockBackendLock = new Mock<IBackendLock>();
             mockBackendLock.Setup(m => m.Lock()).Returns(true);
@@ -112,7 +112,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
         [TestMethod]
         public void TestStartBackendCallsStartTimerOnBackendController()
         {
-            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
             var mockBackendLock = new Mock<IBackendLock>();
             mockBackendLock.Setup(m => m.Lock()).Returns(true);
@@ -138,7 +138,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             var mockWriter = new Mock<TextWriter>();
             Console.SetOut(mockWriter.Object);
 
-            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
             var mockBackendLock = new Mock<IBackendLock>();
             mockBackendLock.Setup(m => m.Lock()).Returns(true);
@@ -164,7 +164,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             var mockWriter = new Mock<TextWriter>();
             Console.SetOut(mockWriter.Object);
 
-            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
             var mockBackendLock = new Mock<IBackendLock>();
 
@@ -195,7 +195,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             var mockWriter = new Mock<TextWriter>();
             Console.SetOut(mockWriter.Object);
 
-            var mockSetupManager = new Mock<ISqlDatabaseSetupManager>();
+            var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
             var mockBackendLock = new Mock<IBackendLock>();
 

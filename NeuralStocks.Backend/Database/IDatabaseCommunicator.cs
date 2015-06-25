@@ -2,9 +2,9 @@
 using System.Data.SQLite;
 using NeuralStocks.Backend.ApiCommunication;
 
-namespace NeuralStocks.Backend.SqlDatabase
+namespace NeuralStocks.Backend.Database
 {
-    public interface ISqlDatabaseCommandRunner
+    public interface IDatabaseCommunicator
     {
         void CreateDatabase(string databaseName);
         void CreateCompanyTable(SQLiteConnection connection);

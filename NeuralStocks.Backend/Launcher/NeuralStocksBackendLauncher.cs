@@ -2,22 +2,23 @@
 using System.IO;
 using NeuralStocks.Backend.ApiCommunication;
 using NeuralStocks.Backend.Controller;
-using NeuralStocks.Backend.SqlDatabase;
+using NeuralStocks.Backend.Database;
 
 namespace NeuralStocks.Backend.Launcher
 {
     public class NeuralStocksBackendLauncher : INeuralStocksBackendLauncher
     {
         private const string DatabaseFileName = "NeuralStocksDatabase.sqlite";
-        public ISqlDatabaseSetupManager SetupManager { get; set; }
+        public IDatabaseSetupManager SetupManager { get; set; }
         public IBackendController BackendController { get; set; }
         public IBackendLock BackendLock { get; set; }
 
         public NeuralStocksBackendLauncher()
         {
-            SetupManager = new SqlDatabaseSetupManager(SqlDatabaseCommandRunner.Singleton);
-            BackendController = new BackendController(new StockMarketApiCommunicator(StockMarketApi.Singleton, TimestampParser.Singleton),
-                SqlDatabaseCommandRunner.Singleton, DatabaseFileName);
+            SetupManager = new DatabaseSetupManager(DatabaseCommunicator.Singleton);
+            BackendController = new BackendController(new StockMarketApiCommunicator(
+                StockMarketApi.Singleton, TimestampParser.Singleton),
+                DatabaseCommunicator.Singleton, DatabaseFileName);
             BackendLock = new BackendLock(58525);
         }
 

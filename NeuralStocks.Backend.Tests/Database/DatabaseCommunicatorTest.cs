@@ -4,13 +4,13 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.ApiCommunication;
-using NeuralStocks.Backend.SqlDatabase;
+using NeuralStocks.Backend.Database;
 using NeuralStocks.Backend.Tests.Testing;
 
-namespace NeuralStocks.Backend.Tests.SqlDatabase
+namespace NeuralStocks.Backend.Tests.Database
 {
     [TestClass]
-    public class SqlDatabaseCommandRunnerTest : AssertTestClass
+    public class DatabaseCommunicatorTest : AssertTestClass
     {
         private const string DatabaseFileName = "TestStocksDatabase.sqlite";
         private const string DatabaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
@@ -23,14 +23,14 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(
-                typeof (ISqlDatabaseCommandRunner), typeof (SqlDatabaseCommandRunner));
+                typeof (IDatabaseCommunicator), typeof (DatabaseCommunicator));
         }
 
         [TestMethod]
         public void TestSqlDatabaseCommandRunnerIsSingleton()
         {
-            AssertPrivateContructor(typeof (SqlDatabaseCommandRunner));
-            Assert.AreSame(SqlDatabaseCommandRunner.Singleton, SqlDatabaseCommandRunner.Singleton);
+            AssertPrivateContructor(typeof (DatabaseCommunicator));
+            Assert.AreSame(DatabaseCommunicator.Singleton, DatabaseCommunicator.Singleton);
         }
 
         [TestMethod]
@@ -41,7 +41,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             if (File.Exists(databaseFileName)) File.Delete(databaseFileName);
             Assert.IsFalse(File.Exists(databaseFileName));
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             commandRunner.CreateDatabase(databaseFileName);
 
             Assert.IsTrue(File.Exists(databaseFileName));
@@ -58,7 +58,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             commandRunner.CreateCompanyTable(connection);
 
             connection.Open();
@@ -89,7 +89,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             commandRunner.CreateCompanyTable(connection);
 
             connection.Open();
@@ -143,7 +143,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             commandRunner.CreateCompanyTable(connection);
 
             commandRunner.AddCompanyToTable(connection, companyLookupResponse1);
@@ -214,7 +214,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Close();
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
 
             commandRunner.AddCompanyToTable(connection, companyLookupResponse1);
             commandRunner.AddCompanyToTable(connection, companyLookupResponse2);
@@ -266,7 +266,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             var mockWriter = new Mock<TextWriter>();
             Console.SetOut(mockWriter.Object);
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
 
             mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
 
@@ -326,7 +326,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Close();
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             commandRunner.UpdateCompanyTimestamp(connection, quoteLookupResponse1);
             commandRunner.UpdateCompanyTimestamp(connection, quoteLookupResponse2);
 
@@ -417,7 +417,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Close();
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             commandRunner.UpdateCompanyTimestamp(connection, quoteLookupResponse1);
             commandRunner.UpdateCompanyTimestamp(connection, quoteLookupResponse2);
 
@@ -492,7 +492,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             var mockWriter = new Mock<TextWriter>();
             Console.SetOut(mockWriter.Object);
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
 
             mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
 
@@ -533,7 +533,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Close();
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             var quoteLookupsFromTable = commandRunner.GetQuoteLookupsFromTable(connection);
 
             Assert.AreEqual(2, quoteLookupsFromTable.Count);
@@ -611,7 +611,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
 
             connection.Close();
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
             commandRunner.AddQuoteResponseToTable(connection, quoteLookupResponse1);
             commandRunner.AddQuoteResponseToTable(connection, quoteLookupResponse2);
 
@@ -688,7 +688,7 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             var mockWriter = new Mock<TextWriter>();
             Console.SetOut(mockWriter.Object);
 
-            var commandRunner = SqlDatabaseCommandRunner.Singleton;
+            var commandRunner = DatabaseCommunicator.Singleton;
 
             mockWriter.Verify(m => m.WriteLine(It.IsAny<string>()), Times.Never);
 

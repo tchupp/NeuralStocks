@@ -1,18 +1,18 @@
 ﻿using System.Data.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using NeuralStocks.Backend.SqlDatabase;
+using NeuralStocks.Backend.Database;
 using NeuralStocks.Backend.Tests.Testing;
 
-namespace NeuralStocks.Backend.Tests.SqlDatabase
+namespace NeuralStocks.Backend.Tests.Database
 {
     [TestClass]
-    public class SqlDatabaseSetupManagerTest : AssertTestClass
+    public class DatabaseSetupManagerTest : AssertTestClass
     {
         [TestMethod]
         public void TestImplementsInterface()
         {
-            AssertImplementsInterface(typeof (ISqlDatabaseSetupManager), typeof (SqlDatabaseSetupManager));
+            AssertImplementsInterface(typeof (IDatabaseSetupManager), typeof (DatabaseSetupManager));
         }
 
         [TestMethod]
@@ -21,8 +21,8 @@ namespace NeuralStocks.Backend.Tests.SqlDatabase
             const string databaseFileName = "TestStocksDatabase.sqlite";
             const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
 
-            var mockCommandRunner = new Mock<ISqlDatabaseCommandRunner>();
-            var setupManager = new SqlDatabaseSetupManager(mockCommandRunner.Object);
+            var mockCommandRunner = new Mock<IDatabaseCommunicator>();
+            var setupManager = new DatabaseSetupManager(mockCommandRunner.Object);
 
             mockCommandRunner.Verify(m => m.CreateDatabase(databaseFileName), Times.Never);
             mockCommandRunner.Verify(m => m.CreateCompanyTable(It.IsAny<SQLiteConnection>()), Times.Never);

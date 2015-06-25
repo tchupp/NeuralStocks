@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using NeuralStocks.Backend.ApiCommunication;
 
-namespace NeuralStocks.Backend.SqlDatabase
+namespace NeuralStocks.Backend.Database
 {
-    public class SqlDatabaseCommandRunner : ISqlDatabaseCommandRunner
+    public class DatabaseCommunicator : IDatabaseCommunicator
     {
-        public static readonly SqlDatabaseCommandRunner Singleton = new SqlDatabaseCommandRunner();
+        public static readonly DatabaseCommunicator Singleton = new DatabaseCommunicator();
 
-        private SqlDatabaseCommandRunner()
+        private DatabaseCommunicator()
         {
         }
 

@@ -75,8 +75,8 @@
     <Compile Include="Controller\BackendTimerTest.cs" />
     <Compile Include="Launcher\NeuralStocksBackendLauncherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlDatabase\SqlDatabaseCommandRunnerTest.cs" />
-    <Compile Include="SqlDatabase\SqlDatabaseSetupManagerTest.cs" />
+    <Compile Include="Database\DatabaseCommunicatorTest.cs" />
+    <Compile Include="Database\DatabaseSetupManagerTest.cs" />
     <Compile Include="Testing\AssertTestClass.cs" />
   </ItemGroup>
   <ItemGroup>

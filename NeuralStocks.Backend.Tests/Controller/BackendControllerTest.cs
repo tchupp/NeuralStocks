@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.ApiCommunication;
 using NeuralStocks.Backend.Controller;
-using NeuralStocks.Backend.SqlDatabase;
+using NeuralStocks.Backend.Database;
 using NeuralStocks.Backend.Tests.Testing;
 
 namespace NeuralStocks.Backend.Tests.Controller
@@ -31,11 +31,11 @@ namespace NeuralStocks.Backend.Tests.Controller
         [TestMethod]
         public void TestGetsSqlDatabaseCommandRunnerPassedIn()
         {
-            var mockCommandRunner = new Mock<ISqlDatabaseCommandRunner>();
+            var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
             var controller = new BackendController(null, mockCommandRunner.Object, null);
 
-            Assert.AreSame(mockCommandRunner.Object, controller.CommandRunner);
+            Assert.AreSame(mockCommandRunner.Object, controller.DatabaseCommunicator);
         }
 
         [TestMethod]
@@ -99,7 +99,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var quoteResponse2 = new QuoteLookupResponse {Name = company2, Timestamp = timestamp2};
 
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
-            var mockCommandRunner = new Mock<ISqlDatabaseCommandRunner>();
+            var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
             mockCommandRunner.Setup(m => m.GetQuoteLookupsFromTable(It.Is<SQLiteConnection>(
                 c => c.ConnectionString == databaseConnectionString))).Returns(quoteRequests);
@@ -142,7 +142,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var quoteResponse2 = new QuoteLookupResponse {Name = company2, Timestamp = timestamp};
 
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
-            var mockCommandRunner = new Mock<ISqlDatabaseCommandRunner>();
+            var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
             mockCommandRunner.Setup(m => m.GetQuoteLookupsFromTable(It.Is<SQLiteConnection>(
                 c => c.ConnectionString == databaseConnectionString))).Returns(quoteRequests);

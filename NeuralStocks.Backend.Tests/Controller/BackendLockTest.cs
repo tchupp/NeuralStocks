@@ -65,7 +65,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             {
                 backendLock.Unlock();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Assert.Fail("No exception should be thrown.");
             }
