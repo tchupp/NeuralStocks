@@ -16,9 +16,12 @@ namespace NeuralStocks.Backend.Launcher
         public NeuralStocksBackendLauncher()
         {
             SetupManager = new DatabaseSetupManager(DatabaseCommunicator.Singleton);
-            BackendController = new BackendController(new StockMarketApiCommunicator(
-                StockMarketApi.Singleton, TimestampParser.Singleton),
-                DatabaseCommunicator.Singleton, DatabaseFileName);
+
+            var stockCommunicator = new StockMarketApiCommunicator(
+                StockMarketApi.Singleton, TimestampParser.Singleton);
+            BackendController = new BackendController(
+                stockCommunicator, DatabaseCommunicator.Singleton, DatabaseFileName);
+
             BackendLock = new BackendLock(58525);
         }
 

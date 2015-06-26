@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\DataTableFactory.cs" />
     <Compile Include="Controller\FrontendController.cs" />
+    <Compile Include="Controller\IDataTableFactory.cs" />
     <Compile Include="Controller\IFrontendController.cs" />
     <Compile Include="Launcher\INeuralStocksFrontendLauncher.cs" />
     <Compile Include="UI\MainWindow.cs">
@@ -79,6 +81,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NeuralStocks.Backend\NeuralStocks.Backend.csproj">
+      <Project>{4ff2eecd-e119-4297-873d-d2952016148a}</Project>
+      <Name>NeuralStocks.Backend</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

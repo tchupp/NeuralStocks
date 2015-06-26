@@ -35,7 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=4.2.1506.2515, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Moq.4.2.1506.2515\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Controller\DataTableFactoryTest.cs" />
     <Compile Include="Controller\FrontendControllerTest.cs" />
     <Compile Include="Launcher\NeuralStocksFrontendLauncherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,10 +67,17 @@
       <Project>{77accbbf-e342-4289-9191-1bdd0cde2b3f}</Project>
       <Name>NeuralStocks.Backend.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NeuralStocks.Backend\NeuralStocks.Backend.csproj">
+      <Project>{4ff2eecd-e119-4297-873d-d2952016148a}</Project>
+      <Name>NeuralStocks.Backend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NeuralStocks.Frontend\NeuralStocks.Frontend.csproj">
       <Project>{ed766530-d23c-40f7-abd1-f91cd3ec3561}</Project>
       <Name>NeuralStocks.Frontend</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
