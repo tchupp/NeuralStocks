@@ -26,14 +26,14 @@ namespace NeuralStocks.Backend.Controller
         {
             var databaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
             var connection = new SQLiteConnection(databaseConnectionString);
-            var lookupsFromTable = DatabaseCommunicator.GetQuoteLookupsFromTable(connection);
+            var lookupFromTableList = DatabaseCommunicator.GetQuoteLookupsFromTable(connection);
 
-            var responses =
-                from lookup in lookupsFromTable
+            var responseList =
+                from lookup in lookupFromTableList
                 let response = StockCommunicator.QuoteLookup(lookup)
                 where response.Timestamp != lookup.Timestamp
                 select response;
-            foreach (var response in responses)
+            foreach (var response in responseList)
             {
                 DatabaseCommunicator.UpdateCompanyTimestamp(connection, response);
                 DatabaseCommunicator.AddQuoteResponseToTable(connection, response);
