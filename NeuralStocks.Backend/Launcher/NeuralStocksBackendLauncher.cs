@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using NeuralStocks.Backend.ApiCommunication;
 using NeuralStocks.Backend.Controller;
-using NeuralStocks.Backend.Database;
+using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Database;
 
 namespace NeuralStocks.Backend.Launcher
 {

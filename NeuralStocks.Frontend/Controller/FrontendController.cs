@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
-using NeuralStocks.Backend.ApiCommunication;
-using NeuralStocks.Backend.Database;
-using NeuralStocks.Frontend.Database;
+using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Database;
 
 namespace NeuralStocks.Frontend.Controller
 {

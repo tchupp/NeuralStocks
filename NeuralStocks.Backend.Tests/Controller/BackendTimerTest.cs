@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.Controller;
-using NeuralStocks.Backend.Tests.Testing;
+using NeuralStocks.DatabaseLayer.Tests.Testing;
 
 namespace NeuralStocks.Backend.Tests.Controller
 {

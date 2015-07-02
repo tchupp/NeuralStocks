@@ -3,11 +3,10 @@ using System.Data;
 using System.Data.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using NeuralStocks.Backend.ApiCommunication;
-using NeuralStocks.Backend.Database;
-using NeuralStocks.Backend.Tests.Testing;
+using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
-using NeuralStocks.Frontend.Database;
 
 namespace NeuralStocks.Frontend.Tests.Controller
 {

@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using NeuralStocks.Backend.ApiCommunication;
-using NeuralStocks.Frontend.Database;
+using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Database;
 
 namespace NeuralStocks.Frontend.Controller
 {
@@ -34,7 +35,7 @@ namespace NeuralStocks.Frontend.Controller
 
         public DataTable BuildCurrentCompanySearchTable(IEnumerable<QuoteHistoryEntry> lookupResponseList)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

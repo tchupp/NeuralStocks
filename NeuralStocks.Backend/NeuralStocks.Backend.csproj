@@ -50,48 +50,26 @@
     <StartupObject>NeuralStocks.Backend.Launcher.NeuralStocksBackendLauncher</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\JsonParsing\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\SQLite\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiCommunication\ITimestampParser.cs" />
-    <Compile Include="ApiCommunication\QuoteLookupResponse.cs" />
-    <Compile Include="ApiCommunication\CompanyLookupRequest.cs" />
-    <Compile Include="ApiCommunication\IStockMarketApi.cs" />
-    <Compile Include="ApiCommunication\IStockMarketApiCommunicator.cs" />
-    <Compile Include="ApiCommunication\CompanyLookupResponse.cs" />
-    <Compile Include="ApiCommunication\StockMarketApi.cs" />
-    <Compile Include="ApiCommunication\StockMarketApiCommunicator.cs" />
-    <Compile Include="ApiCommunication\QuoteLookupRequest.cs" />
-    <Compile Include="ApiCommunication\TimestampParser.cs" />
     <Compile Include="Controller\BackendController.cs" />
     <Compile Include="Controller\BackendLock.cs" />
     <Compile Include="Controller\BackendTimer.cs" />
     <Compile Include="Controller\IBackendController.cs" />
     <Compile Include="Controller\IBackendLock.cs" />
     <Compile Include="Controller\IBackendTimer.cs" />
-    <Compile Include="Database\CompanyLookupEntry.cs" />
-    <Compile Include="Database\QuoteHistoryEntry.cs" />
     <Compile Include="Launcher\INeuralStocksBackendLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Database\IDatabaseCommunicator.cs" />
-    <Compile Include="Database\IDatabaseSetupManager.cs" />
     <Compile Include="Launcher\NeuralStocksBackendLauncher.cs" />
-    <Compile Include="Database\DatabaseCommunicator.cs" />
-    <Compile Include="Database\DatabaseSetupManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -113,6 +91,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NeuralStocks.DatabaseLayer\NeuralStocks.DatabaseLayer.csproj">
+      <Project>{8ee18ff9-194a-4670-874f-1cd12036dddf}</Project>
+      <Name>NeuralStocks.DatabaseLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.Backend.ApiCommunication;
-using NeuralStocks.Backend.Tests.Testing;
+using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 
 namespace NeuralStocks.Frontend.Tests.Controller

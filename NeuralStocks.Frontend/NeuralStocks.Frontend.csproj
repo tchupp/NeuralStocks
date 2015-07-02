@@ -38,6 +38,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SQLite\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,7 +46,6 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\DataTableFactory.cs" />
@@ -87,9 +87,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NeuralStocks.Backend\NeuralStocks.Backend.csproj">
-      <Project>{4ff2eecd-e119-4297-873d-d2952016148a}</Project>
-      <Name>NeuralStocks.Backend</Name>
+    <ProjectReference Include="..\NeuralStocks.DatabaseLayer\NeuralStocks.DatabaseLayer.csproj">
+      <Project>{8ee18ff9-194a-4670-874f-1cd12036dddf}</Project>
+      <Name>NeuralStocks.DatabaseLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

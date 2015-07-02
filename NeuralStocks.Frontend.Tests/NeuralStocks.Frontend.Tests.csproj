@@ -67,13 +67,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NeuralStocks.Backend.Tests\NeuralStocks.Backend.Tests.csproj">
-      <Project>{77accbbf-e342-4289-9191-1bdd0cde2b3f}</Project>
-      <Name>NeuralStocks.Backend.Tests</Name>
+    <ProjectReference Include="..\NeuralStocks.DatabaseLayer.Tests\NeuralStocks.DatabaseLayer.Tests.csproj">
+      <Project>{28b26226-3fb6-429b-8d5d-bb0a58c2e9fa}</Project>
+      <Name>NeuralStocks.DatabaseLayer.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NeuralStocks.Backend\NeuralStocks.Backend.csproj">
-      <Project>{4ff2eecd-e119-4297-873d-d2952016148a}</Project>
-      <Name>NeuralStocks.Backend</Name>
+    <ProjectReference Include="..\NeuralStocks.DatabaseLayer\NeuralStocks.DatabaseLayer.csproj">
+      <Project>{8ee18ff9-194a-4670-874f-1cd12036dddf}</Project>
+      <Name>NeuralStocks.DatabaseLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\NeuralStocks.Frontend\NeuralStocks.Frontend.csproj">
       <Project>{ed766530-d23c-40f7-abd1-f91cd3ec3561}</Project>

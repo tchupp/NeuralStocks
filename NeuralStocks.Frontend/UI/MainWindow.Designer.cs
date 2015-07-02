@@ -1,11 +1,14 @@
-﻿namespace NeuralStocks.Frontend.UI
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace NeuralStocks.Frontend.UI
 {
     partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -348,30 +351,30 @@
 
         #endregion
 
-        private System.Windows.Forms.Label mainWindowHeaderLabel;
-        private System.Windows.Forms.TabControl mainWindowTabControl;
-        private System.Windows.Forms.TabPage summaryTab;
-        private System.Windows.Forms.TabPage companyTab;
-        private System.Windows.Forms.Panel currentCompanyPanel;
-        private System.Windows.Forms.Panel newCompanyPanel;
-        private System.Windows.Forms.Button newCompanySearchButton;
-        private System.Windows.Forms.TextBox newCompanySearchTextBox;
-        private System.Windows.Forms.Label newCompanySearchLabel;
-        private System.Windows.Forms.Button addNewCompaniesButton;
-        private System.Windows.Forms.Button currentCompanySearchButton;
-        private System.Windows.Forms.TextBox currentCompanySearchTextBox;
-        private System.Windows.Forms.Label currentCompanySearchLabel;
-        private System.Windows.Forms.Label currentCompanySearchTableLabel;
-        private System.Windows.Forms.Label currentCompanySummaryTableLabel;
-        private System.Windows.Forms.Label newCompanySearchTableLabel;
-        private System.Windows.Forms.Button turnCollectionOffButton;
-        private System.Windows.Forms.Button turnCollectionOnButton;
-        private System.Windows.Forms.Panel currentCompanySummaryTabelPanel;
-        private System.Windows.Forms.Panel currentCompanySearchTablePanel;
-        private System.Windows.Forms.DataGridView currentCompanySearchTable;
-        private System.Windows.Forms.Panel newCompanySearchTablePanel;
-        private System.Windows.Forms.DataGridView currentCompanySummaryTable;
-        private System.Windows.Forms.DataGridView newCompanySearchTable;
+        private Label mainWindowHeaderLabel;
+        private TabControl mainWindowTabControl;
+        private TabPage summaryTab;
+        private TabPage companyTab;
+        private Panel currentCompanyPanel;
+        private Panel newCompanyPanel;
+        private Button newCompanySearchButton;
+        private TextBox newCompanySearchTextBox;
+        private Label newCompanySearchLabel;
+        private Button addNewCompaniesButton;
+        private Button currentCompanySearchButton;
+        private TextBox currentCompanySearchTextBox;
+        private Label currentCompanySearchLabel;
+        private Label currentCompanySearchTableLabel;
+        private Label currentCompanySummaryTableLabel;
+        private Label newCompanySearchTableLabel;
+        private Button turnCollectionOffButton;
+        private Button turnCollectionOnButton;
+        private Panel currentCompanySummaryTabelPanel;
+        private Panel currentCompanySearchTablePanel;
+        private DataGridView currentCompanySearchTable;
+        private Panel newCompanySearchTablePanel;
+        private DataGridView currentCompanySummaryTable;
+        private DataGridView newCompanySearchTable;
     }
 }
 

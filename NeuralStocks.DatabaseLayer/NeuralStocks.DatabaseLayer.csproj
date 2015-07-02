@@ -32,8 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\JsonParsing\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\SQLite\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,6 +49,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiCommunication\CompanyLookupRequest.cs" />
+    <Compile Include="ApiCommunication\CompanyLookupResponse.cs" />
+    <Compile Include="ApiCommunication\IStockMarketApi.cs" />
+    <Compile Include="ApiCommunication\IStockMarketApiCommunicator.cs" />
+    <Compile Include="ApiCommunication\ITimestampParser.cs" />
+    <Compile Include="ApiCommunication\QuoteLookupRequest.cs" />
+    <Compile Include="ApiCommunication\QuoteLookupResponse.cs" />
+    <Compile Include="ApiCommunication\StockMarketApi.cs" />
+    <Compile Include="ApiCommunication\StockMarketApiCommunicator.cs" />
+    <Compile Include="ApiCommunication\TimestampParser.cs" />
+    <Compile Include="DatabaseLauncher.cs" />
+    <Compile Include="Database\CompanyLookupEntry.cs" />
+    <Compile Include="Database\DatabaseCommunicator.cs" />
+    <Compile Include="Database\DatabaseSetupManager.cs" />
+    <Compile Include="Database\IDatabaseCommunicator.cs" />
+    <Compile Include="Database\IDatabaseSetupManager.cs" />
+    <Compile Include="Database\QuoteHistoryEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
