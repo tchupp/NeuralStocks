@@ -101,7 +101,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
-            mockCommandRunner.Setup(m => m.GetQuoteLookupsFromTable(It.Is<SQLiteConnection>(
+            mockCommandRunner.Setup(m => m.GetQuoteLookupList(It.Is<SQLiteConnection>(
                 c => c.ConnectionString == databaseConnectionString))).Returns(quoteRequests);
 
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest1)).Returns(quoteResponse1);
@@ -144,7 +144,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
-            mockCommandRunner.Setup(m => m.GetQuoteLookupsFromTable(It.Is<SQLiteConnection>(
+            mockCommandRunner.Setup(m => m.GetQuoteLookupList(It.Is<SQLiteConnection>(
                 c => c.ConnectionString == databaseConnectionString))).Returns(quoteRequests);
 
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest1)).Returns(quoteResponse1);

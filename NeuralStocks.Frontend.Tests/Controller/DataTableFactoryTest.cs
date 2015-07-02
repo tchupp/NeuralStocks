@@ -35,7 +35,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
 
             var factory = DataTableFactory.Factory;
 
-            var companySearchTable = factory.BuildCompanySearchTable(lookupResponseList);
+            var companySearchTable = factory.BuildNewCompanySearchTable(lookupResponseList);
 
             Assert.AreEqual(3, companySearchTable.Columns.Count);
             Assert.AreEqual("Name", companySearchTable.Columns[0].ToString());

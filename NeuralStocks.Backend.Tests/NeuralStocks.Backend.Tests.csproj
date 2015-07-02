@@ -73,6 +73,8 @@
     <Compile Include="Controller\BackendControllerTest.cs" />
     <Compile Include="Controller\BackendLockTest.cs" />
     <Compile Include="Controller\BackendTimerTest.cs" />
+    <Compile Include="Database\CompanyLookupEntryTest.cs" />
+    <Compile Include="Database\QuoteHistoryEntryTest.cs" />
     <Compile Include="Launcher\NeuralStocksBackendLauncherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Database\DatabaseCommunicatorTest.cs" />

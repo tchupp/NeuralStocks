@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using NeuralStocks.Backend.ApiCommunication;
+using NeuralStocks.Frontend.Database;
 
 namespace NeuralStocks.Backend.Database
 {
@@ -76,7 +77,7 @@ namespace NeuralStocks.Backend.Database
             Console.WriteLine("Updating Timestamp: Company: {0}. Time: {1}", response.Symbol, response.Timestamp);
         }
 
-        public List<QuoteLookupRequest> GetQuoteLookupsFromTable(SQLiteConnection connection)
+        public List<QuoteLookupRequest> GetQuoteLookupList(SQLiteConnection connection)
         {
             const string selectFromCompanyCommandString = "SELECT symbol, recentDate FROM Company";
 
@@ -88,8 +89,8 @@ namespace NeuralStocks.Backend.Database
             var lookupRequests = new List<QuoteLookupRequest>();
             while (selectFromCompanyCommandReader.Read())
             {
-                var companySymbol = selectFromCompanyCommandReader["symbol"] as string;
-                var companyTimestamp = selectFromCompanyCommandReader["recentDate"] as string;
+                var companySymbol = selectFromCompanyCommandReader.GetString(0);
+                var companyTimestamp = selectFromCompanyCommandReader.GetString(1);
                 var companyLookupRequest = new QuoteLookupRequest(companySymbol, companyTimestamp);
                 lookupRequests.Add(companyLookupRequest);
             }
@@ -114,6 +115,60 @@ namespace NeuralStocks.Backend.Database
 
             Console.WriteLine("Adding Quote: Company: {0}. Time: {1}. Amount: {2}.",
                 response.Symbol, response.Timestamp, response.LastPrice);
+        }
+
+        public List<CompanyLookupEntry> GetCompanyLookupEntryList(SQLiteConnection connection)
+        {
+            const string selectAllFromCompanyCommandString = "SELECT * FROM Company";
+
+            connection.Open();
+
+            var selectAllFromCompanyCommand = new SQLiteCommand(selectAllFromCompanyCommandString, connection);
+            var selectAllFromCompanyCommandReader = selectAllFromCompanyCommand.ExecuteReader();
+
+            var companyLookupEntryList = new List<CompanyLookupEntry>();
+            while (selectAllFromCompanyCommandReader.Read())
+            {
+                var lookupEntry = new CompanyLookupEntry
+                {
+                    Name = selectAllFromCompanyCommandReader.GetString(0),
+                    Symbol = selectAllFromCompanyCommandReader.GetString(1),
+                    FirstDate = selectAllFromCompanyCommandReader.GetString(2),
+                    RecentDate = selectAllFromCompanyCommandReader.GetString(3),
+                    Collection = selectAllFromCompanyCommandReader.GetBoolean(4)
+                };
+                companyLookupEntryList.Add(lookupEntry);
+            }
+            connection.Close();
+
+            return companyLookupEntryList;
+        }
+
+        public List<QuoteHistoryEntry> GetQuoteHistoryEntryList(SQLiteConnection connection,
+            CompanyLookupEntry company)
+        {
+            var selectAllFromCompanyCommandString = string.Format("SELECT * FROM {0}", company.Symbol);
+
+            connection.Open();
+
+            var selectAllFromCompanyCommand = new SQLiteCommand(selectAllFromCompanyCommandString, connection);
+            var selectAllFromCompanyCommandReader = selectAllFromCompanyCommand.ExecuteReader();
+
+            var quoteHistoryEntryList = new List<QuoteHistoryEntry>();
+            while (selectAllFromCompanyCommandReader.Read())
+            {
+                var historyEntry = new QuoteHistoryEntry
+                {
+                    Name = selectAllFromCompanyCommandReader.GetFieldValue<string>(0),
+                    Symbol = selectAllFromCompanyCommandReader.GetString(1),
+                    Timestamp = selectAllFromCompanyCommandReader.GetString(2),
+                    LastPrice = selectAllFromCompanyCommandReader.GetDouble(3),
+                    Change = selectAllFromCompanyCommandReader.GetDouble(4),
+                    ChangePercent = selectAllFromCompanyCommandReader.GetDouble(5)
+                };
+                quoteHistoryEntryList.Add(historyEntry);
+            }
+            return quoteHistoryEntryList;
         }
     }
 }

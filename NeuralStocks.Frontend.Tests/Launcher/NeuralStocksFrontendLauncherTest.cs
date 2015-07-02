@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks.Backend.ApiCommunication;
+using NeuralStocks.Backend.Database;
 using NeuralStocks.Backend.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 using NeuralStocks.Frontend.Launcher;
@@ -28,6 +29,8 @@ namespace NeuralStocks.Frontend.Tests.Launcher
             Assert.AreSame(TimestampParser.Singleton, stockCommunicator.TimestampParser);
 
             Assert.AreSame(DataTableFactory.Factory, frontendController.TableFactory);
+
+            Assert.AreSame(DatabaseCommunicator.Singleton, frontendController.DatabaseCommunicator);
         }
 
         [TestMethod]

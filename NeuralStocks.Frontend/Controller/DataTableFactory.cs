@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using NeuralStocks.Backend.ApiCommunication;
+using NeuralStocks.Frontend.Database;
 
 namespace NeuralStocks.Frontend.Controller
 {
@@ -13,7 +14,7 @@ namespace NeuralStocks.Frontend.Controller
         {
         }
 
-        public DataTable BuildCompanySearchTable(List<CompanyLookupResponse> lookupResponseList)
+        public DataTable BuildNewCompanySearchTable(IEnumerable<CompanyLookupResponse> lookupResponseList)
         {
             var companySearchTable = new DataTable(NewCompanySearchTableName);
             companySearchTable.Columns.Add("Name");
@@ -29,6 +30,11 @@ namespace NeuralStocks.Frontend.Controller
                 companySearchTable.Rows.Add(name, symbol, exchange);
             }
             return companySearchTable;
+        }
+
+        public DataTable BuildCurrentCompanySearchTable(IEnumerable<QuoteHistoryEntry> lookupResponseList)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

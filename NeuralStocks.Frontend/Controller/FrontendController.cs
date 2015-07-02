@@ -1,5 +1,9 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
 using NeuralStocks.Backend.ApiCommunication;
+using NeuralStocks.Backend.Database;
+using NeuralStocks.Frontend.Database;
 
 namespace NeuralStocks.Frontend.Controller
 {
@@ -7,18 +11,28 @@ namespace NeuralStocks.Frontend.Controller
     {
         public IStockMarketApiCommunicator StockCommunicator { get; private set; }
         public IDataTableFactory TableFactory { get; private set; }
+        public IDatabaseCommunicator DatabaseCommunicator { get; private set; }
 
-        public FrontendController(IStockMarketApiCommunicator stockCommunicator, IDataTableFactory tableFactory)
+        public FrontendController(IStockMarketApiCommunicator stockCommunicator, IDataTableFactory tableFactory, IDatabaseCommunicator databaseCommunicator)
         {
             StockCommunicator = stockCommunicator;
             TableFactory = tableFactory;
+            DatabaseCommunicator = databaseCommunicator;
         }
 
-        public DataTable GetSearchResultsForCompany(string company)
+        public DataTable GetSearchResultsForNewCompany(string company)
         {
             var lookupRequest = new CompanyLookupRequest(company);
             var lookupResponseList = StockCommunicator.CompanyLookup(lookupRequest);
-            var buildCompanySearchTable = TableFactory.BuildCompanySearchTable(lookupResponseList);
+            var buildCompanySearchTable = TableFactory.BuildNewCompanySearchTable(lookupResponseList);
+
+            return buildCompanySearchTable;
+        }
+
+        public DataTable GetSearchResultsForCurrentCompany(CompanyLookupEntry company)
+        {
+            var quoteHistoryEntryList = DatabaseCommunicator.GetQuoteHistoryEntryList(new SQLiteConnection(), company);
+            var buildCompanySearchTable = TableFactory.BuildCurrentCompanySearchTable(quoteHistoryEntryList);
 
             return buildCompanySearchTable;
         }

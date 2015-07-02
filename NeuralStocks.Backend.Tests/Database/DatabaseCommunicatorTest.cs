@@ -6,6 +6,7 @@ using Moq;
 using NeuralStocks.Backend.ApiCommunication;
 using NeuralStocks.Backend.Database;
 using NeuralStocks.Backend.Tests.Testing;
+using NeuralStocks.Frontend.Database;
 
 namespace NeuralStocks.Backend.Tests.Database
 {
@@ -503,7 +504,7 @@ namespace NeuralStocks.Backend.Tests.Database
         }
 
         [TestMethod]
-        public void TestGetCompanyLookupsFromTable_ReturnsCorrectCompanyLookupRequestList()
+        public void TestGetCompanyLookupList_ReturnsCorrectCompanyLookupRequestList()
         {
             const string expectedSymbol1 = "AAPL";
             const string expectedSymbol2 = "NFLX";
@@ -534,7 +535,7 @@ namespace NeuralStocks.Backend.Tests.Database
             connection.Close();
 
             var commandRunner = DatabaseCommunicator.Singleton;
-            var quoteLookupsFromTable = commandRunner.GetQuoteLookupsFromTable(connection);
+            var quoteLookupsFromTable = commandRunner.GetQuoteLookupList(connection);
 
             Assert.AreEqual(2, quoteLookupsFromTable.Count);
 
@@ -659,9 +660,10 @@ namespace NeuralStocks.Backend.Tests.Database
             const double expectedChange = 0.52f;
             const double expectedChangePercent = 0.0062f;
 
-            const string createCompanyTableCommandString =
-                "CREATE TABLE " + expectedSymbol +
-                " (name TEXT, symbol TEXT, timestamp TEXT, lastPrice REAL, change REAL, changePercent REAL)";
+            var createCompanyTableCommandString =
+                string.Format("CREATE TABLE {0} " +
+                              "(name TEXT, symbol TEXT, timestamp TEXT, " +
+                              "lastPrice REAL, change REAL, changePercent REAL)", expectedSymbol);
 
             var quoteLookupResponse = new QuoteLookupResponse
             {
@@ -696,6 +698,132 @@ namespace NeuralStocks.Backend.Tests.Database
 
             mockWriter.Verify(m => m.WriteLine("Adding Quote: Company: {0}. Time: {1}. Amount: {2}.",
                 expectedSymbol, expectedTimestamp, expectedLastPrice), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestGetCompanyLookupEntryList()
+        {
+            const string expectedSymbol1 = "AAPL";
+            const string expectedName1 = "Apple";
+            const string timestamp1 = "Tues Jun 16";
+
+            const string expectedSymbol2 = "NFLX";
+            const string expectedName2 = "Netflix";
+            const string timestamp2 = "Wed Jun 17";
+
+            var addCompanyToTableCommandString1 =
+                string.Format("INSERT INTO Company VALUES ('{0}', '{1}', '{2}', 'null', {3})",
+                    expectedName1, expectedSymbol1, timestamp1, 1);
+            var addCompanyToTableCommandString2 =
+                string.Format("INSERT INTO Company VALUES ('{0}', '{1}', '{2}', 'null', {3})",
+                    expectedName2, expectedSymbol2, timestamp2, 0);
+
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            var connection = new SQLiteConnection(DatabaseConnectionString);
+
+            connection.Open();
+
+            var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
+            createCompanyTableCommand.ExecuteNonQuery();
+
+            var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);
+            addCompanyToTableCommand1.ExecuteNonQuery();
+
+            var addCompanyToTableCommand2 = new SQLiteCommand(addCompanyToTableCommandString2, connection);
+            addCompanyToTableCommand2.ExecuteNonQuery();
+
+            connection.Close();
+
+            var commandRunner = DatabaseCommunicator.Singleton;
+            var companyLookupEntryList = commandRunner.GetCompanyLookupEntryList(connection);
+
+            Assert.AreEqual(2, companyLookupEntryList.Count);
+
+            Assert.AreEqual(expectedName1, companyLookupEntryList[0].Name);
+            Assert.AreEqual(expectedSymbol1, companyLookupEntryList[0].Symbol);
+            Assert.AreEqual(timestamp1, companyLookupEntryList[0].FirstDate);
+            Assert.AreEqual("null", companyLookupEntryList[0].RecentDate);
+            Assert.AreEqual(true, companyLookupEntryList[0].Collection);
+
+            Assert.AreEqual(expectedName2, companyLookupEntryList[1].Name);
+            Assert.AreEqual(expectedSymbol2, companyLookupEntryList[1].Symbol);
+            Assert.AreEqual(timestamp2, companyLookupEntryList[1].FirstDate);
+            Assert.AreEqual("null", companyLookupEntryList[1].RecentDate);
+            Assert.AreEqual(false, companyLookupEntryList[1].Collection);
+        }
+
+        [TestMethod]
+        public void TestGetQuoteHistoryEntryListForCompany()
+        {
+            const string companySymbol = "AAPL";
+            const string companyName = "Apple";
+
+            const string companyTimestamp1 = "Tues Jun 15";
+            const double companyLastPrice1 = 123.5;
+            const double companyChange1 = 2.54;
+            const double companyChangePercent1 = 0.564;
+
+            const string companyTimestamp2 = "Wed Jun 16";
+            const double companyLastPrice2 = 453.1;
+            const double companyChange2 = 3.68;
+            const double companyChangePercent2 = 1.45;
+
+            var createCompanyTableCommandString =
+                string.Format("CREATE TABLE {0} (name TEXT, symbol TEXT, timestamp TEXT, " +
+                              "lastPrice REAL, change REAL, changePercent REAL)", companySymbol);
+
+            var addQuoteToTableCommandString1 = string.Format(
+                "INSERT INTO {0} VALUES ('{1}', '{2}', '{3}', {4}, {5}, {6})",
+                companySymbol, companyName, companySymbol, companyTimestamp1,
+                companyLastPrice1, companyChange1, companyChangePercent1);
+            var addQuoteToTableCommandString2 = string.Format(
+                "INSERT INTO {0} VALUES ('{1}', '{2}', '{3}', {4}, {5}, {6})",
+                companySymbol, companyName, companySymbol, companyTimestamp2,
+                companyLastPrice2, companyChange2, companyChangePercent2);
+
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            var connection = new SQLiteConnection(DatabaseConnectionString);
+
+            connection.Open();
+
+            var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
+            createCompanyTableCommand.ExecuteNonQuery();
+
+            var addQuoteToTableCommand1 = new SQLiteCommand(addQuoteToTableCommandString1, connection);
+            addQuoteToTableCommand1.ExecuteNonQuery();
+
+            var addQuoteToTableCommand2 = new SQLiteCommand(addQuoteToTableCommandString2, connection);
+            addQuoteToTableCommand2.ExecuteNonQuery();
+
+            connection.Close();
+
+            var lookupEntry = new CompanyLookupEntry
+            {
+                Symbol = companySymbol
+            };
+
+            var commandRunner = DatabaseCommunicator.Singleton;
+            var quoteHistoryEntryList = commandRunner.GetQuoteHistoryEntryList(connection, lookupEntry);
+
+            Assert.AreEqual(2, quoteHistoryEntryList.Count);
+
+            Assert.AreEqual(companyName, quoteHistoryEntryList[0].Name);
+            Assert.AreEqual(companySymbol, quoteHistoryEntryList[0].Symbol);
+            Assert.AreEqual(companyTimestamp1, quoteHistoryEntryList[0].Timestamp);
+            Assert.AreEqual(companyLastPrice1, quoteHistoryEntryList[0].LastPrice);
+            Assert.AreEqual(companyChange1, quoteHistoryEntryList[0].Change);
+            Assert.AreEqual(companyChangePercent1, quoteHistoryEntryList[0].ChangePercent);
+
+            Assert.AreEqual(companyName, quoteHistoryEntryList[1].Name);
+            Assert.AreEqual(companySymbol, quoteHistoryEntryList[1].Symbol);
+            Assert.AreEqual(companyTimestamp2, quoteHistoryEntryList[1].Timestamp);
+            Assert.AreEqual(companyLastPrice2, quoteHistoryEntryList[1].LastPrice);
+            Assert.AreEqual(companyChange2, quoteHistoryEntryList[1].Change);
+            Assert.AreEqual(companyChangePercent2, quoteHistoryEntryList[1].ChangePercent);
         }
     }
 }

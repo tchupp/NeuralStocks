@@ -29,7 +29,7 @@ namespace NeuralStocks.Frontend.UI
         private void newCompanySearchButton_Click(object sender, EventArgs e)
         {
             newCompanySearchTable.DataSource =
-                FrontendController.GetSearchResultsForCompany(newCompanySearchTextBox.Text);
+                FrontendController.GetSearchResultsForNewCompany(newCompanySearchTextBox.Text);
         }
 
         private void addNewCompaniesButton_Click(object sender, EventArgs e)

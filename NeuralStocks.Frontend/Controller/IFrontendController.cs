@@ -1,9 +1,11 @@
 ﻿using System.Data;
+using NeuralStocks.Frontend.Database;
 
 namespace NeuralStocks.Frontend.Controller
 {
     public interface IFrontendController
     {
-        DataTable GetSearchResultsForCompany(string company);
+        DataTable GetSearchResultsForNewCompany(string company);
+        DataTable GetSearchResultsForCurrentCompany(CompanyLookupEntry company);
     }
 }

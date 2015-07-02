@@ -26,7 +26,7 @@ namespace NeuralStocks.Backend.Controller
         {
             var databaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
             var connection = new SQLiteConnection(databaseConnectionString);
-            var lookupFromTableList = DatabaseCommunicator.GetQuoteLookupsFromTable(connection);
+            var lookupFromTableList = DatabaseCommunicator.GetQuoteLookupList(connection);
 
             var responseList =
                 from lookup in lookupFromTableList
