@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Frontend", "Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Frontend.Tests", "NeuralStocks.Frontend.Tests\NeuralStocks.Frontend.Tests.csproj", "{1E3DBB8C-87F7-4EED-9833-7F579D207969}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.DatabaseLayer", "NeuralStocks.DatabaseLayer\NeuralStocks.DatabaseLayer.csproj", "{8EE18FF9-194A-4670-874F-1CD12036DDDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.Database.Tests", "NeuralStocks.Database.Tests\NeuralStocks.Database.Tests.csproj", "{CC5B7184-2C74-41EA-9775-26D859C06F8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{1E3DBB8C-87F7-4EED-9833-7F579D207969}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E3DBB8C-87F7-4EED-9833-7F579D207969}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E3DBB8C-87F7-4EED-9833-7F579D207969}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EE18FF9-194A-4670-874F-1CD12036DDDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE18FF9-194A-4670-874F-1CD12036DDDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE18FF9-194A-4670-874F-1CD12036DDDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE18FF9-194A-4670-874F-1CD12036DDDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC5B7184-2C74-41EA-9775-26D859C06F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC5B7184-2C74-41EA-9775-26D859C06F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC5B7184-2C74-41EA-9775-26D859C06F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC5B7184-2C74-41EA-9775-26D859C06F8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
