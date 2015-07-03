@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.Frontend.Controller;
 using NeuralStocks.Frontend.UI;
 

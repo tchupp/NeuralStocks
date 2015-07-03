@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 using NeuralStocks.Frontend.Launcher;
@@ -11,13 +11,13 @@ namespace NeuralStocks.Frontend.Tests.Launcher
     [TestClass]
     public class NeuralStocksFrontendLauncherTest : AssertTestClass
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (INeuralStocksFrontendLauncher), typeof (NeuralStocksFrontendLauncher));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestFrontEndControllerIsConstructedWithCorrectArguments()
         {
             var launcher = new NeuralStocksFrontendLauncher();
@@ -33,7 +33,7 @@ namespace NeuralStocks.Frontend.Tests.Launcher
             Assert.AreSame(DatabaseCommunicator.Singleton, frontendController.DatabaseCommunicator);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestMainWindowIsConstructedWithFrontendController()
         {
             var launcher = new NeuralStocksFrontendLauncher();

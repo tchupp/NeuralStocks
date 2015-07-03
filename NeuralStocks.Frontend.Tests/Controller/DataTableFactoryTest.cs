@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 
@@ -9,28 +9,28 @@ namespace NeuralStocks.Frontend.Tests.Controller
     [TestClass]
     public class DataTableFactoryTest : AssertTestClass
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (IDataTableFactory), typeof (DataTableFactory));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestSingleton()
         {
             AssertPrivateContructor(typeof (DataTableFactory));
             Assert.AreSame(DataTableFactory.Factory, DataTableFactory.Factory);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestBuildCompanySearchTable()
         {
             var lookupResponseList = new List<CompanyLookupResponse>
             {
-                new CompanyLookupResponse("AAPL", "Apple Inc", "NASDAQ"),
-                new CompanyLookupResponse("APLE", "Apple REIT INC", "NYSE"),
-                new CompanyLookupResponse("APLE", "Apple REIT INC", "BATS Trading Inc"),
-                new CompanyLookupResponse("VXAPL", "CBOE Apple VIC Index", "Market Data Express")
+                new CompanyLookupResponse {Symbol = "AAPL", Name = "Apple Inc", Exchange = "NASDAQ"},
+                new CompanyLookupResponse {Symbol = "APLE", Name = "Apple REIT INC", Exchange = "NYSE"},
+                new CompanyLookupResponse {Symbol = "APLE", Name = "Apple REIT INC", Exchange = "BATS Trading Inc"},
+                new CompanyLookupResponse {Symbol = "VXAPL", Name = "CBOE Apple VIC", Exchange = "Market Data Express"}
             };
 
             var factory = DataTableFactory.Factory;
@@ -55,7 +55,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             Assert.AreEqual("APLE", companySearchTable.Rows[2]["Symbol"]);
             Assert.AreEqual("BATS Trading Inc", companySearchTable.Rows[2]["Exchange"]);
 
-            Assert.AreEqual("CBOE Apple VIC Index", companySearchTable.Rows[3]["Name"]);
+            Assert.AreEqual("CBOE Apple VIC", companySearchTable.Rows[3]["Name"]);
             Assert.AreEqual("VXAPL", companySearchTable.Rows[3]["Symbol"]);
             Assert.AreEqual("Market Data Express", companySearchTable.Rows[3]["Exchange"]);
         }

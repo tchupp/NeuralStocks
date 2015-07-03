@@ -4,8 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.Controller;
 using NeuralStocks.Backend.Launcher;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 
 namespace NeuralStocks.Backend.Tests.Launcher
@@ -13,13 +13,13 @@ namespace NeuralStocks.Backend.Tests.Launcher
     [TestClass]
     public class NeuralStocksBackendLauncherTest : AssertTestClass
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (INeuralStocksBackendLauncher), typeof (NeuralStocksBackendLauncher));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestConstructorSetsUpSetupManagerCorrectly()
         {
             var launcher = new NeuralStocksBackendLauncher();
@@ -28,7 +28,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             Assert.AreSame(DatabaseCommunicator.Singleton, setupManager.DatabaseCommunicator);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestConstructorSetsUpBackendControllerCorrectly()
         {
             var launcher = new NeuralStocksBackendLauncher();
@@ -45,7 +45,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             Assert.AreEqual("NeuralStocksDatabase.sqlite", backendController.DatabaseFileName);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestConstructorSetsUpBackendLockCorrectly()
         {
             var launcher = new NeuralStocksBackendLauncher();
@@ -55,7 +55,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             Assert.AreEqual(58525, backendLock.Port);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartBackendCallsInitializeDatabaseOnSetupManager_DatabaseDoesNotExist()
         {
             const string databaseFileName = "NeuralStocksDatabase.sqlite";
@@ -82,7 +82,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             mockBackendLock.VerifyAll();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartBackendDoesNotCallsInitializeDatabaseOnSetupManager_DatabaseExists()
         {
             const string databaseFileName = "NeuralStocksDatabase.sqlite";
@@ -109,7 +109,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             mockBackendLock.VerifyAll();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartBackendCallsStartTimerOnBackendController()
         {
             var mockSetupManager = new Mock<IDatabaseSetupManager>();
@@ -132,7 +132,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             mockBackendLock.VerifyAll();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartBackendWritesCorrectlyToConsole()
         {
             var mockWriter = new Mock<TextWriter>();
@@ -158,7 +158,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             mockBackendLock.VerifyAll();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartBackendDoesNotCallInitializeDatabase_StartTimer_OrWriteToConsole_BackendAlreadyLocked()
         {
             var mockWriter = new Mock<TextWriter>();
@@ -189,7 +189,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
             mockBackendLock.VerifyAll();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartBackendWritesToConsole_BackendAlreadyLocked()
         {
             var mockWriter = new Mock<TextWriter>();

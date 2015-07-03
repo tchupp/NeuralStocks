@@ -9,13 +9,13 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
     [TestClass]
     public class DatabaseSetupManagerTest : AssertTestClass
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (IDatabaseSetupManager), typeof (DatabaseSetupManager));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestInitializeDatabaseCreatesInitialDatabaseWithEmptyTable()
         {
             const string databaseFileName = "TestStocksDatabase.sqlite";

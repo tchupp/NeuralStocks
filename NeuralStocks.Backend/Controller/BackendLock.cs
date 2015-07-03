@@ -21,7 +21,7 @@ namespace NeuralStocks.Backend.Controller
             {
                 WrappedListener.Start();
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 locked = false;
             }

@@ -10,13 +10,13 @@ namespace NeuralStocks.Backend.Tests.Controller
     {
         private const int TestingPort = 52963;
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (IBackendLock), typeof (BackendLock));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestGetsPortPassedIn()
         {
             var backendLock = new BackendLock(TestingPort);
@@ -24,7 +24,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreEqual(TestingPort, backendLock.Port);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestLockReturnsTrue_FirstLockOnPort()
         {
             var backendLock = new BackendLock(TestingPort);
@@ -39,7 +39,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestLockReturnsFalse_LockExistsOnPort()
         {
             var backendLock1 = new BackendLock(TestingPort);
@@ -56,7 +56,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestCallingUnlockDoesNotThrowException_LockHasNotBeenCalled()
         {
             var backendLock = new BackendLock(TestingPort);
@@ -71,7 +71,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestUnlockAllowsOtherLocksToLockTheSocket()
         {
             var backendLock1 = new BackendLock(TestingPort);

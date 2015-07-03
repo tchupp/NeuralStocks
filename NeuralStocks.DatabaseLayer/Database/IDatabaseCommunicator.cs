@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SQLite;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Model.Database;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
 
 namespace NeuralStocks.DatabaseLayer.Database
 {

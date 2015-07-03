@@ -3,8 +3,10 @@ using System.Data;
 using System.Data.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Model.Database;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
+using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 
@@ -13,13 +15,13 @@ namespace NeuralStocks.Frontend.Tests.Controller
     [TestClass]
     public class FrontendControllerTest : AssertTestClass
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (IFrontendController), typeof (FrontendController));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestGetsStockMarketApiCommunicatorPassedIn()
         {
             var mockApiCommunicator = new Mock<IStockMarketApiCommunicator>();
@@ -29,7 +31,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             Assert.AreSame(expected, controller.StockCommunicator);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestGetsTableFactoryPassedIn()
         {
             var mockTableFactory = new Mock<IDataTableFactory>();
@@ -39,7 +41,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             Assert.AreSame(expectedFactory, controller.TableFactory);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestGetsDatabaseCommunicator()
         {
             var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
@@ -49,7 +51,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             Assert.AreSame(expected, controller.DatabaseCommunicator);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestGetSearchResultsForNewCompany()
         {
             var mockApiCommunicator = new Mock<IStockMarketApiCommunicator>();
@@ -73,7 +75,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             mockTableFactory.VerifyAll();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestGetSearchResultsForCurrentCompany()
         {
             var mockTableFactory = new Mock<IDataTableFactory>();

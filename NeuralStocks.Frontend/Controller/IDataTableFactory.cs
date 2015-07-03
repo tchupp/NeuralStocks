@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Model.Database;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
 
 namespace NeuralStocks.Frontend.Controller
 {

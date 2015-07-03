@@ -3,8 +3,9 @@ using System.Data.SQLite;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Model.Database;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Database
@@ -19,42 +20,52 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
         private const string CreateCompanyTableCommandString =
             "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT, collect INT)";
 
-        [TestMethod]
+        [TestCleanup]
+        public void TearDown()
+        {
+            GC.Collect();
+            GC.WaitForFullGCComplete();
+        }
+
+        [TestMethod, TestCategory("Database")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(
                 typeof (IDatabaseCommunicator), typeof (DatabaseCommunicator));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestSqlDatabaseCommandRunnerIsSingleton()
         {
             AssertPrivateContructor(typeof (DatabaseCommunicator));
             Assert.AreSame(DatabaseCommunicator.Singleton, DatabaseCommunicator.Singleton);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestCreateDatabase()
         {
-            const string databaseFileName = "TestStocksDatabase.sqlite";
-
-            if (File.Exists(databaseFileName)) File.Delete(databaseFileName);
-            Assert.IsFalse(File.Exists(databaseFileName));
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
 
             var commandRunner = DatabaseCommunicator.Singleton;
-            commandRunner.CreateDatabase(databaseFileName);
+            commandRunner.CreateDatabase(DatabaseFileName);
 
-            Assert.IsTrue(File.Exists(databaseFileName));
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestCreateCompanyTable_CreatesTable()
         {
-            const string selectAllTablesByNameCompanyCommandString =
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='Company'";
-
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));
+
+            const string selectAllTablesByNameCompanyCommandString =
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='Company'";
 
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
@@ -63,8 +74,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
 
             connection.Open();
 
-            var selectAllTablesByNameCompanyCommand = new SQLiteCommand(selectAllTablesByNameCompanyCommandString,
-                connection);
+            var selectAllTablesByNameCompanyCommand = new SQLiteCommand(
+                selectAllTablesByNameCompanyCommandString, connection);
             var selectAllTablesByNameCompanyCommandReader = selectAllTablesByNameCompanyCommand.ExecuteReader();
 
             try
@@ -77,13 +88,16 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             }
             finally
             {
+                selectAllTablesByNameCompanyCommand.Dispose();
                 connection.Close();
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestCreateCompanyTable_CreatesCorrectFields()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));
 
@@ -94,8 +108,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
 
             connection.Open();
 
-            var selectAllFromCompanyTableCommand = new SQLiteCommand(SelectAllFromCompanyTableCommandString,
-                connection);
+            var selectAllFromCompanyTableCommand = new SQLiteCommand(
+                SelectAllFromCompanyTableCommandString, connection);
             var selectAllFromCompanyTableCommandReader = selectAllFromCompanyTableCommand.ExecuteReader();
 
             try
@@ -115,13 +129,19 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             }
             finally
             {
+                selectAllFromCompanyTableCommand.Dispose();
                 connection.Close();
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestAddCompanyToTable_CorrectlyAddsACompanyWithNameAndSymbol_AndNullDates()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedName1 = "Apple Inc";
             const string expectedSymbol1 = "AAPL";
             const string expectedName2 = "Netflix";
@@ -137,9 +157,6 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 Name = expectedName2,
                 Symbol = expectedSymbol2
             };
-
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
 
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
@@ -176,13 +193,19 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             }
             finally
             {
+                checkCompanyTableFieldsCommand.Dispose();
                 connection.Close();
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestAddCompanyToTable_AlsoAddsNewQuoteHistoryTable()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string selectAllTablesCommandString =
                 "SELECT * FROM sqlite_master WHERE type='table'";
 
@@ -202,15 +225,13 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 Symbol = expectedSymbol2
             };
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             connection.Close();
 
@@ -239,13 +260,19 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             }
             finally
             {
+                selectAllTablesCommand.Dispose();
                 connection.Close();
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestAddCompanyToTable_WritesToConsole()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string name = "Apple Inc";
             const string symbol = "AAPL";
             var companyLookupResponse = new CompanyLookupResponse
@@ -253,14 +280,13 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 Name = name,
                 Symbol = symbol
             };
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
 
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
             var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
             connection.Close();
 
             var mockWriter = new Mock<TextWriter>();
@@ -276,9 +302,14 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                                                "and added a quote history table : {1}.", name, symbol), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestUpdateCompanyTimestamp_SetsRecentDateAsTimestampOfQuote_AndFirstDate_FirstDateNull()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedName1 = "Apple Inc";
             const string expectedSymbol1 = "AAPL";
             const string expectedTimestamp1 = "Thu Jun 4 00:00:00 UTC-04:00 2015";
@@ -308,21 +339,21 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 quoteLookupResponse2.Name + "', '" +
                 quoteLookupResponse2.Symbol + "', 'null', 'null', 1)";
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);
             addCompanyToTableCommand1.ExecuteNonQuery();
+            addCompanyToTableCommand1.Dispose();
 
             var addCompanyToTableCommand2 = new SQLiteCommand(addCompanyToTableCommandString2, connection);
             addCompanyToTableCommand2.ExecuteNonQuery();
+            addCompanyToTableCommand2.Dispose();
 
             connection.Close();
 
@@ -357,13 +388,19 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             }
             finally
             {
+                selectAllFromCompanyTableCommand.Dispose();
                 connection.Close();
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestUpdateCompanyTimestamp_SetsRecentDateAsTimestampOfQuote_FirstDateExists()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedName1 = "Apple Inc";
             const string expectedSymbol1 = "AAPL";
             const string initialTimestamp1 = "Tues May 26 05:17:42 UTC-04:00 2015";
@@ -399,21 +436,21 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 initialTimestamp2 + "', '" +
                 initialTimestamp2 + "', 0)";
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);
             addCompanyToTableCommand1.ExecuteNonQuery();
+            addCompanyToTableCommand1.Dispose();
 
             var addCompanyToTableCommand2 = new SQLiteCommand(addCompanyToTableCommandString2, connection);
             addCompanyToTableCommand2.ExecuteNonQuery();
+            addCompanyToTableCommand2.Dispose();
 
             connection.Close();
 
@@ -448,13 +485,19 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             }
             finally
             {
+                selectAllFromCompanyTableCommand.Dispose();
                 connection.Close();
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestUpdateCompanyTimestamp_WritesToConsole()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedName = "Apple Inc";
             const string expectedSymbol = "AAPL";
             const string initialTimestamp = "Tues May 26 05:17:42 UTC-04:00 2015";
@@ -474,18 +517,17 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 initialTimestamp + "', '" +
                 initialTimestamp + "', 1)";
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             var addCompanyToTableCommand = new SQLiteCommand(addCompanyToTableCommandString, connection);
             addCompanyToTableCommand.ExecuteNonQuery();
+            addCompanyToTableCommand.Dispose();
 
             connection.Close();
 
@@ -502,9 +544,14 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 expectedSymbol, expectedTimestamp), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestGetCompanyLookupList_ReturnsCorrectCompanyLookupRequestList()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedSymbol1 = "AAPL";
             const string expectedSymbol2 = "NFLX";
             const string timestamp1 = "Tues Jun 16";
@@ -515,21 +562,21 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             const string addCompanyToTableCommandString2 = "INSERT INTO Company VALUES ('null', '" +
                                                            expectedSymbol2 + "', 'null', '" + timestamp2 + "', 0)";
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);
             addCompanyToTableCommand1.ExecuteNonQuery();
+            addCompanyToTableCommand1.Dispose();
 
             var addCompanyToTableCommand2 = new SQLiteCommand(addCompanyToTableCommandString2, connection);
             addCompanyToTableCommand2.ExecuteNonQuery();
+            addCompanyToTableCommand2.Dispose();
 
             connection.Close();
 
@@ -548,9 +595,14 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             Assert.AreEqual(timestamp2, quoteLookupsFromTable[1].Timestamp);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestAddQuoteResponseToTable()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedName1 = "Apple Inc";
             const string expectedSymbol1 = "AAPL";
             const string expectedTimestamp1 = "Thu Jun 4 00:00:00 UTC-04:00 2015";
@@ -595,9 +647,6 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 Change = expectedChange2,
                 ChangePercent = expectedChangePercent2
             };
-
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
 
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
@@ -645,13 +694,21 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             }
             finally
             {
+                selectAllTablesCommand1.Dispose();
+                selectAllTablesCommand2.Dispose();
+
                 connection.Close();
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestAddQuoteResponseToTable_WriteToConsole()
         {
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedName = "Apple Inc";
             const string expectedSymbol = "AAPL";
             const string expectedTimestamp = "Thu Jun 4 00:00:00 UTC-04:00 2015";
@@ -674,15 +731,13 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 ChangePercent = expectedChangePercent
             };
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             connection.Close();
 
@@ -699,9 +754,12 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 expectedSymbol, expectedTimestamp, expectedLastPrice), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestGetCompanyLookupEntryList()
         {
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string expectedSymbol1 = "AAPL";
             const string expectedName1 = "Apple";
             const string timestamp1 = "Tues Jun 16";
@@ -717,21 +775,21 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 string.Format("INSERT INTO Company VALUES ('{0}', '{1}', '{2}', 'null', {3})",
                     expectedName2, expectedSymbol2, timestamp2, 0);
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(CreateCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             var addCompanyToTableCommand1 = new SQLiteCommand(addCompanyToTableCommandString1, connection);
             addCompanyToTableCommand1.ExecuteNonQuery();
+            addCompanyToTableCommand1.Dispose();
 
             var addCompanyToTableCommand2 = new SQLiteCommand(addCompanyToTableCommandString2, connection);
             addCompanyToTableCommand2.ExecuteNonQuery();
+            addCompanyToTableCommand2.Dispose();
 
             connection.Close();
 
@@ -753,9 +811,12 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             Assert.AreEqual(false, companyLookupEntryList[1].Collection);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Database")]
         public void TestGetQuoteHistoryEntryListForCompany()
         {
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
+
             const string companySymbol = "AAPL";
             const string companyName = "Apple";
 
@@ -782,21 +843,21 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 companySymbol, companyName, companySymbol, companyTimestamp2,
                 companyLastPrice2, companyChange2, companyChangePercent2);
 
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-
             var connection = new SQLiteConnection(DatabaseConnectionString);
 
             connection.Open();
 
             var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             var addQuoteToTableCommand1 = new SQLiteCommand(addQuoteToTableCommandString1, connection);
             addQuoteToTableCommand1.ExecuteNonQuery();
+            addQuoteToTableCommand1.Dispose();
 
             var addQuoteToTableCommand2 = new SQLiteCommand(addQuoteToTableCommandString2, connection);
             addQuoteToTableCommand2.ExecuteNonQuery();
+            addQuoteToTableCommand2.Dispose();
 
             connection.Close();
 

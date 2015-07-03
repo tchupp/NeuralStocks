@@ -9,13 +9,13 @@ namespace NeuralStocks.Backend.Tests.Controller
     [TestClass]
     public class BackendTimerTest : AssertTestClass
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (IBackendTimer), typeof (BackendTimer));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestGetsBackendControllerPassedIn()
         {
             var mockController = new Mock<IBackendController>();
@@ -24,7 +24,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreSame(mockController.Object, timer.Controller);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestDefaultIntervalIsSetupCorrectly_AndSetInterval()
         {
             var timer = new BackendTimer(null);
@@ -44,7 +44,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreEqual(6540, wrappedTimer.Interval);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartEnablesTheTimer_StopDisables()
         {
             var mockController = new Mock<IBackendController>();
@@ -63,7 +63,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.IsFalse(wrappedTimer.Enabled);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestUpdateQuoteHistoryCalledOnBackendControllerAfterInterval()
         {
             var mockController = new Mock<IBackendController>();

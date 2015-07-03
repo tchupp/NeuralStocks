@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
+using NeuralStocks.DatabaseLayer.Model.Database;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
 
 namespace NeuralStocks.DatabaseLayer.Database
 {
@@ -27,6 +28,8 @@ namespace NeuralStocks.DatabaseLayer.Database
 
             var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
+
 
             connection.Close();
         }
@@ -44,9 +47,11 @@ namespace NeuralStocks.DatabaseLayer.Database
 
             var addCompanyToTableCommand = new SQLiteCommand(addCompanyToTableCommandString, connection);
             addCompanyToTableCommand.ExecuteNonQuery();
+            addCompanyToTableCommand.Dispose();
 
             var createCompanyTableCommand = new SQLiteCommand(createCompanyTableCommandString, connection);
             createCompanyTableCommand.ExecuteNonQuery();
+            createCompanyTableCommand.Dispose();
 
             connection.Close();
 
@@ -67,9 +72,11 @@ namespace NeuralStocks.DatabaseLayer.Database
 
             var updateCompanyRecentDateCommand = new SQLiteCommand(updateCompanyRecentDateCommandString, connection);
             updateCompanyRecentDateCommand.ExecuteNonQuery();
+            updateCompanyRecentDateCommand.Dispose();
 
             var updateCompanyFirstDateCommand = new SQLiteCommand(updateCompanyFirstDateCommandString, connection);
             updateCompanyFirstDateCommand.ExecuteNonQuery();
+            updateCompanyFirstDateCommand.Dispose();
 
             connection.Close();
 
@@ -90,10 +97,15 @@ namespace NeuralStocks.DatabaseLayer.Database
             {
                 var companySymbol = selectFromCompanyCommandReader.GetString(0);
                 var companyTimestamp = selectFromCompanyCommandReader.GetString(1);
-                var companyLookupRequest = new QuoteLookupRequest(companySymbol, companyTimestamp);
+                var companyLookupRequest = new QuoteLookupRequest
+                {
+                    Company = companySymbol,
+                    Timestamp = companyTimestamp
+                };
                 lookupRequests.Add(companyLookupRequest);
             }
 
+            selectFromCompanyCommand.Dispose();
             connection.Close();
             return lookupRequests;
         }
@@ -109,6 +121,7 @@ namespace NeuralStocks.DatabaseLayer.Database
 
             var addQuoteToTableCommand = new SQLiteCommand(addQuoteToTableCommandString, connection);
             addQuoteToTableCommand.ExecuteNonQuery();
+            addQuoteToTableCommand.Dispose();
 
             connection.Close();
 
@@ -138,6 +151,7 @@ namespace NeuralStocks.DatabaseLayer.Database
                 };
                 companyLookupEntryList.Add(lookupEntry);
             }
+            selectAllFromCompanyCommand.Dispose();
             connection.Close();
 
             return companyLookupEntryList;
@@ -167,6 +181,7 @@ namespace NeuralStocks.DatabaseLayer.Database
                 };
                 quoteHistoryEntryList.Add(historyEntry);
             }
+            selectAllFromCompanyCommand.Dispose();
             return quoteHistoryEntryList;
         }
     }

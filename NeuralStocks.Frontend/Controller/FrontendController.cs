@@ -1,7 +1,9 @@
 ﻿using System.Data;
 using System.Data.SQLite;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Model.Database;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
+using NeuralStocks.DatabaseLayer.StockApi;
 
 namespace NeuralStocks.Frontend.Controller
 {
@@ -11,7 +13,8 @@ namespace NeuralStocks.Frontend.Controller
         public IDataTableFactory TableFactory { get; private set; }
         public IDatabaseCommunicator DatabaseCommunicator { get; private set; }
 
-        public FrontendController(IStockMarketApiCommunicator stockCommunicator, IDataTableFactory tableFactory, IDatabaseCommunicator databaseCommunicator)
+        public FrontendController(IStockMarketApiCommunicator stockCommunicator, IDataTableFactory tableFactory,
+            IDatabaseCommunicator databaseCommunicator)
         {
             StockCommunicator = stockCommunicator;
             TableFactory = tableFactory;
@@ -20,7 +23,7 @@ namespace NeuralStocks.Frontend.Controller
 
         public DataTable GetSearchResultsForNewCompany(string company)
         {
-            var lookupRequest = new CompanyLookupRequest(company);
+            var lookupRequest = new CompanyLookupRequest {Company = company};
             var lookupResponseList = StockCommunicator.CompanyLookup(lookupRequest);
             var buildCompanySearchTable = TableFactory.BuildNewCompanySearchTable(lookupResponseList);
 

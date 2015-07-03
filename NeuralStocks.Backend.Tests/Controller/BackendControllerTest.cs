@@ -3,8 +3,9 @@ using System.Data.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.Controller;
-using NeuralStocks.DatabaseLayer.ApiCommunication;
 using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Model.StockApi;
+using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 
 namespace NeuralStocks.Backend.Tests.Controller
@@ -12,13 +13,13 @@ namespace NeuralStocks.Backend.Tests.Controller
     [TestClass]
     public class BackendControllerTest : AssertTestClass
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (IBackendController), typeof (BackendController));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestGetsStockMarketApiCommunicatorPassedIn()
         {
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
@@ -28,7 +29,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreSame(mockCommunicator.Object, controller.StockCommunicator);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestGetsSqlDatabaseCommandRunnerPassedIn()
         {
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
@@ -38,7 +39,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreSame(mockCommandRunner.Object, controller.DatabaseCommunicator);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestGetsCorrectDatabaseFileName()
         {
             const string databaseFileName = "TestStocksDatabase.sqlite";
@@ -47,7 +48,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreEqual(databaseFileName, controller.DatabaseFileName);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestConstructorSetsUpBackendTimer()
         {
             var controller = new BackendController(null, null, null);
@@ -58,7 +59,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreEqual(60000, timer.Interval);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestStartTimerCallsStartOnTimer()
         {
             var mockTimer = new Mock<IBackendTimer>();
@@ -69,7 +70,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             mockTimer.Verify(t => t.Start(), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestDisposeCallsStopOnTimer()
         {
             var mockTimer = new Mock<IBackendTimer>();
@@ -80,7 +81,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             mockTimer.Verify(t => t.Stop(), Times.Once);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestUpdateCompanyQuotes_RecentDateDifferentThanTimestamp()
         {
             const string company1 = "NFLX";
@@ -91,8 +92,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             const string databaseFileName = "TestStocksDatabase.sqlite";
             const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
 
-            var quoteRequest1 = new QuoteLookupRequest(company1, timestamp1);
-            var quoteRequest2 = new QuoteLookupRequest(company2, timestamp1);
+            var quoteRequest1 = new QuoteLookupRequest {Company = company1, Timestamp = timestamp1};
+            var quoteRequest2 = new QuoteLookupRequest {Company = company2, Timestamp = timestamp1};
             var quoteRequests = new List<QuoteLookupRequest> {quoteRequest1, quoteRequest2};
 
             var quoteResponse1 = new QuoteLookupResponse {Name = company1, Timestamp = timestamp2};
@@ -124,7 +125,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             mockCommandRunner.VerifyAll();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Backend")]
         public void TestUpdateCompanyQuotes_RecentDateSameAsTimestamp()
         {
             const string company1 = "NFLX";
@@ -134,8 +135,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             const string databaseFileName = "TestStocksDatabase.sqlite";
             const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
 
-            var quoteRequest1 = new QuoteLookupRequest(company1, timestamp);
-            var quoteRequest2 = new QuoteLookupRequest(company2, timestamp);
+            var quoteRequest1 = new QuoteLookupRequest {Company = company1, Timestamp = timestamp};
+            var quoteRequest2 = new QuoteLookupRequest {Company = company2, Timestamp = timestamp};
             var quoteRequests = new List<QuoteLookupRequest> {quoteRequest1, quoteRequest2};
 
             var quoteResponse1 = new QuoteLookupResponse {Name = company1, Timestamp = timestamp};
