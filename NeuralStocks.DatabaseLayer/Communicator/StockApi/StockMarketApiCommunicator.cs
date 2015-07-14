@@ -6,13 +6,14 @@ namespace NeuralStocks.DatabaseLayer.Communicator.StockApi
 {
     public class StockMarketApiCommunicator : IStockMarketApiCommunicator
     {
-        public IStockMarketApi StockMarketApi { get; private set; }
-        public ITimestampParser TimestampParser { get; private set; }
+        public static readonly IStockMarketApiCommunicator Singleton = new StockMarketApiCommunicator();
+        public IStockMarketApi StockMarketApi { get; set; }
+        public ITimestampParser TimestampParser { get; set; }
 
-        public StockMarketApiCommunicator(IStockMarketApi marketApi, ITimestampParser timestampParser)
+        private StockMarketApiCommunicator()
         {
-            StockMarketApi = marketApi;
-            TimestampParser = timestampParser;
+            StockMarketApi = StockApi.StockMarketApi.Singleton;
+            TimestampParser = StockApi.TimestampParser.Singleton;
         }
 
         public List<CompanyLookupResponse> CompanyLookup(CompanyLookupRequest request)

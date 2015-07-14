@@ -24,10 +24,7 @@ namespace NeuralStocks.Frontend.Tests.Launcher
             var launcher = new NeuralStocksFrontendLauncher();
             var frontendController = AssertIsOfTypeAndGet<FrontendController>(launcher.FrontendController);
 
-            var stockCommunicator =
-                AssertIsOfTypeAndGet<StockMarketApiCommunicator>(frontendController.StockCommunicator);
-            Assert.AreSame(StockMarketApi.Singleton, stockCommunicator.StockMarketApi);
-            Assert.AreSame(TimestampParser.Singleton, stockCommunicator.TimestampParser);
+            Assert.AreSame(StockMarketApiCommunicator.Singleton, frontendController.StockCommunicator);
 
             Assert.AreSame(DataTableFactory.Factory, frontendController.TableFactory);
 

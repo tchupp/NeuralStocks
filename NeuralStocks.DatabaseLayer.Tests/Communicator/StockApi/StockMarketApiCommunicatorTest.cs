@@ -15,26 +15,21 @@ namespace NeuralStocks.DatabaseLayer.Tests.Communicator.StockApi
             AssertImplementsInterface(typeof (IStockMarketApiCommunicator), typeof (StockMarketApiCommunicator));
         }
 
-        [TestMethod, TestCategory("StockApi")]
-        public void TestGetsStockMarketApiPassedIn()
+        [TestMethod]
+        public void TestSingleton()
         {
-            var mockApi = new Mock<IStockMarketApi>();
-            var expectedApi = mockApi.Object;
-
-            var communicator = new StockMarketApiCommunicator(expectedApi, null);
-
-            Assert.AreSame(expectedApi, communicator.StockMarketApi);
+            AssertPrivateContructor(typeof (StockMarketApiCommunicator));
+            Assert.AreSame(StockMarketApiCommunicator.Singleton, StockMarketApiCommunicator.Singleton);
+            AssertIsOfTypeAndGet<StockMarketApiCommunicator>(StockMarketApiCommunicator.Singleton);
         }
 
         [TestMethod, TestCategory("StockApi")]
-        public void TestGetsTimestampParserPassedIn()
+        public void TestConstructedWithTimestampParserAndStockMarketApi()
         {
-            var mockTimestampParser = new Mock<ITimestampParser>();
-            var expectedParser = mockTimestampParser.Object;
+            var communicator = AssertIsOfTypeAndGet<StockMarketApiCommunicator>(StockMarketApiCommunicator.Singleton);
 
-            var communicator = new StockMarketApiCommunicator(null, expectedParser);
-
-            Assert.AreSame(expectedParser, communicator.TimestampParser);
+            Assert.AreSame(StockMarketApi.Singleton, communicator.StockMarketApi);
+            Assert.AreSame(TimestampParser.Singleton, communicator.TimestampParser);
         }
 
         [TestMethod, TestCategory("StockApi")]
@@ -55,7 +50,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Communicator.StockApi
             var mockApi = new Mock<IStockMarketApi>();
             mockApi.Setup(m => m.CompanyLookup(company)).Returns(expectedResponse);
 
-            var communicator = new StockMarketApiCommunicator(mockApi.Object, null);
+            var communicator = AssertIsOfTypeAndGet<StockMarketApiCommunicator>(StockMarketApiCommunicator.Singleton);
+            communicator.StockMarketApi = mockApi.Object;
 
             var response = communicator.CompanyLookup(new CompanyLookupRequest {Company = company});
 
@@ -138,7 +134,9 @@ namespace NeuralStocks.DatabaseLayer.Tests.Communicator.StockApi
             mockTimestampParser.Setup(m => m.Parse(It.Is<QuoteLookupResponse>(
                 r => r.Timestamp == expectedTimestamp))).Returns(lookupResponse);
 
-            var communicator = new StockMarketApiCommunicator(mockApi.Object, mockTimestampParser.Object);
+            var communicator = AssertIsOfTypeAndGet<StockMarketApiCommunicator>(StockMarketApiCommunicator.Singleton);
+            communicator.StockMarketApi = mockApi.Object;
+            communicator.TimestampParser = mockTimestampParser.Object;
 
             var response = communicator.QuoteLookup(new QuoteLookupRequest {Company = company});
             mockApi.Verify(m => m.QuoteLookup(company), Times.Once());

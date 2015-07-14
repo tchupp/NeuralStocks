@@ -16,8 +16,7 @@ namespace NeuralStocks.Frontend.Launcher
 
         public NeuralStocksFrontendLauncher()
         {
-            var stockCommunicator = new StockMarketApiCommunicator(
-                StockMarketApi.Singleton, TimestampParser.Singleton);
+            var stockCommunicator = StockMarketApiCommunicator.Singleton;
 
             var databaseConnection = new DatabaseConnection(new DatabaseName { Name = DatabaseFileName });
             var databaseCommunicator = new DatabaseCommunicator(databaseConnection);
