@@ -13,11 +13,8 @@ namespace NeuralStocks.DatabaseLayer.Communicator.Database
 
         public void InitializeDatabase(string databaseFileName)
         {
-            var databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
-            var connection = new SQLiteConnection(databaseConnectionString);
-
             DatabaseCommunicator.CreateDatabase(databaseFileName);
-            DatabaseCommunicator.CreateCompanyTable(connection);
+            DatabaseCommunicator.CreateCompanyTable();
         }
     }
 }

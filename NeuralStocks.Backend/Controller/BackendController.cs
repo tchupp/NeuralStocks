@@ -9,24 +9,18 @@ namespace NeuralStocks.Backend.Controller
     {
         public IStockMarketApiCommunicator StockCommunicator { get; private set; }
         public IDatabaseCommunicator DatabaseCommunicator { get; private set; }
-        public string DatabaseFileName { get; private set; }
         public IBackendTimer BackendTimer { get; set; }
 
-        public BackendController(IStockMarketApiCommunicator stockCommunicator,
-            IDatabaseCommunicator databaseCommunicator,
-            string databaseFileName)
+        public BackendController(IStockMarketApiCommunicator stockCommunicator, IDatabaseCommunicator databaseCommunicator)
         {
             StockCommunicator = stockCommunicator;
             DatabaseCommunicator = databaseCommunicator;
-            DatabaseFileName = databaseFileName;
             BackendTimer = new BackendTimer(this);
         }
 
         public void UpdateCompanyQuotes()
         {
-            var databaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
-            var connection = new SQLiteConnection(databaseConnectionString);
-            var lookupFromTableList = DatabaseCommunicator.GetQuoteLookupList(connection);
+            var lookupFromTableList = DatabaseCommunicator.GetQuoteLookupList();
 
             var responseList =
                 from lookup in lookupFromTableList
@@ -35,8 +29,8 @@ namespace NeuralStocks.Backend.Controller
                 select response;
             foreach (var response in responseList)
             {
-                DatabaseCommunicator.UpdateCompanyTimestamp(connection, response);
-                DatabaseCommunicator.AddQuoteResponseToTable(connection, response);
+                DatabaseCommunicator.UpdateCompanyTimestamp(response);
+                DatabaseCommunicator.AddQuoteResponseToTable(response);
             }
         }
 

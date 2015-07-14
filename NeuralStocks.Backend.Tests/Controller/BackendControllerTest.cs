@@ -24,7 +24,7 @@ namespace NeuralStocks.Backend.Tests.Controller
         {
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
 
-            var controller = new BackendController(mockCommunicator.Object, null, null);
+            var controller = new BackendController(mockCommunicator.Object, null);
 
             Assert.AreSame(mockCommunicator.Object, controller.StockCommunicator);
         }
@@ -34,24 +34,15 @@ namespace NeuralStocks.Backend.Tests.Controller
         {
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
-            var controller = new BackendController(null, mockCommandRunner.Object, null);
+            var controller = new BackendController(null, mockCommandRunner.Object);
 
             Assert.AreSame(mockCommandRunner.Object, controller.DatabaseCommunicator);
         }
 
         [TestMethod, TestCategory("Backend")]
-        public void TestGetsCorrectDatabaseFileName()
-        {
-            const string databaseFileName = "TestStocksDatabase.sqlite";
-            var controller = new BackendController(null, null, databaseFileName);
-
-            Assert.AreEqual(databaseFileName, controller.DatabaseFileName);
-        }
-
-        [TestMethod, TestCategory("Backend")]
         public void TestConstructorSetsUpBackendTimer()
         {
-            var controller = new BackendController(null, null, null);
+            var controller = new BackendController(null, null);
 
             var timer = AssertIsOfTypeAndGet<BackendTimer>(controller.BackendTimer);
             Assert.AreSame(controller, timer.Controller);
@@ -63,7 +54,7 @@ namespace NeuralStocks.Backend.Tests.Controller
         public void TestStartTimerCallsStartOnTimer()
         {
             var mockTimer = new Mock<IBackendTimer>();
-            var controller = new BackendController(null, null, null) {BackendTimer = mockTimer.Object};
+            var controller = new BackendController(null, null) {BackendTimer = mockTimer.Object};
 
             mockTimer.Verify(t => t.Start(), Times.Never);
             controller.StartTimer();
@@ -74,7 +65,7 @@ namespace NeuralStocks.Backend.Tests.Controller
         public void TestDisposeCallsStopOnTimer()
         {
             var mockTimer = new Mock<IBackendTimer>();
-            var controller = new BackendController(null, null, null) {BackendTimer = mockTimer.Object};
+            var controller = new BackendController(null, null) {BackendTimer = mockTimer.Object};
 
             mockTimer.Verify(t => t.Stop(), Times.Never);
             controller.Dispose();
@@ -89,9 +80,6 @@ namespace NeuralStocks.Backend.Tests.Controller
             const string timestamp1 = "Tues Jun 16";
             const string timestamp2 = "Wed Jun 17";
 
-            const string databaseFileName = "TestStocksDatabase.sqlite";
-            const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
-
             var quoteRequest1 = new QuoteLookupRequest {Company = company1, Timestamp = timestamp1};
             var quoteRequest2 = new QuoteLookupRequest {Company = company2, Timestamp = timestamp1};
             var quoteRequests = new List<QuoteLookupRequest> {quoteRequest1, quoteRequest2};
@@ -102,24 +90,19 @@ namespace NeuralStocks.Backend.Tests.Controller
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
-            mockCommandRunner.Setup(m => m.GetQuoteLookupList(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString))).Returns(quoteRequests);
+            mockCommandRunner.Setup(m => m.GetQuoteLookupList()).Returns(quoteRequests);
 
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest1)).Returns(quoteResponse1);
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest2)).Returns(quoteResponse2);
 
-            var controller = new BackendController(mockCommunicator.Object, mockCommandRunner.Object, databaseFileName);
+            var controller = new BackendController(mockCommunicator.Object, mockCommandRunner.Object);
             controller.UpdateCompanyQuotes();
 
-            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse1), Times.Once);
-            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse2), Times.Once);
+            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse1), Times.Once);
+            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse2), Times.Once);
 
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse1), Times.Once);
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse2), Times.Once);
+            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse1), Times.Once);
+            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse2), Times.Once);
 
             mockCommunicator.VerifyAll();
             mockCommandRunner.VerifyAll();
@@ -132,9 +115,6 @@ namespace NeuralStocks.Backend.Tests.Controller
             const string company2 = "AAPL";
             const string timestamp = "Tues Jun 16";
 
-            const string databaseFileName = "TestStocksDatabase.sqlite";
-            const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
-
             var quoteRequest1 = new QuoteLookupRequest {Company = company1, Timestamp = timestamp};
             var quoteRequest2 = new QuoteLookupRequest {Company = company2, Timestamp = timestamp};
             var quoteRequests = new List<QuoteLookupRequest> {quoteRequest1, quoteRequest2};
@@ -145,24 +125,19 @@ namespace NeuralStocks.Backend.Tests.Controller
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
-            mockCommandRunner.Setup(m => m.GetQuoteLookupList(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString))).Returns(quoteRequests);
+            mockCommandRunner.Setup(m => m.GetQuoteLookupList()).Returns(quoteRequests);
 
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest1)).Returns(quoteResponse1);
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest2)).Returns(quoteResponse2);
 
-            var controller = new BackendController(mockCommunicator.Object, mockCommandRunner.Object, databaseFileName);
+            var controller = new BackendController(mockCommunicator.Object, mockCommandRunner.Object);
             controller.UpdateCompanyQuotes();
 
-            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse1), Times.Never);
-            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse2), Times.Never);
+            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse1), Times.Never);
+            mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse2), Times.Never);
 
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse1), Times.Never);
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(It.Is<SQLiteConnection>(
-                c => c.ConnectionString == databaseConnectionString), quoteResponse2), Times.Never);
+            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse1), Times.Never);
+            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse2), Times.Never);
 
             mockCommunicator.VerifyAll();
             mockCommandRunner.VerifyAll();

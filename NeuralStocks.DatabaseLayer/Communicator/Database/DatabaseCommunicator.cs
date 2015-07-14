@@ -22,38 +22,6 @@ namespace NeuralStocks.DatabaseLayer.Communicator.Database
         {
         }
 
-        public void CreateCompanyTable(SQLiteConnection connection)
-        {
-        }
-
-        public void AddCompanyToTable(SQLiteConnection connection, CompanyLookupResponse company)
-        {
-        }
-
-        public void UpdateCompanyTimestamp(SQLiteConnection connection, QuoteLookupResponse response)
-        {
-        }
-
-        public List<QuoteLookupRequest> GetQuoteLookupList(SQLiteConnection connection)
-        {
-            return new List<QuoteLookupRequest>();
-        }
-
-        public void AddQuoteResponseToTable(SQLiteConnection connection, QuoteLookupResponse response)
-        {
-        }
-
-        public List<CompanyLookupEntry> GetCompanyLookupEntryList(SQLiteConnection connection)
-        {
-            return new List<CompanyLookupEntry>();
-        }
-
-        public List<QuoteHistoryEntry> GetQuoteHistoryEntryList(SQLiteConnection connection,
-            CompanyLookupEntry company)
-        {
-            return new List<QuoteHistoryEntry>();
-        }
-
         public List<QuoteHistoryEntry> GetQuoteHistoryEntryList(CompanyLookupEntry company)
         {
             var selectAllFromCompanyCommandString = Factory.BuildSelectAllQuotesFromHistoryTableCommandString(company);

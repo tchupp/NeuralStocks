@@ -25,13 +25,12 @@ namespace NeuralStocks.DatabaseLayer.Tests.Communicator.Database
             var setupManager = new DatabaseSetupManager(mockCommandRunner.Object);
 
             mockCommandRunner.Verify(m => m.CreateDatabase(databaseFileName), Times.Never);
-            mockCommandRunner.Verify(m => m.CreateCompanyTable(It.IsAny<SQLiteConnection>()), Times.Never);
+            mockCommandRunner.Verify(m => m.CreateCompanyTable(), Times.Never);
 
             setupManager.InitializeDatabase(databaseFileName);
 
             mockCommandRunner.Verify(m => m.CreateDatabase(databaseFileName), Times.Once);
-            mockCommandRunner.Verify(m => m.CreateCompanyTable(It.Is<SQLiteConnection>
-                (n => n.ConnectionString == databaseConnectionString)), Times.Once);
+            mockCommandRunner.Verify(m => m.CreateCompanyTable(), Times.Once);
         }
     }
 }

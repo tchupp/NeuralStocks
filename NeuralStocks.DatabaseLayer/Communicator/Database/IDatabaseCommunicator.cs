@@ -8,14 +8,12 @@ namespace NeuralStocks.DatabaseLayer.Communicator.Database
     public interface IDatabaseCommunicator
     {
         void CreateDatabase(string databaseName);
-        void CreateCompanyTable(SQLiteConnection connection);
-        void AddCompanyToTable(SQLiteConnection connection, CompanyLookupResponse company);
-        void UpdateCompanyTimestamp(SQLiteConnection connection, QuoteLookupResponse response);
-        List<QuoteLookupRequest> GetQuoteLookupList(SQLiteConnection connection);
-        void AddQuoteResponseToTable(SQLiteConnection connection, QuoteLookupResponse response);
-        List<CompanyLookupEntry> GetCompanyLookupEntryList(SQLiteConnection connection);
-
-        List<QuoteHistoryEntry> GetQuoteHistoryEntryList(SQLiteConnection connection,
-            CompanyLookupEntry company);
+        void CreateCompanyTable();
+        void AddCompanyToTable(CompanyLookupResponse company);
+        void UpdateCompanyTimestamp(QuoteLookupResponse response);
+        List<QuoteLookupRequest> GetQuoteLookupList();
+        void AddQuoteResponseToTable(QuoteLookupResponse response);
+        List<CompanyLookupEntry> GetCompanyLookupEntryList();
+        List<QuoteHistoryEntry> GetQuoteHistoryEntryList(CompanyLookupEntry company);
     }
 }

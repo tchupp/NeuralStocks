@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.DatabaseLayer.Communicator.Database;
@@ -91,7 +90,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             };
 
             mockDatabaseCommunicator.Setup(
-                c => c.GetQuoteHistoryEntryList(It.IsAny<SQLiteConnection>(), It.Is<CompanyLookupEntry>(
+                c => c.GetQuoteHistoryEntryList(It.Is<CompanyLookupEntry>(
                     e => e.Symbol == expectedSearch))).Returns(quoteHistoryList);
             mockTableFactory.Setup(
                 f => f.BuildCurrentCompanySearchTable(quoteHistoryList)).Returns(expectedDataTable);

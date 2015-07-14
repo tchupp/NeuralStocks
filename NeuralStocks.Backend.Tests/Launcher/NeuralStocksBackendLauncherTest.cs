@@ -52,8 +52,6 @@ namespace NeuralStocks.Backend.Tests.Launcher
             var connection = AssertIsOfTypeAndGet<DatabaseConnection>(communicator.Connection);
             var databaseName = AssertIsOfTypeAndGet<DatabaseName>(connection.DatabaseName);
             Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
-
-            Assert.AreEqual("NeuralStocksDatabase.sqlite", backendController.DatabaseFileName);
         }
 
         [TestMethod, TestCategory("Backend")]
