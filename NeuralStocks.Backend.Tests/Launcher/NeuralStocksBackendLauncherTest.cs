@@ -4,8 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.Controller;
 using NeuralStocks.Backend.Launcher;
-using NeuralStocks.DatabaseLayer.Database;
-using NeuralStocks.DatabaseLayer.StockApi;
+using NeuralStocks.DatabaseLayer.Communicator.Database;
+using NeuralStocks.DatabaseLayer.Communicator.StockApi;
+using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 
 namespace NeuralStocks.Backend.Tests.Launcher
@@ -25,7 +26,12 @@ namespace NeuralStocks.Backend.Tests.Launcher
             var launcher = new NeuralStocksBackendLauncher();
 
             var setupManager = AssertIsOfTypeAndGet<DatabaseSetupManager>(launcher.SetupManager);
-            Assert.AreSame(DatabaseCommunicator.Singleton, setupManager.DatabaseCommunicator);
+            var communicator = AssertIsOfTypeAndGet<DatabaseCommunicator>(setupManager.DatabaseCommunicator);
+            Assert.AreSame(DatabaseCommandStringFactory.Singleton, communicator.Factory);
+
+            var connection = AssertIsOfTypeAndGet<DatabaseConnection>(communicator.Connection);
+            var databaseName = AssertIsOfTypeAndGet<DatabaseName>(connection.DatabaseName);
+            Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
         }
 
         [TestMethod, TestCategory("Backend")]
@@ -40,7 +46,12 @@ namespace NeuralStocks.Backend.Tests.Launcher
             Assert.AreSame(StockMarketApi.Singleton, stockApiCommunicator.StockMarketApi);
             Assert.AreSame(TimestampParser.Singleton, stockApiCommunicator.TimestampParser);
 
-            Assert.AreSame(DatabaseCommunicator.Singleton, backendController.DatabaseCommunicator);
+            var communicator = AssertIsOfTypeAndGet<DatabaseCommunicator>(backendController.DatabaseCommunicator);
+            Assert.AreSame(DatabaseCommandStringFactory.Singleton, communicator.Factory);
+
+            var connection = AssertIsOfTypeAndGet<DatabaseConnection>(communicator.Connection);
+            var databaseName = AssertIsOfTypeAndGet<DatabaseName>(connection.DatabaseName);
+            Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
 
             Assert.AreEqual("NeuralStocksDatabase.sqlite", backendController.DatabaseFileName);
         }

@@ -1,4 +1,4 @@
-﻿namespace NeuralStocks.DatabaseLayer
+﻿namespace NeuralStocks.DatabaseLayer.Launcher
 {
     public class DatabaseLauncher
     {

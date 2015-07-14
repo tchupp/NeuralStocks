@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using System.Data.SQLite;
-using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Communicator.Database;
+using NeuralStocks.DatabaseLayer.Communicator.StockApi;
 using NeuralStocks.DatabaseLayer.Model.Database;
 using NeuralStocks.DatabaseLayer.Model.StockApi;
-using NeuralStocks.DatabaseLayer.StockApi;
 
 namespace NeuralStocks.Frontend.Controller
 {

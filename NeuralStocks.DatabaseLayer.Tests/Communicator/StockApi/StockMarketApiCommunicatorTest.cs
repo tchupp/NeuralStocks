@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using NeuralStocks.DatabaseLayer.Communicator.StockApi;
 using NeuralStocks.DatabaseLayer.Model.StockApi;
-using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 
-namespace NeuralStocks.DatabaseLayer.Tests.StockApi
+namespace NeuralStocks.DatabaseLayer.Tests.Communicator.StockApi
 {
     [TestClass]
     public class StockMarketApiCommunicatorTest : AssertTestClass

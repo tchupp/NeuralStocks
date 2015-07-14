@@ -1,4 +1,4 @@
-﻿namespace NeuralStocks.DatabaseLayer.Database
+﻿namespace NeuralStocks.DatabaseLayer.Communicator.Database
 {
     public interface IDatabaseSetupManager
     {

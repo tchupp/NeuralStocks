@@ -1,7 +1,7 @@
 ﻿using System.Data.SQLite;
 using System.Linq;
-using NeuralStocks.DatabaseLayer.Database;
-using NeuralStocks.DatabaseLayer.StockApi;
+using NeuralStocks.DatabaseLayer.Communicator.Database;
+using NeuralStocks.DatabaseLayer.Communicator.StockApi;
 
 namespace NeuralStocks.Backend.Controller
 {

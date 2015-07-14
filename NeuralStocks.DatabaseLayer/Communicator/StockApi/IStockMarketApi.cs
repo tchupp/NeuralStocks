@@ -1,4 +1,4 @@
-﻿namespace NeuralStocks.DatabaseLayer.StockApi
+﻿namespace NeuralStocks.DatabaseLayer.Communicator.StockApi
 {
     public interface IStockMarketApi
     {

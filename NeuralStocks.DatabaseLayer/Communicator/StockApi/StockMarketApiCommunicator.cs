@@ -2,7 +2,7 @@
 using NeuralStocks.DatabaseLayer.Model.StockApi;
 using Newtonsoft.Json;
 
-namespace NeuralStocks.DatabaseLayer.StockApi
+namespace NeuralStocks.DatabaseLayer.Communicator.StockApi
 {
     public class StockMarketApiCommunicator : IStockMarketApiCommunicator
     {

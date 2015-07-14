@@ -3,7 +3,7 @@ using System.Data.SQLite;
 using NeuralStocks.DatabaseLayer.Model.Database;
 using NeuralStocks.DatabaseLayer.Model.StockApi;
 
-namespace NeuralStocks.DatabaseLayer.Database
+namespace NeuralStocks.DatabaseLayer.Communicator.Database
 {
     public interface IDatabaseCommunicator
     {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.StockApi;
+using NeuralStocks.DatabaseLayer.Communicator.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 
-namespace NeuralStocks.DatabaseLayer.Tests.StockApi
+namespace NeuralStocks.DatabaseLayer.Tests.Communicator.StockApi
 {
     [TestClass]
     public class StockMarketApiTest : AssertTestClass

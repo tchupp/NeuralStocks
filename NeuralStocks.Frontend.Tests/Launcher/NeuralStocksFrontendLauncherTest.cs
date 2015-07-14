@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.Database;
-using NeuralStocks.DatabaseLayer.StockApi;
+using NeuralStocks.DatabaseLayer.Communicator.Database;
+using NeuralStocks.DatabaseLayer.Communicator.StockApi;
+using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 using NeuralStocks.Frontend.Launcher;
@@ -30,7 +31,12 @@ namespace NeuralStocks.Frontend.Tests.Launcher
 
             Assert.AreSame(DataTableFactory.Factory, frontendController.TableFactory);
 
-            Assert.AreSame(DatabaseCommunicator.Singleton, frontendController.DatabaseCommunicator);
+            var communicator = AssertIsOfTypeAndGet<DatabaseCommunicator>(frontendController.DatabaseCommunicator);
+            Assert.AreSame(DatabaseCommandStringFactory.Singleton, communicator.Factory);
+
+            var connection = AssertIsOfTypeAndGet<DatabaseConnection>(communicator.Connection);
+            var databaseName = AssertIsOfTypeAndGet<DatabaseName>(connection.DatabaseName);
+            Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
         }
 
         [TestMethod, TestCategory("Frontend")]

@@ -1,10 +1,10 @@
 ﻿using System.Data.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.Communicator.Database;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 
-namespace NeuralStocks.DatabaseLayer.Tests.Database
+namespace NeuralStocks.DatabaseLayer.Tests.Communicator.Database
 {
     [TestClass]
     public class DatabaseSetupManagerTest : AssertTestClass

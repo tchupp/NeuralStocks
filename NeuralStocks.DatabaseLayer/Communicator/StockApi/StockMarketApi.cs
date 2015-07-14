@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace NeuralStocks.DatabaseLayer.StockApi
+namespace NeuralStocks.DatabaseLayer.Communicator.StockApi
 {
     public class StockMarketApi : IStockMarketApi
     {

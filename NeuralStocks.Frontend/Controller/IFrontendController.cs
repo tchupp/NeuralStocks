@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Model.Database;
 
 namespace NeuralStocks.Frontend.Controller

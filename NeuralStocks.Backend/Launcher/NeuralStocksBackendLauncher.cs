@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using NeuralStocks.Backend.Controller;
-using NeuralStocks.DatabaseLayer.Database;
-using NeuralStocks.DatabaseLayer.StockApi;
+using NeuralStocks.DatabaseLayer.Communicator.Database;
+using NeuralStocks.DatabaseLayer.Communicator.StockApi;
+using NeuralStocks.DatabaseLayer.Sqlite;
 
 namespace NeuralStocks.Backend.Launcher
 {
@@ -15,12 +16,14 @@ namespace NeuralStocks.Backend.Launcher
 
         public NeuralStocksBackendLauncher()
         {
-            SetupManager = new DatabaseSetupManager(DatabaseCommunicator.Singleton);
+            var databaseConnection = new DatabaseConnection(new DatabaseName {Name = DatabaseFileName});
+            var databaseCommunicator = new DatabaseCommunicator(databaseConnection);
+            SetupManager = new DatabaseSetupManager(databaseCommunicator);
 
             var stockCommunicator = new StockMarketApiCommunicator(
                 StockMarketApi.Singleton, TimestampParser.Singleton);
-            BackendController = new BackendController(
-                stockCommunicator, DatabaseCommunicator.Singleton, DatabaseFileName);
+            BackendController = new BackendController(stockCommunicator,
+                databaseCommunicator, DatabaseFileName);
 
             BackendLock = new BackendLock(58525);
         }

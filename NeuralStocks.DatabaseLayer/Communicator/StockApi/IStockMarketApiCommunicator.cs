@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NeuralStocks.DatabaseLayer.Model.StockApi;
 
-namespace NeuralStocks.DatabaseLayer.StockApi
+namespace NeuralStocks.DatabaseLayer.Communicator.StockApi
 {
     public interface IStockMarketApiCommunicator
     {
