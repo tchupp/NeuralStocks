@@ -21,33 +21,22 @@ namespace NeuralStocks.Frontend.Tests.Controller
         }
 
         [TestMethod, TestCategory("Frontend")]
-        public void TestGetsStockMarketApiCommunicatorPassedIn()
-        {
-            var mockApiCommunicator = new Mock<IStockMarketApiCommunicator>();
-
-            var expected = mockApiCommunicator.Object;
-            var controller = new FrontendController(expected, null, null);
-            Assert.AreSame(expected, controller.StockCommunicator);
-        }
-
-        [TestMethod, TestCategory("Frontend")]
-        public void TestGetsTableFactoryPassedIn()
-        {
-            var mockTableFactory = new Mock<IDataTableFactory>();
-
-            var expectedFactory = mockTableFactory.Object;
-            var controller = new FrontendController(null, expectedFactory, null);
-            Assert.AreSame(expectedFactory, controller.TableFactory);
-        }
-
-        [TestMethod, TestCategory("Frontend")]
         public void TestGetsDatabaseCommunicator()
         {
             var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
 
             var expected = mockDatabaseCommunicator.Object;
-            var controller = new FrontendController(null, null, expected);
+            var controller = new FrontendController(expected);
             Assert.AreSame(expected, controller.DatabaseCommunicator);
+        }
+
+        [TestMethod]
+        public void TestConstructorSetsStockCommunicatorAndTableFactory_AsSingletons()
+        {
+            var controller = new FrontendController(null);
+
+            Assert.AreSame(StockMarketApiCommunicator.Singleton, controller.StockCommunicator);
+            Assert.AreSame(DataTableFactory.Factory, controller.TableFactory);
         }
 
         [TestMethod, TestCategory("Frontend")]
@@ -65,7 +54,11 @@ namespace NeuralStocks.Frontend.Tests.Controller
                     r => r.Company == expectedSearch))).Returns(lookupResponseList);
             mockTableFactory.Setup(f => f.BuildNewCompanySearchTable(lookupResponseList)).Returns(expectedDataTable);
 
-            var controller = new FrontendController(mockApiCommunicator.Object, mockTableFactory.Object, null);
+            var controller = new FrontendController(null)
+            {
+                StockCommunicator = mockApiCommunicator.Object,
+                TableFactory = mockTableFactory.Object
+            };
 
             var dataTable = controller.GetSearchResultsForNewCompany(expectedSearch);
             Assert.AreSame(expectedDataTable, dataTable);
@@ -95,7 +88,10 @@ namespace NeuralStocks.Frontend.Tests.Controller
             mockTableFactory.Setup(
                 f => f.BuildCurrentCompanySearchTable(quoteHistoryList)).Returns(expectedDataTable);
 
-            var controller = new FrontendController(null, mockTableFactory.Object, mockDatabaseCommunicator.Object);
+            var controller = new FrontendController(mockDatabaseCommunicator.Object)
+            {
+                TableFactory = mockTableFactory.Object
+            };
 
             var dataTable = controller.GetSearchResultsForCurrentCompany(lookupEntry);
             Assert.AreSame(expectedDataTable, dataTable);

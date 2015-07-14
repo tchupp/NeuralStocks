@@ -20,8 +20,7 @@ namespace NeuralStocks.Frontend.Launcher
 
             var databaseConnection = new DatabaseConnection(new DatabaseName { Name = DatabaseFileName });
             var databaseCommunicator = new DatabaseCommunicator(databaseConnection);
-            FrontendController = new FrontendController(stockCommunicator,
-                DataTableFactory.Factory, databaseCommunicator);
+            FrontendController = new FrontendController(databaseCommunicator);
             MainWindow = new MainWindow(FrontendController);
         }
 

@@ -8,15 +8,14 @@ namespace NeuralStocks.Frontend.Controller
 {
     public class FrontendController : IFrontendController
     {
-        public IStockMarketApiCommunicator StockCommunicator { get; private set; }
-        public IDataTableFactory TableFactory { get; private set; }
+        public IStockMarketApiCommunicator StockCommunicator { get; set; }
+        public IDataTableFactory TableFactory { get; set; }
         public IDatabaseCommunicator DatabaseCommunicator { get; private set; }
 
-        public FrontendController(IStockMarketApiCommunicator stockCommunicator, IDataTableFactory tableFactory,
-            IDatabaseCommunicator databaseCommunicator)
+        public FrontendController(IDatabaseCommunicator databaseCommunicator)
         {
-            StockCommunicator = stockCommunicator;
-            TableFactory = tableFactory;
+            StockCommunicator = StockMarketApiCommunicator.Singleton;
+            TableFactory = DataTableFactory.Factory;
             DatabaseCommunicator = databaseCommunicator;
         }
 
