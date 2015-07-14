@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using NeuralStocks.DatabaseLayer.Model.Database;
 using NeuralStocks.DatabaseLayer.Model.StockApi;
 using NeuralStocks.DatabaseLayer.Sqlite;

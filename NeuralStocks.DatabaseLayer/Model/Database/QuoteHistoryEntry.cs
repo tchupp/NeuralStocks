@@ -8,9 +8,5 @@
         public double LastPrice { get; set; }
         public double Change { get; set; }
         public double ChangePercent { get; set; }
-
-        public QuoteHistoryEntry()
-        {
-        }
     }
 }

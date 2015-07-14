@@ -1,6 +1,4 @@
-﻿using System.Data.SQLite;
-
-namespace NeuralStocks.DatabaseLayer.Communicator.Database
+﻿namespace NeuralStocks.DatabaseLayer.Communicator.Database
 {
     public class DatabaseSetupManager : IDatabaseSetupManager
     {

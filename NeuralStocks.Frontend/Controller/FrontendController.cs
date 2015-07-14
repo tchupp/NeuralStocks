@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Data.SQLite;
 using NeuralStocks.DatabaseLayer.Communicator.Database;
 using NeuralStocks.DatabaseLayer.Communicator.StockApi;
 using NeuralStocks.DatabaseLayer.Model.Database;

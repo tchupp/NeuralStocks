@@ -1,5 +1,4 @@
-﻿using System.Data.SQLite;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.DatabaseLayer.Communicator.Database;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
@@ -19,7 +18,6 @@ namespace NeuralStocks.DatabaseLayer.Tests.Communicator.Database
         public void TestInitializeDatabaseCreatesInitialDatabaseWithEmptyTable()
         {
             const string databaseFileName = "TestStocksDatabase.sqlite";
-            const string databaseConnectionString = "Data Source=" + databaseFileName + ";Version=3;";
 
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
             var setupManager = new DatabaseSetupManager(mockCommandRunner.Object);
