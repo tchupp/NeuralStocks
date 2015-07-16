@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using NeuralStocks.DatabaseLayer.Communicator.Database;
-using NeuralStocks.DatabaseLayer.Communicator.StockApi;
+using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Sqlite;
+using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.Frontend.Controller;
 using NeuralStocks.Frontend.UI;
 

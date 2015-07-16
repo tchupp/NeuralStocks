@@ -78,17 +78,17 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Model\StockApi\CompanyLookupRequestTest.cs" />
-    <Compile Include="Model\StockApi\CompanyLookupResponseTest.cs" />
-    <Compile Include="Model\StockApi\QuoteLookupRequestTest.cs" />
-    <Compile Include="Model\StockApi\QuoteLookupResponseTest.cs" />
-    <Compile Include="Communicator\StockApi\StockMarketApiCommunicatorTest.cs" />
-    <Compile Include="Communicator\StockApi\StockMarketApiTest.cs" />
-    <Compile Include="Communicator\StockApi\TimestampParserTest.cs" />
-    <Compile Include="Model\Database\CompanyLookupEntryTest.cs" />
-    <Compile Include="Communicator\Database\DatabaseCommunicatorTest.cs" />
-    <Compile Include="Communicator\Database\DatabaseSetupManagerTest.cs" />
-    <Compile Include="Model\Database\QuoteHistoryEntryTest.cs" />
+    <Compile Include="StockApi\CompanyLookupRequestTest.cs" />
+    <Compile Include="StockApi\CompanyLookupResponseTest.cs" />
+    <Compile Include="StockApi\QuoteLookupRequestTest.cs" />
+    <Compile Include="StockApi\QuoteLookupResponseTest.cs" />
+    <Compile Include="StockApi\StockMarketApiCommunicatorTest.cs" />
+    <Compile Include="StockApi\StockMarketApiTest.cs" />
+    <Compile Include="StockApi\TimestampParserTest.cs" />
+    <Compile Include="Database\CompanyLookupEntryTest.cs" />
+    <Compile Include="Database\DatabaseCommunicatorTest.cs" />
+    <Compile Include="Database\DatabaseSetupManagerTest.cs" />
+    <Compile Include="Database\QuoteHistoryEntryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sqlite\DatabaseCommandStringFactoryTest.cs" />
     <Compile Include="Sqlite\DatabaseCommandTest.cs" />

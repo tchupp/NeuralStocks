@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using NeuralStocks.DatabaseLayer.Communicator.Database;
-using NeuralStocks.DatabaseLayer.Communicator.StockApi;
+using NeuralStocks.DatabaseLayer.Database;
+using NeuralStocks.DatabaseLayer.StockApi;
 
 namespace NeuralStocks.Backend.Controller
 {

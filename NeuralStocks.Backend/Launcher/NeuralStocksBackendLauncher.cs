@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using NeuralStocks.Backend.Controller;
-using NeuralStocks.DatabaseLayer.Communicator.Database;
-using NeuralStocks.DatabaseLayer.Communicator.StockApi;
+using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Sqlite;
+using NeuralStocks.DatabaseLayer.StockApi;
 
 namespace NeuralStocks.Backend.Launcher
 {
