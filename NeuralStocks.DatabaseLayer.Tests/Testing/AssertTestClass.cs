@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq.Language.Flow;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Testing
 {
@@ -32,6 +35,15 @@ namespace NeuralStocks.DatabaseLayer.Tests.Testing
                 "Object was type: " + obj.GetType() + ", not: " + typeof (T));
 
             return (T) obj;
+        }
+    }
+
+    public static class MoqExtentions
+    {
+        public static void ReturnsInOrder<T, TResult>(this ISetup<T, TResult> setup, params TResult[] results)
+            where T : class
+        {
+            setup.Returns(new Queue<TResult>(results).Dequeue);
         }
     }
 }

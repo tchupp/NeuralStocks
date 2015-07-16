@@ -88,7 +88,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
-            mockCommandRunner.Setup(m => m.GetQuoteLookupList()).Returns(quoteRequests);
+            mockCommandRunner.Setup(m => m.SelectQuoteLookupList()).Returns(quoteRequests);
 
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest1)).Returns(quoteResponse1);
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest2)).Returns(quoteResponse2);
@@ -99,8 +99,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse1), Times.Once);
             mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse2), Times.Once);
 
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse1), Times.Once);
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse2), Times.Once);
+            mockCommandRunner.Verify(m => m.InsertQuoteResponseToTable(quoteResponse1), Times.Once);
+            mockCommandRunner.Verify(m => m.InsertQuoteResponseToTable(quoteResponse2), Times.Once);
 
             mockCommunicator.VerifyAll();
             mockCommandRunner.VerifyAll();
@@ -123,7 +123,7 @@ namespace NeuralStocks.Backend.Tests.Controller
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
 
-            mockCommandRunner.Setup(m => m.GetQuoteLookupList()).Returns(quoteRequests);
+            mockCommandRunner.Setup(m => m.SelectQuoteLookupList()).Returns(quoteRequests);
 
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest1)).Returns(quoteResponse1);
             mockCommunicator.Setup(m => m.QuoteLookup(quoteRequest2)).Returns(quoteResponse2);
@@ -134,8 +134,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse1), Times.Never);
             mockCommandRunner.Verify(m => m.UpdateCompanyTimestamp(quoteResponse2), Times.Never);
 
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse1), Times.Never);
-            mockCommandRunner.Verify(m => m.AddQuoteResponseToTable(quoteResponse2), Times.Never);
+            mockCommandRunner.Verify(m => m.InsertQuoteResponseToTable(quoteResponse1), Times.Never);
+            mockCommandRunner.Verify(m => m.InsertQuoteResponseToTable(quoteResponse2), Times.Never);
 
             mockCommunicator.VerifyAll();
             mockCommandRunner.VerifyAll();

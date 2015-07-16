@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 
@@ -16,11 +17,61 @@ namespace NeuralStocks.DatabaseLayer.Database
             Factory = DatabaseCommandStringFactory.Singleton;
         }
 
-        public void CreateDatabase(string databaseName)
+        public void CreateCompanyTable()
         {
+            var commandString = Factory.BuildCreateCompanyLookupTableCommandString();
+            var databaseCommand = Connection.CreateCommand(commandString);
+
+            Connection.Open();
+            databaseCommand.ExecuteNonQuery();
+            Connection.Close();
         }
 
-        public List<QuoteHistoryEntry> GetQuoteHistoryEntryList(CompanyLookupEntry company)
+        public void InsertCompanyToTable(CompanyLookupResponse response)
+        {
+            var createQuoteTableCommandString = Factory.BuildCreateQuoteHistoryTableCommandString(response);
+            var insertCompanyLookupCommandString = Factory.BuildInsertCompanyToLookupTableCommandString(response);
+            var createQuoteTableCommand = Connection.CreateCommand(createQuoteTableCommandString);
+            var insertCompanyLookupCommand = Connection.CreateCommand(insertCompanyLookupCommandString);
+
+            Connection.Open();
+            createQuoteTableCommand.ExecuteNonQuery();
+            insertCompanyLookupCommand.ExecuteNonQuery();
+            Connection.Close();
+
+            Console.WriteLine("Added {0} to company lookup table, " +
+                              "and added a quote history table : {1}.", response.Name, response.Symbol);
+        }
+
+        public void InsertQuoteResponseToTable(QuoteLookupResponse response)
+        {
+            var addQuoteToTableCommandString = Factory.BuildInsertQuoteToHistoryTableCommandString(response);
+            var addQuoteToTableCommand = Connection.CreateCommand(addQuoteToTableCommandString);
+
+            Connection.Open();
+            addQuoteToTableCommand.ExecuteNonQuery();
+            Connection.Close();
+
+            Console.WriteLine("Adding Quote: Company: {0}. Time: {1}. Amount: {2}.",
+                response.Symbol, response.Timestamp, response.LastPrice);
+        }
+       
+        public void UpdateCompanyTimestamp(QuoteLookupResponse response)
+        {
+            var updateFirstDateCommandString = Factory.BuildUpdateCompanyFirstDateCommandString(response);
+            var updateRecentDateCommandString = Factory.BuildUpdateCompanyRecentTimestampCommandString(response);
+            var updateFirstDateCommand = Connection.CreateCommand(updateFirstDateCommandString);
+            var updateRecentDateCommand = Connection.CreateCommand(updateRecentDateCommandString);
+
+            Connection.Open();
+            updateFirstDateCommand.ExecuteNonQuery();
+            updateRecentDateCommand.ExecuteNonQuery();
+            Connection.Close();
+
+            Console.WriteLine("Updating Timestamp: Company: {0}. Time: {1}", response.Symbol, response.Timestamp);
+        }
+
+        public List<QuoteHistoryEntry> SelectQuoteHistoryEntryList(CompanyLookupEntry company)
         {
             var selectAllFromCompanyCommandString = Factory.BuildSelectAllQuotesFromHistoryTableCommandString(company);
 
@@ -45,7 +96,7 @@ namespace NeuralStocks.DatabaseLayer.Database
             return quoteHistoryEntryList;
         }
 
-        public List<QuoteLookupRequest> GetQuoteLookupList()
+        public List<QuoteLookupRequest> SelectQuoteLookupList()
         {
             var selectFromCompanyCommandString = Factory.BuildSelectAllCompaniesFromLookupTableCommandString();
 
@@ -57,14 +108,14 @@ namespace NeuralStocks.DatabaseLayer.Database
             {
                 var symbol = selectFromCompanyCommandReader.Field<string>("symbol");
                 var timestamp = selectFromCompanyCommandReader.Field<string>("recentDate");
-                var request = new QuoteLookupRequest {Company = symbol, Timestamp = timestamp};
+                var request = new QuoteLookupRequest { Company = symbol, Timestamp = timestamp };
                 lookupRequests.Add(request);
             }
 
             return lookupRequests;
         }
 
-        public List<CompanyLookupEntry> GetCompanyLookupEntryList()
+        public List<CompanyLookupEntry> SelectCompanyLookupEntryList()
         {
             var selectAllFromCompanyCommandString = Factory.BuildSelectAllCompaniesFromLookupTableCommandString();
 
@@ -87,51 +138,6 @@ namespace NeuralStocks.DatabaseLayer.Database
 
             return companyLookupEntryList;
         }
-
-        public void CreateCompanyTable()
-        {
-            var commandString = Factory.BuildCreateCompanyLookupTableCommandString();
-            var databaseCommand = Connection.CreateCommand(commandString);
-
-            databaseCommand.ExecuteNonQuery();
-        }
-
-        public void AddCompanyToTable(CompanyLookupResponse response)
-        {
-            var createQuoteTableCommandString = Factory.BuildCreateQuoteHistoryTableCommandString(response);
-            var insertCompanyLookupCommandString = Factory.BuildInsertCompanyToLookupTableCommandString(response);
-            var createQuoteTableCommand = Connection.CreateCommand(createQuoteTableCommandString);
-            var insertCompanyLookupCommand = Connection.CreateCommand(insertCompanyLookupCommandString);
-
-            createQuoteTableCommand.ExecuteNonQuery();
-            insertCompanyLookupCommand.ExecuteNonQuery();
-
-            Console.WriteLine("Added {0} to company lookup table, " +
-                              "and added a quote history table : {1}.", response.Name, response.Symbol);
-        }
-
-        public void UpdateCompanyTimestamp(QuoteLookupResponse response)
-        {
-            var updateFirstDateCommandString = Factory.BuildUpdateCompanyFirstDateCommandString(response);
-            var updateRecentDateCommandString = Factory.BuildUpdateCompanyRecentTimestampCommandString(response);
-            var updateFirstDateCommand = Connection.CreateCommand(updateFirstDateCommandString);
-            var updateRecentDateCommand = Connection.CreateCommand(updateRecentDateCommandString);
-
-            updateFirstDateCommand.ExecuteNonQuery();
-            updateRecentDateCommand.ExecuteNonQuery();
-
-            Console.WriteLine("Updating Timestamp: Company: {0}. Time: {1}", response.Symbol, response.Timestamp);
-        }
-
-        public void AddQuoteResponseToTable(QuoteLookupResponse response)
-        {
-            var addQuoteToTableCommandString = Factory.BuildInsertQuoteToHistoryTableCommandString(response);
-            var addQuoteToTableCommand = Connection.CreateCommand(addQuoteToTableCommandString);
-
-            addQuoteToTableCommand.ExecuteNonQuery();
-
-            Console.WriteLine("Adding Quote: Company: {0}. Time: {1}. Amount: {2}.",
-                response.Symbol, response.Timestamp, response.LastPrice);
-        }
+    
     }
 }

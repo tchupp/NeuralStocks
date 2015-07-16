@@ -19,7 +19,7 @@ namespace NeuralStocks.Backend.Controller
 
         public void UpdateCompanyQuotes()
         {
-            var lookupFromTableList = DatabaseCommunicator.GetQuoteLookupList();
+            var lookupFromTableList = DatabaseCommunicator.SelectQuoteLookupList();
 
             var responseList =
                 from lookup in lookupFromTableList
@@ -29,7 +29,7 @@ namespace NeuralStocks.Backend.Controller
             foreach (var response in responseList)
             {
                 DatabaseCommunicator.UpdateCompanyTimestamp(response);
-                DatabaseCommunicator.AddQuoteResponseToTable(response);
+                DatabaseCommunicator.InsertQuoteResponseToTable(response);
             }
         }
 

@@ -81,7 +81,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             };
 
             mockDatabaseCommunicator.Setup(
-                c => c.GetQuoteHistoryEntryList(It.Is<CompanyLookupEntry>(
+                c => c.SelectQuoteHistoryEntryList(It.Is<CompanyLookupEntry>(
                     e => e.Symbol == expectedSearch))).Returns(quoteHistoryList);
             mockTableFactory.Setup(
                 f => f.BuildCurrentCompanySearchTable(quoteHistoryList)).Returns(expectedDataTable);

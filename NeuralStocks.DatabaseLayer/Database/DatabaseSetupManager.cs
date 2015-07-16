@@ -11,7 +11,6 @@
 
         public void InitializeDatabase(string databaseFileName)
         {
-            DatabaseCommunicator.CreateDatabase(databaseFileName);
             DatabaseCommunicator.CreateCompanyTable();
         }
     }

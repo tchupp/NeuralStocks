@@ -22,12 +22,10 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             var mockCommandRunner = new Mock<IDatabaseCommunicator>();
             var setupManager = new DatabaseSetupManager(mockCommandRunner.Object);
 
-            mockCommandRunner.Verify(m => m.CreateDatabase(databaseFileName), Times.Never);
             mockCommandRunner.Verify(m => m.CreateCompanyTable(), Times.Never);
 
             setupManager.InitializeDatabase(databaseFileName);
 
-            mockCommandRunner.Verify(m => m.CreateDatabase(databaseFileName), Times.Once);
             mockCommandRunner.Verify(m => m.CreateCompanyTable(), Times.Once);
         }
     }

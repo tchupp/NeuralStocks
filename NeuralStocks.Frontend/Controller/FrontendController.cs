@@ -28,7 +28,7 @@ namespace NeuralStocks.Frontend.Controller
 
         public DataTable GetSearchResultsForCurrentCompany(CompanyLookupEntry company)
         {
-            var quoteHistoryEntryList = DatabaseCommunicator.GetQuoteHistoryEntryList(company);
+            var quoteHistoryEntryList = DatabaseCommunicator.SelectQuoteHistoryEntryList(company);
             var buildCompanySearchTable = TableFactory.BuildCurrentCompanySearchTable(quoteHistoryEntryList);
 
             return buildCompanySearchTable;

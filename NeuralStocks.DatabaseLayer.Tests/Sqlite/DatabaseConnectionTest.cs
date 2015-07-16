@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,6 +12,15 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
     public class DatabaseConnectionTest : AssertTestClass
     {
         private const string DatabaseFileName = "TestSqliteDatabase.sqlite";
+
+        [TestCleanup, TestCategory("Database")]
+        public void TearDown()
+        {
+            GC.Collect();
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            GC.WaitForFullGCComplete();
+        }
 
         [TestMethod, TestCategory("Database")]
         public void TestImplementsInterface()

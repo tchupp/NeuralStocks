@@ -5,13 +5,12 @@ namespace NeuralStocks.DatabaseLayer.Database
 {
     public interface IDatabaseCommunicator
     {
-        void CreateDatabase(string databaseName);
         void CreateCompanyTable();
-        void AddCompanyToTable(CompanyLookupResponse company);
+        void InsertCompanyToTable(CompanyLookupResponse company);
         void UpdateCompanyTimestamp(QuoteLookupResponse response);
-        List<QuoteLookupRequest> GetQuoteLookupList();
-        void AddQuoteResponseToTable(QuoteLookupResponse response);
-        List<CompanyLookupEntry> GetCompanyLookupEntryList();
-        List<QuoteHistoryEntry> GetQuoteHistoryEntryList(CompanyLookupEntry company);
+        List<QuoteLookupRequest> SelectQuoteLookupList();
+        void InsertQuoteResponseToTable(QuoteLookupResponse response);
+        List<CompanyLookupEntry> SelectCompanyLookupEntryList();
+        List<QuoteHistoryEntry> SelectQuoteHistoryEntryList(CompanyLookupEntry company);
     }
 }
