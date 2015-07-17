@@ -13,12 +13,27 @@ namespace NeuralStocks.DatabaseLayer.Database
 
         public DataTable CreateQuoteHistoryTable(IDatabaseReader reader)
         {
-            var quoteHistoryDataTable = new DataTable();
+            return ReadToDataTable(reader);
+        }
+
+        public DataTable CreateQuoteLookupTable(IDatabaseReader reader)
+        {
+            return ReadToDataTable(reader);
+        }
+
+        public DataTable CreateCompanyLookupTable(IDatabaseReader reader)
+        {
+            return ReadToDataTable(reader);
+        }
+
+        private static DataTable ReadToDataTable(IDatabaseReader reader)
+        {
+            var dataTable = new DataTable();
             for (var i = 0; i < reader.FieldCount; i++)
             {
                 var columnName = reader.GetColumnName(i);
                 var fieldType = reader.GetFieldType(i);
-                quoteHistoryDataTable.Columns.Add(columnName, fieldType);
+                dataTable.Columns.Add(columnName, fieldType);
             }
 
             while (reader.Read())
@@ -28,19 +43,9 @@ namespace NeuralStocks.DatabaseLayer.Database
                 {
                     args[i] = reader.Field(reader.GetColumnName(i));
                 }
-                quoteHistoryDataTable.Rows.Add(args);
+                dataTable.Rows.Add(args);
             }
-            return quoteHistoryDataTable;
-        }
-
-        public DataTable CreateQuoteLookupTable(IDatabaseReader reader)
-        {
-            return new DataTable();
-        }
-
-        public DataTable CreateCompanyLookupTable(IDatabaseReader reader)
-        {
-            return new DataTable();
+            return dataTable;
         }
     }
 }
