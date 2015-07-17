@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using NeuralStocks.DatabaseLayer.StockApi;
 
 namespace NeuralStocks.DatabaseLayer.Database
@@ -7,10 +8,10 @@ namespace NeuralStocks.DatabaseLayer.Database
     {
         void CreateCompanyTable();
         void InsertCompanyToTable(CompanyLookupResponse company);
-        void UpdateCompanyTimestamp(QuoteLookupResponse response);
-        List<QuoteLookupRequest> SelectQuoteLookupList();
         void InsertQuoteResponseToTable(QuoteLookupResponse response);
-        List<CompanyLookupEntry> SelectCompanyLookupEntryList();
-        List<QuoteHistoryEntry> SelectQuoteHistoryEntryList(CompanyLookupEntry company);
+        void UpdateCompanyTimestamp(QuoteLookupResponse response);
+        List<QuoteLookupRequest> SelectQuoteLookupTable();
+        DataTable SelectCompanyLookupTable();
+        DataTable SelectCompanyQuoteHistoryTable(CompanyLookupEntry company);
     }
 }

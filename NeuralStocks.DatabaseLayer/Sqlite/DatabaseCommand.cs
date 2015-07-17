@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System.Data;
+using System.Data.SQLite;
 
 namespace NeuralStocks.DatabaseLayer.Sqlite
 {
@@ -24,7 +25,7 @@ namespace NeuralStocks.DatabaseLayer.Sqlite
             DatabaseReader databaseReader;
             using (WrappedCommand)
             {
-                databaseReader = new DatabaseReader(WrappedCommand.ExecuteReader());
+                databaseReader = new DatabaseReader(WrappedCommand.ExecuteReader(CommandBehavior.CloseConnection));
             }
             return databaseReader;
         }

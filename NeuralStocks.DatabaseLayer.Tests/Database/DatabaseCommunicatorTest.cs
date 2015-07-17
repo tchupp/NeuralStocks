@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -39,7 +40,15 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
         }
 
         [TestMethod, TestCategory("Database")]
-        public void TestCreateCompanyTable_CallsExecuteNonQuery_WithCorrectCommandString()
+        public void TestGetsDatabaseReaderFactory()
+        {
+            var communicator = new DatabaseCommunicator(null);
+
+            Assert.AreSame(DatabaseReaderHelper.Singleton, communicator.ReaderHelper);
+        }
+
+        [TestMethod, TestCategory("Database")]
+        public void TestCreateCompanyTable_CallsCommands_WithCorrectCommandString()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
             var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
@@ -65,7 +74,7 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
         }
 
         [TestMethod, TestCategory("Database")]
-        public void TestInsertCompanyToTable_CallsExecuteNonQuery_WithInsertToLookup_AndCreateHistoryTable()
+        public void TestInsertCompanyToTable_CallsCommands_WithInsertToLookup_AndCreateHistoryTable()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
             var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
@@ -243,7 +252,7 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
         }
 
         [TestMethod, TestCategory("Database")]
-        public void TestSelectCompanyLookupList_ReturnsCorrectCompanyLookupRequestList()
+        public void TestSelectQuoteLookupTable()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
             var mockConnection = new Mock<IDatabaseConnection>();
@@ -261,8 +270,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             mockReader.Setup(r => r.Field<string>("symbol")).ReturnsInOrder("AAPL", "NFLX");
             mockReader.Setup(r => r.Field<string>("recentDate")).ReturnsInOrder("20150709", "20150714");
 
-            var communicator = new DatabaseCommunicator(mockConnection.Object) { Factory = mockFactory.Object };
-            var lookupList = communicator.SelectQuoteLookupList();
+            var communicator = new DatabaseCommunicator(mockConnection.Object) {Factory = mockFactory.Object};
+            var lookupList = communicator.SelectQuoteLookupTable();
 
             Assert.AreEqual(2, lookupList.Count);
             Assert.AreEqual("AAPL", lookupList[0].Company);
@@ -277,40 +286,38 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
         }
 
         [TestMethod, TestCategory("Database")]
-        public void TestSelectCompanyLookupEntryList()
+        public void TestCompanyLookupTable()
         {
-            var count = 0;
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
-            var mockConnection = new Mock<IDatabaseConnection>();
-            var mockCommand = new Mock<IDatabaseCommand>();
+            var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
+            var mockCommand = new Mock<IDatabaseCommand>(MockBehavior.Strict);
             var mockReader = new Mock<IDatabaseReader>();
+            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
+            var seq = new MockSequence();
+            var databaseReader = mockReader.Object;
+
+            var expectedTable = new DataTable();
 
             const string selectAllLookup = "selectAllLookup";
             mockFactory.Setup(f => f.BuildSelectAllCompaniesFromLookupTableCommandString()).Returns(selectAllLookup);
-            mockConnection.Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
-            mockCommand.Setup(c => c.ExecuteReader()).Returns(mockReader.Object);
-            mockReader.Setup(r => r.Read()).Returns(() => count < 2).Callback(() => count++);
-            mockReader.Setup(r => r.Field<string>("name")).Returns("Apple");
-            mockReader.Setup(r => r.Field<string>("symbol")).Returns("AAPL");
-            mockReader.Setup(r => r.Field<string>("firstDate")).Returns("20150704");
-            mockReader.Setup(r => r.Field<string>("recentDate")).Returns("20150709");
-            mockReader.Setup(r => r.Field<int>("collect")).Returns(() => count - 1);
 
-            var communicator = new DatabaseCommunicator(mockConnection.Object) {Factory = mockFactory.Object};
-            var lookupList = communicator.SelectCompanyLookupEntryList();
+            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
 
-            Assert.AreEqual(2, lookupList.Count);
-            Assert.AreEqual("Apple", lookupList[0].Name);
-            Assert.AreEqual("AAPL", lookupList[0].Symbol);
-            Assert.AreEqual(false, lookupList[0].Collection);
-            Assert.AreEqual("20150704", lookupList[0].FirstDate);
-            Assert.AreEqual("20150709", lookupList[0].RecentDate);
+            mockConnection.InSequence(seq).Setup(c => c.Open());
+            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
+            mockReaderHelper.InSequence(seq)
+                .Setup(h => h.CreateCompanyLookupTable(databaseReader))
+                .Returns(expectedTable);
+            mockConnection.InSequence(seq).Setup(c => c.Close());
 
-            Assert.AreEqual("Apple", lookupList[1].Name);
-            Assert.AreEqual("AAPL", lookupList[1].Symbol);
-            Assert.AreEqual(true, lookupList[1].Collection);
-            Assert.AreEqual("20150704", lookupList[1].FirstDate);
-            Assert.AreEqual("20150709", lookupList[1].RecentDate);
+            var communicator = new DatabaseCommunicator(mockConnection.Object)
+            {
+                Factory = mockFactory.Object,
+                ReaderHelper = mockReaderHelper.Object
+            };
+            var lookupTable = communicator.SelectCompanyLookupTable();
+
+            Assert.AreSame(expectedTable, lookupTable);
 
             mockFactory.VerifyAll();
             mockConnection.VerifyAll();
@@ -319,49 +326,45 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
         }
 
         [TestMethod, TestCategory("Database")]
-        public void TestSelectQuoteHistoryEntryListForCompany()
+        public void TestSelectCompanyQuoteHistoryTable()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
-            var mockConnection = new Mock<IDatabaseConnection>();
-            var mockCommand = new Mock<IDatabaseCommand>();
+            var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
+            var mockCommand = new Mock<IDatabaseCommand>(MockBehavior.Strict);
             var mockReader = new Mock<IDatabaseReader>();
+            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
+            var seq = new MockSequence();
+            var databaseReader = mockReader.Object;
+
             var entry = new CompanyLookupEntry {Symbol = "AAPL"};
+            var expectedTable = new DataTable();
 
             const string selectAllLookup = "selectAllLookup";
             mockFactory.Setup(f => f.BuildSelectAllQuotesFromHistoryTableCommandString(entry)).Returns(selectAllLookup);
-            mockConnection.Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
-            mockCommand.Setup(c => c.ExecuteReader()).Returns(mockReader.Object);
 
-            mockReader.Setup(r => r.Read()).ReturnsInOrder(true, true, false);
-            mockReader.Setup(r => r.Field<string>("name")).Returns("Apple");
-            mockReader.Setup(r => r.Field<string>("symbol")).Returns("AAPL");
-            mockReader.Setup(r => r.Field<string>("timestamp")).Returns("20150704");
-            mockReader.Setup(r => r.Field<double>("lastPrice")).Returns(0.158);
-            mockReader.Setup(r => r.Field<double>("change")).Returns(0.86);
-            mockReader.Setup(r => r.Field<double>("changePercent")).Returns(0.763);
+            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
 
-            var communicator = new DatabaseCommunicator(mockConnection.Object) {Factory = mockFactory.Object};
-            var lookupList = communicator.SelectQuoteHistoryEntryList(entry);
+            mockConnection.InSequence(seq).Setup(c => c.Open());
+            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
+            mockReaderHelper.InSequence(seq)
+                .Setup(h => h.CreateQuoteHistoryTable(databaseReader))
+                .Returns(expectedTable);
+            mockConnection.InSequence(seq).Setup(c => c.Close());
 
-            Assert.AreEqual(2, lookupList.Count);
-            Assert.AreEqual("Apple", lookupList[0].Name);
-            Assert.AreEqual("AAPL", lookupList[0].Symbol);
-            Assert.AreEqual("20150704", lookupList[0].Timestamp);
-            Assert.AreEqual(0.158, lookupList[0].LastPrice);
-            Assert.AreEqual(0.86, lookupList[0].Change);
-            Assert.AreEqual(0.763, lookupList[0].ChangePercent);
+            var communicator = new DatabaseCommunicator(mockConnection.Object)
+            {
+                Factory = mockFactory.Object,
+                ReaderHelper = mockReaderHelper.Object
+            };
+            var lookupTable = communicator.SelectCompanyQuoteHistoryTable(entry);
 
-            Assert.AreEqual("Apple", lookupList[1].Name);
-            Assert.AreEqual("AAPL", lookupList[1].Symbol);
-            Assert.AreEqual("20150704", lookupList[1].Timestamp);
-            Assert.AreEqual(0.158, lookupList[1].LastPrice);
-            Assert.AreEqual(0.86, lookupList[1].Change);
-            Assert.AreEqual(0.763, lookupList[1].ChangePercent);
+            Assert.AreSame(expectedTable, lookupTable);
 
             mockFactory.VerifyAll();
             mockConnection.VerifyAll();
             mockCommand.VerifyAll();
             mockReader.VerifyAll();
+            mockReaderHelper.VerifyAll();
         }
     }
 }

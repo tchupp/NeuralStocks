@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Data;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 
@@ -10,11 +10,13 @@ namespace NeuralStocks.DatabaseLayer.Database
     {
         public IDatabaseConnection Connection { get; private set; }
         public IDatabaseCommandStringFactory Factory { get; set; }
+        public IDatabaseReaderHelper ReaderHelper { get; set; }
 
         public DatabaseCommunicator(IDatabaseConnection connection)
         {
             Connection = connection;
             Factory = DatabaseCommandStringFactory.Singleton;
+            ReaderHelper = DatabaseReaderHelper.Singleton;
         }
 
         public void CreateCompanyTable()
@@ -55,7 +57,7 @@ namespace NeuralStocks.DatabaseLayer.Database
             Console.WriteLine("Adding Quote: Company: {0}. Time: {1}. Amount: {2}.",
                 response.Symbol, response.Timestamp, response.LastPrice);
         }
-       
+
         public void UpdateCompanyTimestamp(QuoteLookupResponse response)
         {
             var updateFirstDateCommandString = Factory.BuildUpdateCompanyFirstDateCommandString(response);
@@ -71,32 +73,7 @@ namespace NeuralStocks.DatabaseLayer.Database
             Console.WriteLine("Updating Timestamp: Company: {0}. Time: {1}", response.Symbol, response.Timestamp);
         }
 
-        public List<QuoteHistoryEntry> SelectQuoteHistoryEntryList(CompanyLookupEntry company)
-        {
-            var selectAllFromCompanyCommandString = Factory.BuildSelectAllQuotesFromHistoryTableCommandString(company);
-
-            var selectAllFromCompanyCommand = Connection.CreateCommand(selectAllFromCompanyCommandString);
-            var selectAllFromCompanyCommandReader = selectAllFromCompanyCommand.ExecuteReader();
-
-            var quoteHistoryEntryList = new List<QuoteHistoryEntry>();
-            while (selectAllFromCompanyCommandReader.Read())
-            {
-                var historyEntry = new QuoteHistoryEntry
-                {
-                    Name = selectAllFromCompanyCommandReader.Field<string>("name"),
-                    Symbol = selectAllFromCompanyCommandReader.Field<string>("symbol"),
-                    Timestamp = selectAllFromCompanyCommandReader.Field<string>("timestamp"),
-                    LastPrice = selectAllFromCompanyCommandReader.Field<double>("lastPrice"),
-                    Change = selectAllFromCompanyCommandReader.Field<double>("change"),
-                    ChangePercent = selectAllFromCompanyCommandReader.Field<double>("changePercent")
-                };
-                quoteHistoryEntryList.Add(historyEntry);
-            }
-
-            return quoteHistoryEntryList;
-        }
-
-        public List<QuoteLookupRequest> SelectQuoteLookupList()
+        public List<QuoteLookupRequest> SelectQuoteLookupTable()
         {
             var selectFromCompanyCommandString = Factory.BuildSelectAllCompaniesFromLookupTableCommandString();
 
@@ -108,36 +85,37 @@ namespace NeuralStocks.DatabaseLayer.Database
             {
                 var symbol = selectFromCompanyCommandReader.Field<string>("symbol");
                 var timestamp = selectFromCompanyCommandReader.Field<string>("recentDate");
-                var request = new QuoteLookupRequest { Company = symbol, Timestamp = timestamp };
+                var request = new QuoteLookupRequest {Company = symbol, Timestamp = timestamp};
                 lookupRequests.Add(request);
             }
 
             return lookupRequests;
         }
 
-        public List<CompanyLookupEntry> SelectCompanyLookupEntryList()
+        public DataTable SelectCompanyLookupTable()
         {
             var selectAllFromCompanyCommandString = Factory.BuildSelectAllCompaniesFromLookupTableCommandString();
-
             var selectAllFromCompanyCommand = Connection.CreateCommand(selectAllFromCompanyCommandString);
-            var selectAllFromCompanyCommandReader = selectAllFromCompanyCommand.ExecuteReader();
 
-            var companyLookupEntryList = new List<CompanyLookupEntry>();
-            while (selectAllFromCompanyCommandReader.Read())
-            {
-                var lookupEntry = new CompanyLookupEntry
-                {
-                    Name = selectAllFromCompanyCommandReader.Field<string>("name"),
-                    Symbol = selectAllFromCompanyCommandReader.Field<string>("symbol"),
-                    FirstDate = selectAllFromCompanyCommandReader.Field<string>("firstDate"),
-                    RecentDate = selectAllFromCompanyCommandReader.Field<string>("recentDate"),
-                    Collection = selectAllFromCompanyCommandReader.Field<int>("collect") > 0
-                };
-                companyLookupEntryList.Add(lookupEntry);
-            }
+            Connection.Open();
+            var dataReader = selectAllFromCompanyCommand.ExecuteReader();
+            var quoteHistoryTable = ReaderHelper.CreateCompanyLookupTable(dataReader);
+            Connection.Close();
 
-            return companyLookupEntryList;
+            return quoteHistoryTable;
         }
-    
+
+        public DataTable SelectCompanyQuoteHistoryTable(CompanyLookupEntry company)
+        {
+            var selectAllFromCompanyCommandString = Factory.BuildSelectAllQuotesFromHistoryTableCommandString(company);
+            var selectAllFromCompanyCommand = Connection.CreateCommand(selectAllFromCompanyCommandString);
+
+            Connection.Open();
+            var dataReader = selectAllFromCompanyCommand.ExecuteReader();
+            var quoteHistoryTable = ReaderHelper.CreateQuoteHistoryTable(dataReader);
+            Connection.Close();
+
+            return quoteHistoryTable;
+        }
     }
 }

@@ -64,6 +64,7 @@
     <Reference Include="System.Data.SQLite.Linq">
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.97.0\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -78,6 +79,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Database\DatabaseReaderHelperTest.cs" />
     <Compile Include="StockApi\CompanyLookupRequestTest.cs" />
     <Compile Include="StockApi\CompanyLookupResponseTest.cs" />
     <Compile Include="StockApi\QuoteLookupRequestTest.cs" />

@@ -14,7 +14,7 @@ namespace NeuralStocks.DatabaseLayer.Tests.StockApi
             AssertImplementsInterface(typeof (IStockMarketApiCommunicator), typeof (StockMarketApiCommunicator));
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("StockApi")]
         public void TestSingleton()
         {
             AssertPrivateContructor(typeof (StockMarketApiCommunicator));

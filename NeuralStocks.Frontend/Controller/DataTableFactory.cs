@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.StockApi;
 
 namespace NeuralStocks.Frontend.Controller
@@ -31,11 +29,6 @@ namespace NeuralStocks.Frontend.Controller
                 companySearchTable.Rows.Add(name, symbol, exchange);
             }
             return companySearchTable;
-        }
-
-        public DataTable BuildCurrentCompanySearchTable(IEnumerable<QuoteHistoryEntry> lookupResponseList)
-        {
-            throw new NotImplementedException();
         }
     }
 }

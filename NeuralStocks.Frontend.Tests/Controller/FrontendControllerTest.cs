@@ -28,7 +28,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
             Assert.AreSame(expected, controller.DatabaseCommunicator);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Frontend")]
         public void TestConstructorSetsStockCommunicatorAndTableFactory_AsSingletons()
         {
             var controller = new FrontendController(null);
@@ -68,11 +68,9 @@ namespace NeuralStocks.Frontend.Tests.Controller
         [TestMethod, TestCategory("Frontend")]
         public void TestGetSearchResultsForCurrentCompany()
         {
-            var mockTableFactory = new Mock<IDataTableFactory>();
             var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
 
             const string expectedSearch = "Apple";
-            var quoteHistoryList = new List<QuoteHistoryEntry>();
             var expectedDataTable = new DataTable();
 
             var lookupEntry = new CompanyLookupEntry
@@ -81,20 +79,14 @@ namespace NeuralStocks.Frontend.Tests.Controller
             };
 
             mockDatabaseCommunicator.Setup(
-                c => c.SelectQuoteHistoryEntryList(It.Is<CompanyLookupEntry>(
-                    e => e.Symbol == expectedSearch))).Returns(quoteHistoryList);
-            mockTableFactory.Setup(
-                f => f.BuildCurrentCompanySearchTable(quoteHistoryList)).Returns(expectedDataTable);
+                c => c.SelectCompanyQuoteHistoryTable(It.Is<CompanyLookupEntry>(
+                    e => e.Symbol == expectedSearch))).Returns(expectedDataTable);
 
-            var controller = new FrontendController(mockDatabaseCommunicator.Object)
-            {
-                TableFactory = mockTableFactory.Object
-            };
+            var controller = new FrontendController(mockDatabaseCommunicator.Object);
 
             var dataTable = controller.GetSearchResultsForCurrentCompany(lookupEntry);
             Assert.AreSame(expectedDataTable, dataTable);
 
-            mockTableFactory.VerifyAll();
             mockDatabaseCommunicator.VerifyAll();
         }
     }

@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\DatabaseReaderHelper.cs" />
+    <Compile Include="Database\IDatabaseReaderHelper.cs" />
     <Compile Include="StockApi\CompanyLookupRequest.cs" />
     <Compile Include="StockApi\CompanyLookupResponse.cs" />
     <Compile Include="StockApi\IStockMarketApi.cs" />

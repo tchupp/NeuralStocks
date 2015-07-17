@@ -74,8 +74,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
                 }
 
 
-                using (var allFromCompanyCommand = new SQLiteCommand(SelectAllFromCompanyTableCommandString, connection)
-                    )
+                using (var allFromCompanyCommand =
+                    new SQLiteCommand(SelectAllFromCompanyTableCommandString, connection))
                 {
                     connection.Open();
                     var selectAllFromCompanyTableCommandReader = allFromCompanyCommand.ExecuteReader();
@@ -567,7 +567,7 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             GC.Collect();
             GC.WaitForFullGCComplete();
 
-            if (File.Exists(DatabaseFileName))File.Delete(DatabaseFileName);
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
             Assert.IsFalse(File.Exists(DatabaseFileName));
             SQLiteConnection.CreateFile(DatabaseFileName);
             Assert.IsTrue(File.Exists(DatabaseFileName));

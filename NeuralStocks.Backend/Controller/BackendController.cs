@@ -19,7 +19,7 @@ namespace NeuralStocks.Backend.Controller
 
         public void UpdateCompanyQuotes()
         {
-            var lookupFromTableList = DatabaseCommunicator.SelectQuoteLookupList();
+            var lookupFromTableList = DatabaseCommunicator.SelectQuoteLookupTable();
 
             var responseList =
                 from lookup in lookupFromTableList
