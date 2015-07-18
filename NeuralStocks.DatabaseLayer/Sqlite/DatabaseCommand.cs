@@ -25,7 +25,7 @@ namespace NeuralStocks.DatabaseLayer.Sqlite
             DatabaseReader databaseReader;
             using (WrappedCommand)
             {
-                databaseReader = new DatabaseReader(WrappedCommand.ExecuteReader(CommandBehavior.CloseConnection));
+                databaseReader = new DatabaseReader(WrappedCommand.ExecuteReader());
             }
             return databaseReader;
         }

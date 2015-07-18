@@ -76,20 +76,14 @@ namespace NeuralStocks.DatabaseLayer.Database
         public List<QuoteLookupRequest> SelectQuoteLookupTable()
         {
             var selectFromCompanyCommandString = Factory.BuildSelectAllCompaniesFromLookupTableCommandString();
-
             var selectFromCompanyCommand = Connection.CreateCommand(selectFromCompanyCommandString);
-            var selectFromCompanyCommandReader = selectFromCompanyCommand.ExecuteReader();
 
-            var lookupRequests = new List<QuoteLookupRequest>();
-            while (selectFromCompanyCommandReader.Read())
-            {
-                var symbol = selectFromCompanyCommandReader.Field<string>("symbol");
-                var timestamp = selectFromCompanyCommandReader.Field<string>("recentDate");
-                var request = new QuoteLookupRequest {Company = symbol, Timestamp = timestamp};
-                lookupRequests.Add(request);
-            }
+            Connection.Open();
+            var dataReader = selectFromCompanyCommand.ExecuteReader();
+            var lookupRequestList = ReaderHelper.CreateQuoteLookupList(dataReader);
+            Connection.Close();
 
-            return lookupRequests;
+            return lookupRequestList;
         }
 
         public DataTable SelectCompanyLookupTable()
@@ -99,10 +93,10 @@ namespace NeuralStocks.DatabaseLayer.Database
 
             Connection.Open();
             var dataReader = selectAllFromCompanyCommand.ExecuteReader();
-            var quoteHistoryTable = ReaderHelper.CreateCompanyLookupTable(dataReader);
+            var companyLookupTable = ReaderHelper.CreateCompanyLookupTable(dataReader);
             Connection.Close();
 
-            return quoteHistoryTable;
+            return companyLookupTable;
         }
 
         public DataTable SelectCompanyQuoteHistoryTable(CompanyLookupEntry company)

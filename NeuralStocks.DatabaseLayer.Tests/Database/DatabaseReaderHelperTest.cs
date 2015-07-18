@@ -163,5 +163,29 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             Assert.AreEqual(false, companyLookupDataTable.Rows[0][names[4]]);
             Assert.AreEqual(true, companyLookupDataTable.Rows[1][names[4]]);
         }
+
+        [TestMethod, TestCategory("Database")]
+        public void TestCreateQuoteLookupList()
+        {
+            const int columnCount = 2;
+
+            var mockReader = new Mock<IDatabaseReader>();
+            mockReader.Setup(c => c.Read()).ReturnsInOrder(true, true, false);
+            mockReader.Setup(c => c.FieldCount).Returns(columnCount);
+
+            mockReader.Setup(c => c.Field<string>("symbol")).ReturnsInOrder("AAPL", "NFLX");
+            mockReader.Setup(c => c.Field<string>("recentDate")).ReturnsInOrder("D20150503", "D20140308");
+
+            var readerHelper = DatabaseReaderHelper.Singleton;
+            var quoteLookupList = readerHelper.CreateQuoteLookupList(mockReader.Object);
+
+            Assert.AreEqual(2, quoteLookupList.Count);
+
+            Assert.AreEqual("AAPL", quoteLookupList[0].Company);
+            Assert.AreEqual("NFLX", quoteLookupList[1].Company);
+
+            Assert.AreEqual("D20150503", quoteLookupList[0].Timestamp);
+            Assert.AreEqual("D20140308", quoteLookupList[1].Timestamp);
+        }
     }
 }
