@@ -12,6 +12,7 @@ namespace NeuralStocks.Frontend.UI
         {
             FrontendController = frontendController;
             InitializeComponent();
+            currentCompanySearchTable.DataSource = FrontendController.GetCompanyLookupTable();
         }
 
         private void currentCompanySearchButton_Click(object sender, EventArgs e)

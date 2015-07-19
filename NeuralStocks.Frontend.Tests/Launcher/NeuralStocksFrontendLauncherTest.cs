@@ -6,7 +6,6 @@ using NeuralStocks.Frontend.Controller;
 using NeuralStocks.Frontend.Launcher;
 using NeuralStocks.Frontend.UI;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Frontend.Tests.Launcher
 {
@@ -29,7 +28,7 @@ namespace NeuralStocks.Frontend.Tests.Launcher
 
             var connection = AssertIsOfTypeAndGet<DatabaseConnection>(communicator.Connection);
             var databaseName = AssertIsOfTypeAndGet<DatabaseName>(connection.DatabaseName);
-            Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
+            Assert.AreEqual(DatabaseConfiguration.FullDatabaseFileName, databaseName.Name);
         }
 
         [Test]

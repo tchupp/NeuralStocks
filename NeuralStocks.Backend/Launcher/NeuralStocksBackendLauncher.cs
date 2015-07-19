@@ -9,14 +9,14 @@ namespace NeuralStocks.Backend.Launcher
 {
     public class NeuralStocksBackendLauncher : INeuralStocksBackendLauncher
     {
-        private const string DatabaseFileName = "NeuralStocksDatabase.sqlite";
+        private readonly string _databaseFileName = DatabaseConfiguration.FullDatabaseFileName;
         public IDatabaseSetupManager SetupManager { get; set; }
         public IBackendController BackendController { get; set; }
         public IBackendLock BackendLock { get; set; }
 
         public NeuralStocksBackendLauncher()
         {
-            var databaseConnection = new DatabaseConnection(new DatabaseName {Name = DatabaseFileName});
+            var databaseConnection = new DatabaseConnection(new DatabaseName {Name = _databaseFileName});
             var databaseCommunicator = new DatabaseCommunicator(databaseConnection);
             SetupManager = new DatabaseSetupManager(databaseCommunicator);
 
@@ -30,7 +30,7 @@ namespace NeuralStocks.Backend.Launcher
         {
             if (BackendLock.Lock())
             {
-                if (!File.Exists(DatabaseFileName)) SetupManager.InitializeDatabase(DatabaseFileName);
+                if (!File.Exists(_databaseFileName)) SetupManager.InitializeDatabase(_databaseFileName);
                 BackendController.StartTimer();
                 Console.WriteLine("Backend Started");
             }

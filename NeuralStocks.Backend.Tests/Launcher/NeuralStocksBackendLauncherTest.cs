@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Moq;
 using NeuralStocks.Backend.Controller;
 using NeuralStocks.Backend.Launcher;
@@ -8,7 +10,6 @@ using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Backend.Tests.Launcher
 {
@@ -30,7 +31,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
 
             var connection = AssertIsOfTypeAndGet<DatabaseConnection>(communicator.Connection);
             var databaseName = AssertIsOfTypeAndGet<DatabaseName>(connection.DatabaseName);
-            Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
+            Assert.AreEqual(DatabaseConfiguration.FullDatabaseFileName, databaseName.Name);
         }
 
         [Test]
@@ -56,7 +57,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
 
             var connection = AssertIsOfTypeAndGet<DatabaseConnection>(communicator.Connection);
             var databaseName = AssertIsOfTypeAndGet<DatabaseName>(connection.DatabaseName);
-            Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
+            Assert.AreEqual(DatabaseConfiguration.FullDatabaseFileName, databaseName.Name);
         }
 
         [Test]
@@ -70,7 +71,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
         [Category("Backend")]
         public void TestStartBackendCallsInitializeDatabaseOnSetupManager_DatabaseDoesNotExist()
         {
-            const string databaseFileName = "NeuralStocksDatabase.sqlite";
+            var databaseFileName = TestDatabaseName;
             File.Delete(databaseFileName);
             Assert.IsFalse(File.Exists(databaseFileName));
 
@@ -85,6 +86,8 @@ namespace NeuralStocks.Backend.Tests.Launcher
                 BackendController = mockController.Object,
                 BackendLock = mockBackendLock.Object
             };
+
+            AssertFieldIsOfTypeAndSet(launcher, "_databaseFileName", databaseFileName);
 
             mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
 
@@ -154,7 +157,7 @@ namespace NeuralStocks.Backend.Tests.Launcher
         [Category("Backend")]
         public void TestStartBackendDoesNotCallsInitializeDatabaseOnSetupManager_DatabaseExists()
         {
-            const string databaseFileName = "NeuralStocksDatabase.sqlite";
+            var databaseFileName = TestDatabaseName;
             File.Create(databaseFileName);
             Assert.IsTrue(File.Exists(databaseFileName));
 

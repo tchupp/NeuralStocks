@@ -38,6 +38,7 @@ namespace NeuralStocks.Frontend.UI
             this.companyTab = new System.Windows.Forms.TabPage();
             this.currentCompanyPanel = new System.Windows.Forms.Panel();
             this.currentCompanySummaryTabelPanel = new System.Windows.Forms.Panel();
+            this.currentCompanySummaryTable = new System.Windows.Forms.DataGridView();
             this.currentCompanySearchTablePanel = new System.Windows.Forms.Panel();
             this.currentCompanySearchTable = new System.Windows.Forms.DataGridView();
             this.turnCollectionOffButton = new System.Windows.Forms.Button();
@@ -49,22 +50,21 @@ namespace NeuralStocks.Frontend.UI
             this.currentCompanySearchLabel = new System.Windows.Forms.Label();
             this.newCompanyPanel = new System.Windows.Forms.Panel();
             this.newCompanySearchTablePanel = new System.Windows.Forms.Panel();
+            this.newCompanySearchTable = new System.Windows.Forms.DataGridView();
             this.newCompanySearchTableLabel = new System.Windows.Forms.Label();
             this.addNewCompaniesButton = new System.Windows.Forms.Button();
             this.newCompanySearchButton = new System.Windows.Forms.Button();
             this.newCompanySearchTextBox = new System.Windows.Forms.TextBox();
             this.newCompanySearchLabel = new System.Windows.Forms.Label();
-            this.currentCompanySummaryTable = new System.Windows.Forms.DataGridView();
-            this.newCompanySearchTable = new System.Windows.Forms.DataGridView();
             this.mainWindowTabControl.SuspendLayout();
             this.companyTab.SuspendLayout();
             this.currentCompanyPanel.SuspendLayout();
             this.currentCompanySummaryTabelPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.currentCompanySummaryTable)).BeginInit();
             this.currentCompanySearchTablePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.currentCompanySearchTable)).BeginInit();
             this.newCompanyPanel.SuspendLayout();
             this.newCompanySearchTablePanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.currentCompanySummaryTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.newCompanySearchTable)).BeginInit();
             this.SuspendLayout();
             // 
@@ -139,6 +139,18 @@ namespace NeuralStocks.Frontend.UI
             this.currentCompanySummaryTabelPanel.Name = "currentCompanySummaryTabelPanel";
             this.currentCompanySummaryTabelPanel.Size = new System.Drawing.Size(500, 553);
             this.currentCompanySummaryTabelPanel.TabIndex = 12;
+            // 
+            // currentCompanySummaryTable
+            // 
+            this.currentCompanySummaryTable.AllowUserToAddRows = false;
+            this.currentCompanySummaryTable.AllowUserToDeleteRows = false;
+            this.currentCompanySummaryTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.currentCompanySummaryTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.currentCompanySummaryTable.Location = new System.Drawing.Point(0, 0);
+            this.currentCompanySummaryTable.Name = "currentCompanySummaryTable";
+            this.currentCompanySummaryTable.ReadOnly = true;
+            this.currentCompanySummaryTable.Size = new System.Drawing.Size(500, 553);
+            this.currentCompanySummaryTable.TabIndex = 1;
             // 
             // currentCompanySearchTablePanel
             // 
@@ -248,14 +260,26 @@ namespace NeuralStocks.Frontend.UI
             this.newCompanySearchTablePanel.Size = new System.Drawing.Size(436, 553);
             this.newCompanySearchTablePanel.TabIndex = 13;
             // 
+            // newCompanySearchTable
+            // 
+            this.newCompanySearchTable.AllowUserToAddRows = false;
+            this.newCompanySearchTable.AllowUserToDeleteRows = false;
+            this.newCompanySearchTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.newCompanySearchTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.newCompanySearchTable.Location = new System.Drawing.Point(0, 0);
+            this.newCompanySearchTable.Name = "newCompanySearchTable";
+            this.newCompanySearchTable.ReadOnly = true;
+            this.newCompanySearchTable.Size = new System.Drawing.Size(436, 553);
+            this.newCompanySearchTable.TabIndex = 1;
+            // 
             // newCompanySearchTableLabel
             // 
             this.newCompanySearchTableLabel.AutoSize = true;
             this.newCompanySearchTableLabel.Location = new System.Drawing.Point(7, 90);
             this.newCompanySearchTableLabel.Name = "newCompanySearchTableLabel";
-            this.newCompanySearchTableLabel.Size = new System.Drawing.Size(166, 22);
+            this.newCompanySearchTableLabel.Size = new System.Drawing.Size(148, 22);
             this.newCompanySearchTableLabel.TabIndex = 9;
-            this.newCompanySearchTableLabel.Text = "Current Company Summary:";
+            this.newCompanySearchTableLabel.Text = "New Company Summary:";
             // 
             // addNewCompaniesButton
             // 
@@ -294,30 +318,6 @@ namespace NeuralStocks.Frontend.UI
             this.newCompanySearchLabel.TabIndex = 3;
             this.newCompanySearchLabel.Text = "New Company Search:";
             // 
-            // currentCompanySummaryTable
-            // 
-            this.currentCompanySummaryTable.AllowUserToAddRows = false;
-            this.currentCompanySummaryTable.AllowUserToDeleteRows = false;
-            this.currentCompanySummaryTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.currentCompanySummaryTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.currentCompanySummaryTable.Location = new System.Drawing.Point(0, 0);
-            this.currentCompanySummaryTable.Name = "currentCompanySummaryTable";
-            this.currentCompanySummaryTable.ReadOnly = true;
-            this.currentCompanySummaryTable.Size = new System.Drawing.Size(500, 553);
-            this.currentCompanySummaryTable.TabIndex = 1;
-            // 
-            // newCompanySearchTable
-            // 
-            this.newCompanySearchTable.AllowUserToAddRows = false;
-            this.newCompanySearchTable.AllowUserToDeleteRows = false;
-            this.newCompanySearchTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.newCompanySearchTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.newCompanySearchTable.Location = new System.Drawing.Point(0, 0);
-            this.newCompanySearchTable.Name = "newCompanySearchTable";
-            this.newCompanySearchTable.ReadOnly = true;
-            this.newCompanySearchTable.Size = new System.Drawing.Size(436, 553);
-            this.newCompanySearchTable.TabIndex = 1;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -337,12 +337,12 @@ namespace NeuralStocks.Frontend.UI
             this.currentCompanyPanel.ResumeLayout(false);
             this.currentCompanyPanel.PerformLayout();
             this.currentCompanySummaryTabelPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.currentCompanySummaryTable)).EndInit();
             this.currentCompanySearchTablePanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.currentCompanySearchTable)).EndInit();
             this.newCompanyPanel.ResumeLayout(false);
             this.newCompanyPanel.PerformLayout();
             this.newCompanySearchTablePanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.currentCompanySummaryTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.newCompanySearchTable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

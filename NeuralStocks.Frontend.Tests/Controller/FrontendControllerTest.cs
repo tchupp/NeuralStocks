@@ -36,7 +36,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
 
         [Test]
         [Category("Frontend")]
-        public void TestGetSearchResultsForCurrentCompany()
+        public void TestGetSummaryForCurrentCompany()
         {
             var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
 
@@ -54,7 +54,7 @@ namespace NeuralStocks.Frontend.Tests.Controller
 
             var controller = new FrontendController(mockDatabaseCommunicator.Object);
 
-            var dataTable = controller.GetSearchResultsForCurrentCompany(lookupEntry);
+            var dataTable = controller.GetSummaryForCurrentCompany(lookupEntry);
             Assert.AreSame(expectedDataTable, dataTable);
 
             mockDatabaseCommunicator.VerifyAll();
@@ -87,6 +87,25 @@ namespace NeuralStocks.Frontend.Tests.Controller
 
             mockApiCommunicator.VerifyAll();
             mockTableFactory.VerifyAll();
+        }
+
+        [Test]
+        [Category("Frontend")]
+        public void TestGetCompanyLookupTable()
+        {
+            var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
+
+            var expectedDataTable = new DataTable();
+
+            mockDatabaseCommunicator.Setup(
+                c => c.SelectCompanyLookupTable()).Returns(expectedDataTable);
+
+            var controller = new FrontendController(mockDatabaseCommunicator.Object);
+
+            var dataTable = controller.GetCompanyLookupTable();
+            Assert.AreSame(expectedDataTable, dataTable);
+
+            mockDatabaseCommunicator.VerifyAll();
         }
 
         [Test]

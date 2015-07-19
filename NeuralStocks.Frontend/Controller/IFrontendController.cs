@@ -6,6 +6,7 @@ namespace NeuralStocks.Frontend.Controller
     public interface IFrontendController
     {
         DataTable GetSearchResultsForNewCompany(string company);
-        DataTable GetSearchResultsForCurrentCompany(CompanyLookupEntry company);
+        DataTable GetSummaryForCurrentCompany(CompanyLookupEntry company);
+        DataTable GetCompanyLookupTable();
     }
 }

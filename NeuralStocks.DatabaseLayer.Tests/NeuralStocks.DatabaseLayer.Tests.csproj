@@ -83,6 +83,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Database\DatabaseReaderHelperTest.cs" />
+    <Compile Include="Sqlite\DatabaseConfigurationTest.cs" />
     <Compile Include="StockApi\CompanyLookupRequestTest.cs" />
     <Compile Include="StockApi\CompanyLookupResponseTest.cs" />
     <Compile Include="StockApi\QuoteLookupRequestTest.cs" />

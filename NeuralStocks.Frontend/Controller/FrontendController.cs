@@ -26,7 +26,12 @@ namespace NeuralStocks.Frontend.Controller
             return buildCompanySearchTable;
         }
 
-        public DataTable GetSearchResultsForCurrentCompany(CompanyLookupEntry company)
+        public DataTable GetCompanyLookupTable()
+        {
+            return DatabaseCommunicator.SelectCompanyLookupTable();
+        }
+
+        public DataTable GetSummaryForCurrentCompany(CompanyLookupEntry company)
         {
             return DatabaseCommunicator.SelectCompanyQuoteHistoryTable(company);
         }
