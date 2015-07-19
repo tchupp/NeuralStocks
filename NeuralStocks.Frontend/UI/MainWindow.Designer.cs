@@ -76,7 +76,7 @@ namespace NeuralStocks.Frontend.UI
             this.mainWindowHeaderLabel.Name = "mainWindowHeaderLabel";
             this.mainWindowHeaderLabel.Size = new System.Drawing.Size(127, 29);
             this.mainWindowHeaderLabel.TabIndex = 0;
-            this.mainWindowHeaderLabel.Text = "Nueral Stocks";
+            this.mainWindowHeaderLabel.Text = "Neural Stocks";
             // 
             // mainWindowTabControl
             // 
