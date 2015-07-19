@@ -1,40 +1,22 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.StockApi;
+﻿using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.StockApi
 {
-    [TestClass]
+    [TestFixture]
     public class TimestampParserTest : AssertTestClass
     {
-        [TestMethod, TestCategory("StockApi")]
+        [Test]
+        [Category("StockApi")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (ITimestampParser), typeof (TimestampParser));
         }
 
-        [TestMethod, TestCategory("StockApi")]
-        public void TestSingleton()
-        {
-            AssertPrivateContructor(typeof (TimestampParser));
-            Assert.AreSame(TimestampParser.Singleton, TimestampParser.Singleton);
-        }
-
-        [TestMethod, TestCategory("StockApi")]
-        public void TestParseCorrectlyParsesTimestampToDateTimeFormat_SameQuoteLookupObject()
-        {
-            const string initialTimestamp = "Tue Jun 16 11:49:10 UTC-04:00 2015";
-            const string expecetedTimestamp = "D20150616T11:49:10";
-
-            var quoteLookupResponse = new QuoteLookupResponse {Timestamp = initialTimestamp};
-
-            var parser = TimestampParser.Singleton;
-            var newResponse = parser.Parse(quoteLookupResponse);
-
-            Assert.AreEqual(expecetedTimestamp, newResponse.Timestamp);
-        }
-
-        [TestMethod, TestCategory("StockApi")]
+        [Test]
+        [Category("StockApi")]
         public void TestParseCorrectlyParsesTimestampToDateTimeFormat_EachMonth()
         {
             const string initialTimestampJan = "Tue Jan 16 11:49:10 UTC-04:00 2015";
@@ -101,6 +83,29 @@ namespace NeuralStocks.DatabaseLayer.Tests.StockApi
             Assert.AreEqual(expecetedTimestampOct, quoteLookupResponseOct.Timestamp);
             Assert.AreEqual(expecetedTimestampNov, quoteLookupResponseNov.Timestamp);
             Assert.AreEqual(expecetedTimestampDec, quoteLookupResponseDec.Timestamp);
+        }
+
+        [Test]
+        [Category("StockApi")]
+        public void TestParseCorrectlyParsesTimestampToDateTimeFormat_SameQuoteLookupObject()
+        {
+            const string initialTimestamp = "Tue Jun 16 11:49:10 UTC-04:00 2015";
+            const string expecetedTimestamp = "D20150616T11:49:10";
+
+            var quoteLookupResponse = new QuoteLookupResponse {Timestamp = initialTimestamp};
+
+            var parser = TimestampParser.Singleton;
+            var newResponse = parser.Parse(quoteLookupResponse);
+
+            Assert.AreEqual(expecetedTimestamp, newResponse.Timestamp);
+        }
+
+        [Test]
+        [Category("StockApi")]
+        public void TestSingleton()
+        {
+            AssertPrivateContructor(typeof (TimestampParser));
+            Assert.AreSame(TimestampParser.Singleton, TimestampParser.Singleton);
         }
     }
 }

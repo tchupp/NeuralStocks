@@ -1,30 +1,17 @@
 ﻿using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.Controller;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Backend.Tests.Controller
 {
-    [TestClass]
+    [TestFixture]
     public class BackendTimerTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Backend")]
-        public void TestImplementsInterface()
-        {
-            AssertImplementsInterface(typeof (IBackendTimer), typeof (BackendTimer));
-        }
-
-        [TestMethod, TestCategory("Backend")]
-        public void TestGetsBackendControllerPassedIn()
-        {
-            var mockController = new Mock<IBackendController>();
-
-            var timer = new BackendTimer(mockController.Object);
-            Assert.AreSame(mockController.Object, timer.Controller);
-        }
-
-        [TestMethod, TestCategory("Backend")]
+        [Test]
+        [Category("Backend")]
         public void TestDefaultIntervalIsSetupCorrectly_AndSetInterval()
         {
             var timer = new BackendTimer(null);
@@ -44,7 +31,25 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreEqual(6540, wrappedTimer.Interval);
         }
 
-        [TestMethod, TestCategory("Backend")]
+        [Test]
+        [Category("Backend")]
+        public void TestGetsBackendControllerPassedIn()
+        {
+            var mockController = new Mock<IBackendController>();
+
+            var timer = new BackendTimer(mockController.Object);
+            Assert.AreSame(mockController.Object, timer.Controller);
+        }
+
+        [Test]
+        [Category("Backend")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (IBackendTimer), typeof (BackendTimer));
+        }
+
+        [Test]
+        [Category("Backend")]
         public void TestStartEnablesTheTimer_StopDisables()
         {
             var mockController = new Mock<IBackendController>();
@@ -63,7 +68,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.IsFalse(wrappedTimer.Enabled);
         }
 
-        [TestMethod, TestCategory("Backend")]
+        [Test]
+        [Category("Backend")]
         public void TestUpdateQuoteHistoryCalledOnBackendControllerAfterInterval()
         {
             var mockController = new Mock<IBackendController>();

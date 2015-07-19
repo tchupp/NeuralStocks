@@ -1,24 +1,20 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.Database;
+﻿using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 using NeuralStocks.Frontend.Launcher;
 using NeuralStocks.Frontend.UI;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Frontend.Tests.Launcher
 {
-    [TestClass]
+    [TestFixture]
     public class NeuralStocksFrontendLauncherTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Frontend")]
-        public void TestImplementsInterface()
-        {
-            AssertImplementsInterface(typeof (INeuralStocksFrontendLauncher), typeof (NeuralStocksFrontendLauncher));
-        }
-
-        [TestMethod, TestCategory("Frontend")]
+        [Test]
+        [Category("Frontend")]
         public void TestFrontEndControllerIsConstructedWithCorrectArguments()
         {
             var launcher = new NeuralStocksFrontendLauncher();
@@ -36,7 +32,15 @@ namespace NeuralStocks.Frontend.Tests.Launcher
             Assert.AreEqual("NeuralStocksDatabase.sqlite", databaseName.Name);
         }
 
-        [TestMethod, TestCategory("Frontend")]
+        [Test]
+        [Category("Frontend")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (INeuralStocksFrontendLauncher), typeof (NeuralStocksFrontendLauncher));
+        }
+
+        [Test]
+        [Category("Frontend")]
         public void TestMainWindowIsConstructedWithFrontendController()
         {
             var launcher = new NeuralStocksFrontendLauncher();

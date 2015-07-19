@@ -1,13 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.StockApi;
+﻿using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.StockApi
 {
-    [TestClass]
+    [TestFixture]
     public class QuoteLookupRequestTest : AssertTestClass
     {
-        [TestMethod, TestCategory("StockApi")]
+        [Test]
+        [Category("StockApi")]
         public void TestStockQuoteRequestConstructedWithCorrectCompany()
         {
             const string company1 = "NFLX";

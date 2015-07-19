@@ -2,53 +2,62 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Database
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseCommunicatorTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Database")]
-        public void TestImplementsInterface()
+        [Test]
+        [Category("Database")]
+        public void TestCompanyLookupTable()
         {
-            AssertImplementsInterface(
-                typeof (IDatabaseCommunicator), typeof (DatabaseCommunicator));
+            var mockFactory = new Mock<IDatabaseCommandStringFactory>();
+            var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
+            var mockCommand = new Mock<IDatabaseCommand>(MockBehavior.Strict);
+            var mockReader = new Mock<IDatabaseReader>();
+            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
+            var seq = new MockSequence();
+            var databaseReader = mockReader.Object;
+
+            var expectedTable = new DataTable();
+
+            const string selectAllLookup = "selectAllLookup";
+            mockFactory.Setup(f => f.BuildSelectAllCompaniesFromLookupTableCommandString()).Returns(selectAllLookup);
+
+            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
+
+            mockConnection.InSequence(seq).Setup(c => c.Open());
+            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
+            mockReaderHelper.InSequence(seq)
+                .Setup(h => h.CreateCompanyLookupTable(databaseReader))
+                .Returns(expectedTable);
+            mockConnection.InSequence(seq).Setup(c => c.Close());
+
+            var communicator = new DatabaseCommunicator(mockConnection.Object)
+            {
+                Factory = mockFactory.Object,
+                ReaderHelper = mockReaderHelper.Object
+            };
+            var lookupTable = communicator.SelectCompanyLookupTable();
+
+            Assert.AreSame(expectedTable, lookupTable);
+
+            mockFactory.VerifyAll();
+            mockConnection.VerifyAll();
+            mockCommand.VerifyAll();
+            mockReader.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestGetsDatabaseConnection()
-        {
-            var mockConnection = new Mock<IDatabaseConnection>();
-
-            var connection = mockConnection.Object;
-            var communicator = new DatabaseCommunicator(connection);
-
-            Assert.AreSame(connection, communicator.Connection);
-        }
-
-        [TestMethod, TestCategory("Database")]
-        public void TestGetsDatabaseConnectionStringFactory()
-        {
-            var communicator = new DatabaseCommunicator(null);
-
-            Assert.AreSame(DatabaseCommandStringFactory.Singleton, communicator.Factory);
-        }
-
-        [TestMethod, TestCategory("Database")]
-        public void TestGetsDatabaseReaderFactory()
-        {
-            var communicator = new DatabaseCommunicator(null);
-
-            Assert.AreSame(DatabaseReaderHelper.Singleton, communicator.ReaderHelper);
-        }
-
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestCreateCompanyTable_CallsCommands_WithCorrectCommandString()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
@@ -74,7 +83,46 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             mockCommand.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
+        public void TestGetsDatabaseConnection()
+        {
+            var mockConnection = new Mock<IDatabaseConnection>();
+
+            var connection = mockConnection.Object;
+            var communicator = new DatabaseCommunicator(connection);
+
+            Assert.AreSame(connection, communicator.Connection);
+        }
+
+        [Test]
+        [Category("Database")]
+        public void TestGetsDatabaseConnectionStringFactory()
+        {
+            var communicator = new DatabaseCommunicator(null);
+
+            Assert.AreSame(DatabaseCommandStringFactory.Singleton, communicator.Factory);
+        }
+
+        [Test]
+        [Category("Database")]
+        public void TestGetsDatabaseReaderFactory()
+        {
+            var communicator = new DatabaseCommunicator(null);
+
+            Assert.AreSame(DatabaseReaderHelper.Singleton, communicator.ReaderHelper);
+        }
+
+        [Test]
+        [Category("Database")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(
+                typeof (IDatabaseCommunicator), typeof (DatabaseCommunicator));
+        }
+
+        [Test]
+        [Category("Database")]
         public void TestInsertCompanyToTable_CallsCommands_WithInsertToLookup_AndCreateHistoryTable()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
@@ -112,7 +160,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             mockCommand2.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestInsertCompanyToTable_WritesToConsole()
         {
             var mockWriter = new Mock<TextWriter>();
@@ -136,7 +185,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                     response.Name, response.Symbol), Times.Once);
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestInsertQuoteResponseToTable()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
@@ -163,7 +213,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             mockCommand.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestInsertQuoteResponseToTable_WriteToConsole()
         {
             var mockWriter = new Mock<TextWriter>();
@@ -187,7 +238,90 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
                 response.Symbol, response.Timestamp, response.LastPrice), Times.Once);
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
+        public void TestSelectCompanyQuoteHistoryTable()
+        {
+            var mockFactory = new Mock<IDatabaseCommandStringFactory>();
+            var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
+            var mockCommand = new Mock<IDatabaseCommand>(MockBehavior.Strict);
+            var mockReader = new Mock<IDatabaseReader>();
+            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
+            var seq = new MockSequence();
+            var databaseReader = mockReader.Object;
+
+            var entry = new CompanyLookupEntry {Symbol = "AAPL"};
+            var expectedTable = new DataTable();
+
+            const string selectAllLookup = "selectAllLookup";
+            mockFactory.Setup(f => f.BuildSelectAllQuotesFromHistoryTableCommandString(entry)).Returns(selectAllLookup);
+
+            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
+
+            mockConnection.InSequence(seq).Setup(c => c.Open());
+            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
+            mockReaderHelper.InSequence(seq)
+                .Setup(h => h.CreateQuoteHistoryTable(databaseReader))
+                .Returns(expectedTable);
+            mockConnection.InSequence(seq).Setup(c => c.Close());
+
+            var communicator = new DatabaseCommunicator(mockConnection.Object)
+            {
+                Factory = mockFactory.Object,
+                ReaderHelper = mockReaderHelper.Object
+            };
+            var lookupTable = communicator.SelectCompanyQuoteHistoryTable(entry);
+
+            Assert.AreSame(expectedTable, lookupTable);
+
+            mockFactory.VerifyAll();
+            mockConnection.VerifyAll();
+            mockCommand.VerifyAll();
+            mockReader.VerifyAll();
+            mockReaderHelper.VerifyAll();
+        }
+
+        [Test]
+        [Category("Database")]
+        public void TestSelectQuoteLookupTable()
+        {
+            var mockFactory = new Mock<IDatabaseCommandStringFactory>();
+            var mockConnection = new Mock<IDatabaseConnection>();
+            var mockCommand = new Mock<IDatabaseCommand>();
+            var mockReader = new Mock<IDatabaseReader>();
+            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
+            var seq = new MockSequence();
+            var databaseReader = mockReader.Object;
+
+            var expectedRequests = new List<QuoteLookupRequest>();
+
+            const string selectAllLookup = "selectAllLookup";
+            mockFactory.Setup(f => f.BuildSelectAllCompaniesFromLookupTableCommandString()).Returns(selectAllLookup);
+
+            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
+            mockConnection.InSequence(seq).Setup(c => c.Open());
+            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
+            mockReaderHelper.InSequence(seq)
+                .Setup(h => h.CreateQuoteLookupList(databaseReader))
+                .Returns(expectedRequests);
+            mockConnection.InSequence(seq).Setup(c => c.Close());
+
+            var communicator = new DatabaseCommunicator(mockConnection.Object)
+            {
+                Factory = mockFactory.Object,
+                ReaderHelper = mockReaderHelper.Object
+            };
+            var lookupRequests = communicator.SelectQuoteLookupTable();
+            Assert.AreSame(expectedRequests, lookupRequests);
+
+            mockFactory.VerifyAll();
+            mockConnection.VerifyAll();
+            mockCommand.VerifyAll();
+            mockReader.VerifyAll();
+        }
+
+        [Test]
+        [Category("Database")]
         public void TestUpdateCompanyTimestamp_CallsCommands_UpdateFirstDate_AndUpdateRecentDate()
         {
             var mockFactory = new Mock<IDatabaseCommandStringFactory>();
@@ -228,7 +362,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             mockCommand2.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestUpdateCompanyTimestamp_WritesToConsole()
         {
             var mockWriter = new Mock<TextWriter>();
@@ -250,126 +385,6 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
 
             mockWriter.Verify(m => m.WriteLine("Updating Timestamp: Company: {0}. Time: {1}",
                 response.Symbol, response.Timestamp), Times.Once);
-        }
-
-        [TestMethod, TestCategory("Database")]
-        public void TestSelectQuoteLookupTable()
-        {
-            var mockFactory = new Mock<IDatabaseCommandStringFactory>();
-            var mockConnection = new Mock<IDatabaseConnection>();
-            var mockCommand = new Mock<IDatabaseCommand>();
-            var mockReader = new Mock<IDatabaseReader>();
-            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
-            var seq = new MockSequence();
-            var databaseReader = mockReader.Object;
-
-            var expectedRequests = new List<QuoteLookupRequest>();
-
-            const string selectAllLookup = "selectAllLookup";
-            mockFactory.Setup(f => f.BuildSelectAllCompaniesFromLookupTableCommandString()).Returns(selectAllLookup);
-
-            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
-            mockConnection.InSequence(seq).Setup(c => c.Open());
-            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
-            mockReaderHelper.InSequence(seq)
-                .Setup(h => h.CreateQuoteLookupList(databaseReader))
-                .Returns(expectedRequests);
-            mockConnection.InSequence(seq).Setup(c => c.Close());
-
-            var communicator = new DatabaseCommunicator(mockConnection.Object)
-            {
-                Factory = mockFactory.Object,
-                ReaderHelper = mockReaderHelper.Object
-            };
-            var lookupRequests = communicator.SelectQuoteLookupTable();
-            Assert.AreSame(expectedRequests, lookupRequests);
-
-            mockFactory.VerifyAll();
-            mockConnection.VerifyAll();
-            mockCommand.VerifyAll();
-            mockReader.VerifyAll();
-        }
-
-        [TestMethod, TestCategory("Database")]
-        public void TestCompanyLookupTable()
-        {
-            var mockFactory = new Mock<IDatabaseCommandStringFactory>();
-            var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
-            var mockCommand = new Mock<IDatabaseCommand>(MockBehavior.Strict);
-            var mockReader = new Mock<IDatabaseReader>();
-            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
-            var seq = new MockSequence();
-            var databaseReader = mockReader.Object;
-
-            var expectedTable = new DataTable();
-
-            const string selectAllLookup = "selectAllLookup";
-            mockFactory.Setup(f => f.BuildSelectAllCompaniesFromLookupTableCommandString()).Returns(selectAllLookup);
-
-            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
-
-            mockConnection.InSequence(seq).Setup(c => c.Open());
-            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
-            mockReaderHelper.InSequence(seq)
-                .Setup(h => h.CreateCompanyLookupTable(databaseReader))
-                .Returns(expectedTable);
-            mockConnection.InSequence(seq).Setup(c => c.Close());
-
-            var communicator = new DatabaseCommunicator(mockConnection.Object)
-            {
-                Factory = mockFactory.Object,
-                ReaderHelper = mockReaderHelper.Object
-            };
-            var lookupTable = communicator.SelectCompanyLookupTable();
-
-            Assert.AreSame(expectedTable, lookupTable);
-
-            mockFactory.VerifyAll();
-            mockConnection.VerifyAll();
-            mockCommand.VerifyAll();
-            mockReader.VerifyAll();
-        }
-
-        [TestMethod, TestCategory("Database")]
-        public void TestSelectCompanyQuoteHistoryTable()
-        {
-            var mockFactory = new Mock<IDatabaseCommandStringFactory>();
-            var mockConnection = new Mock<IDatabaseConnection>(MockBehavior.Strict);
-            var mockCommand = new Mock<IDatabaseCommand>(MockBehavior.Strict);
-            var mockReader = new Mock<IDatabaseReader>();
-            var mockReaderHelper = new Mock<IDatabaseReaderHelper>(MockBehavior.Strict);
-            var seq = new MockSequence();
-            var databaseReader = mockReader.Object;
-
-            var entry = new CompanyLookupEntry {Symbol = "AAPL"};
-            var expectedTable = new DataTable();
-
-            const string selectAllLookup = "selectAllLookup";
-            mockFactory.Setup(f => f.BuildSelectAllQuotesFromHistoryTableCommandString(entry)).Returns(selectAllLookup);
-
-            mockConnection.InSequence(seq).Setup(c => c.CreateCommand(selectAllLookup)).Returns(mockCommand.Object);
-
-            mockConnection.InSequence(seq).Setup(c => c.Open());
-            mockCommand.InSequence(seq).Setup(c => c.ExecuteReader()).Returns(databaseReader);
-            mockReaderHelper.InSequence(seq)
-                .Setup(h => h.CreateQuoteHistoryTable(databaseReader))
-                .Returns(expectedTable);
-            mockConnection.InSequence(seq).Setup(c => c.Close());
-
-            var communicator = new DatabaseCommunicator(mockConnection.Object)
-            {
-                Factory = mockFactory.Object,
-                ReaderHelper = mockReaderHelper.Object
-            };
-            var lookupTable = communicator.SelectCompanyQuoteHistoryTable(entry);
-
-            Assert.AreSame(expectedTable, lookupTable);
-
-            mockFactory.VerifyAll();
-            mockConnection.VerifyAll();
-            mockCommand.VerifyAll();
-            mockReader.VerifyAll();
-            mockReaderHelper.VerifyAll();
         }
     }
 }

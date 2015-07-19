@@ -13,19 +13,24 @@ namespace NeuralStocks.DatabaseLayer.StockApi
 
         public string CompanyLookup(string company)
         {
-            var url = "http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=" + company;
+            var url = GetBaseUrl() + "Lookup/jsonp?input=" + company;
             return ReadUrl(url);
         }
 
         public string QuoteLookup(string company)
         {
-            var url = "http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol=" + company;
+            var url = GetBaseUrl() + "Quote/jsonp?symbol=" + company;
             return ReadUrl(url);
         }
 
         public string RangeLookup(string parameters)
         {
             return "";
+        }
+
+        private static string GetBaseUrl()
+        {
+            return "http://dev.markitondemand.com/Api/v2/";
         }
 
         private static string ReadUrl(string url)

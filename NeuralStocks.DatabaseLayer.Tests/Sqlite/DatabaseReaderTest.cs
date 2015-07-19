@@ -1,24 +1,20 @@
 ﻿using System.Data.SQLite;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseReaderTest : AssertTestClass
     {
         private const string DatabaseFileName = "TestsStocksDatabase.sqlite";
         private const string DatabaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
 
-        [TestMethod, TestCategory("Database")]
-        public void TestImplementsInterface()
-        {
-            AssertImplementsInterface(typeof (IDatabaseReader), typeof (DatabaseReader));
-        }
-
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestGetWrappedReader()
         {
             if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
@@ -37,6 +33,13 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             var databaseReader = new DatabaseReader(reader);
 
             Assert.AreSame(reader, databaseReader.WrappedReader);
+        }
+
+        [Test]
+        [Category("Database")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (IDatabaseReader), typeof (DatabaseReader));
         }
     }
 }

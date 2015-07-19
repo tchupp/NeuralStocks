@@ -1,29 +1,69 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿using Moq;
 using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Database
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseReaderHelperTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Database")]
-        public void TestImplementsInterface()
+        [Test]
+        [Category("Database")]
+        public void TestCreateCompanyLookupTable()
         {
-            AssertImplementsInterface(typeof (IDatabaseReaderHelper), typeof (DatabaseReaderHelper));
+            const int columnCount = 5;
+            const int rowCount = 2;
+            var names = new[] {"name", "symbol", "firstDate", "recentDate", "collect"};
+
+            var mockReader = new Mock<IDatabaseReader>();
+            mockReader.Setup(c => c.Read()).ReturnsInOrder(true, true, false);
+            mockReader.Setup(c => c.FieldCount).Returns(columnCount);
+
+            mockReader.Setup(c => c.GetColumnName(0)).Returns(names[0]);
+            mockReader.Setup(c => c.GetColumnName(1)).Returns(names[1]);
+            mockReader.Setup(c => c.GetColumnName(2)).Returns(names[2]);
+            mockReader.Setup(c => c.GetColumnName(3)).Returns(names[3]);
+            mockReader.Setup(c => c.GetColumnName(4)).Returns(names[4]);
+
+            mockReader.Setup(c => c.GetFieldType(0)).Returns(typeof (string));
+            mockReader.Setup(c => c.GetFieldType(1)).Returns(typeof (string));
+            mockReader.Setup(c => c.GetFieldType(2)).Returns(typeof (string));
+            mockReader.Setup(c => c.GetFieldType(3)).Returns(typeof (string));
+            mockReader.Setup(c => c.GetFieldType(4)).Returns(typeof (bool));
+
+            mockReader.Setup(c => c.Field(names[0])).ReturnsInOrder("Apple", "Netflix");
+            mockReader.Setup(c => c.Field(names[1])).ReturnsInOrder("AAPL", "NFLX");
+            mockReader.Setup(c => c.Field(names[2])).ReturnsInOrder("D20150503", "D20140308");
+            mockReader.Setup(c => c.Field(names[3])).ReturnsInOrder("D20150504", "D20140309");
+            mockReader.Setup(c => c.Field(names[4])).ReturnsInOrder(0, 1);
+
+            var readerHelper = DatabaseReaderHelper.Singleton;
+            var companyLookupDataTable = readerHelper.CreateCompanyLookupTable(mockReader.Object);
+
+            Assert.AreEqual(columnCount, companyLookupDataTable.Columns.Count);
+            Assert.AreEqual(rowCount, companyLookupDataTable.Rows.Count);
+
+            Assert.AreEqual("Apple", companyLookupDataTable.Rows[0][names[0]]);
+            Assert.AreEqual("Netflix", companyLookupDataTable.Rows[1][names[0]]);
+
+            Assert.AreEqual("AAPL", companyLookupDataTable.Rows[0][names[1]]);
+            Assert.AreEqual("NFLX", companyLookupDataTable.Rows[1][names[1]]);
+
+            Assert.AreEqual("D20150503", companyLookupDataTable.Rows[0][names[2]]);
+            Assert.AreEqual("D20140308", companyLookupDataTable.Rows[1][names[2]]);
+
+            Assert.AreEqual("D20150504", companyLookupDataTable.Rows[0][names[3]]);
+            Assert.AreEqual("D20140309", companyLookupDataTable.Rows[1][names[3]]);
+
+            Assert.AreEqual(false, companyLookupDataTable.Rows[0][names[4]]);
+            Assert.AreEqual(true, companyLookupDataTable.Rows[1][names[4]]);
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestSingleton()
-        {
-            AssertPrivateContructor(typeof (DatabaseReaderHelper));
-            Assert.AreSame(DatabaseReaderHelper.Singleton, DatabaseReaderHelper.Singleton);
-            AssertIsOfTypeAndGet<DatabaseReaderHelper>(DatabaseReaderHelper.Singleton);
-        }
-
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestCreateQuoteHistoryTable()
         {
             const int columnCount = 6;
@@ -80,7 +120,33 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             Assert.AreEqual(89.0, quoteHistoryDataTable.Rows[1][names[5]]);
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
+        public void TestCreateQuoteLookupList()
+        {
+            const int columnCount = 2;
+
+            var mockReader = new Mock<IDatabaseReader>();
+            mockReader.Setup(c => c.Read()).ReturnsInOrder(true, true, false);
+            mockReader.Setup(c => c.FieldCount).Returns(columnCount);
+
+            mockReader.Setup(c => c.Field<string>("symbol")).ReturnsInOrder("AAPL", "NFLX");
+            mockReader.Setup(c => c.Field<string>("recentDate")).ReturnsInOrder("D20150503", "D20140308");
+
+            var readerHelper = DatabaseReaderHelper.Singleton;
+            var quoteLookupList = readerHelper.CreateQuoteLookupList(mockReader.Object);
+
+            Assert.AreEqual(2, quoteLookupList.Count);
+
+            Assert.AreEqual("AAPL", quoteLookupList[0].Company);
+            Assert.AreEqual("NFLX", quoteLookupList[1].Company);
+
+            Assert.AreEqual("D20150503", quoteLookupList[0].Timestamp);
+            Assert.AreEqual("D20140308", quoteLookupList[1].Timestamp);
+        }
+
+        [Test]
+        [Category("Database")]
         public void TestCreateQuoteLookupTable()
         {
             const int columnCount = 2;
@@ -113,79 +179,20 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
             Assert.AreEqual("D20140308", quoteLookupDataTable.Rows[1][names[1]]);
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestCreateCompanyLookupTable()
+        [Test]
+        [Category("Database")]
+        public void TestImplementsInterface()
         {
-            const int columnCount = 5;
-            const int rowCount = 2;
-            var names = new[] {"name", "symbol", "firstDate", "recentDate", "collect"};
-
-            var mockReader = new Mock<IDatabaseReader>();
-            mockReader.Setup(c => c.Read()).ReturnsInOrder(true, true, false);
-            mockReader.Setup(c => c.FieldCount).Returns(columnCount);
-
-            mockReader.Setup(c => c.GetColumnName(0)).Returns(names[0]);
-            mockReader.Setup(c => c.GetColumnName(1)).Returns(names[1]);
-            mockReader.Setup(c => c.GetColumnName(2)).Returns(names[2]);
-            mockReader.Setup(c => c.GetColumnName(3)).Returns(names[3]);
-            mockReader.Setup(c => c.GetColumnName(4)).Returns(names[4]);
-
-            mockReader.Setup(c => c.GetFieldType(0)).Returns(typeof(string));
-            mockReader.Setup(c => c.GetFieldType(1)).Returns(typeof(string));
-            mockReader.Setup(c => c.GetFieldType(2)).Returns(typeof(string));
-            mockReader.Setup(c => c.GetFieldType(3)).Returns(typeof(string));
-            mockReader.Setup(c => c.GetFieldType(4)).Returns(typeof(bool));
-
-            mockReader.Setup(c => c.Field(names[0])).ReturnsInOrder("Apple", "Netflix");
-            mockReader.Setup(c => c.Field(names[1])).ReturnsInOrder("AAPL", "NFLX");
-            mockReader.Setup(c => c.Field(names[2])).ReturnsInOrder("D20150503", "D20140308");
-            mockReader.Setup(c => c.Field(names[3])).ReturnsInOrder("D20150504", "D20140309");
-            mockReader.Setup(c => c.Field(names[4])).ReturnsInOrder(0, 1);
-
-            var readerHelper = DatabaseReaderHelper.Singleton;
-            var companyLookupDataTable = readerHelper.CreateCompanyLookupTable(mockReader.Object);
-
-            Assert.AreEqual(columnCount, companyLookupDataTable.Columns.Count);
-            Assert.AreEqual(rowCount, companyLookupDataTable.Rows.Count);
-
-            Assert.AreEqual("Apple", companyLookupDataTable.Rows[0][names[0]]);
-            Assert.AreEqual("Netflix", companyLookupDataTable.Rows[1][names[0]]);
-
-            Assert.AreEqual("AAPL", companyLookupDataTable.Rows[0][names[1]]);
-            Assert.AreEqual("NFLX", companyLookupDataTable.Rows[1][names[1]]);
-
-            Assert.AreEqual("D20150503", companyLookupDataTable.Rows[0][names[2]]);
-            Assert.AreEqual("D20140308", companyLookupDataTable.Rows[1][names[2]]);
-
-            Assert.AreEqual("D20150504", companyLookupDataTable.Rows[0][names[3]]);
-            Assert.AreEqual("D20140309", companyLookupDataTable.Rows[1][names[3]]);
-
-            Assert.AreEqual(false, companyLookupDataTable.Rows[0][names[4]]);
-            Assert.AreEqual(true, companyLookupDataTable.Rows[1][names[4]]);
+            AssertImplementsInterface(typeof (IDatabaseReaderHelper), typeof (DatabaseReaderHelper));
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestCreateQuoteLookupList()
+        [Test]
+        [Category("Database")]
+        public void TestSingleton()
         {
-            const int columnCount = 2;
-
-            var mockReader = new Mock<IDatabaseReader>();
-            mockReader.Setup(c => c.Read()).ReturnsInOrder(true, true, false);
-            mockReader.Setup(c => c.FieldCount).Returns(columnCount);
-
-            mockReader.Setup(c => c.Field<string>("symbol")).ReturnsInOrder("AAPL", "NFLX");
-            mockReader.Setup(c => c.Field<string>("recentDate")).ReturnsInOrder("D20150503", "D20140308");
-
-            var readerHelper = DatabaseReaderHelper.Singleton;
-            var quoteLookupList = readerHelper.CreateQuoteLookupList(mockReader.Object);
-
-            Assert.AreEqual(2, quoteLookupList.Count);
-
-            Assert.AreEqual("AAPL", quoteLookupList[0].Company);
-            Assert.AreEqual("NFLX", quoteLookupList[1].Company);
-
-            Assert.AreEqual("D20150503", quoteLookupList[0].Timestamp);
-            Assert.AreEqual("D20140308", quoteLookupList[1].Timestamp);
+            AssertPrivateContructor(typeof (DatabaseReaderHelper));
+            Assert.AreSame(DatabaseReaderHelper.Singleton, DatabaseReaderHelper.Singleton);
+            AssertIsOfTypeAndGet<DatabaseReaderHelper>(DatabaseReaderHelper.Singleton);
         }
     }
 }

@@ -2,18 +2,18 @@
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseConnectionTest : AssertTestClass
     {
-        private const string DatabaseFileName = "TestSqliteDatabase.sqlite";
-
-        [TestCleanup, TestCategory("Database")]
+        [TearDown]
+        [Category("Database")]
         public void TearDown()
         {
             GC.Collect();
@@ -22,13 +22,25 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             GC.WaitForFullGCComplete();
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestImplementsInterface()
+        private const string DatabaseFileName = "TestSqliteDatabase.sqlite";
+
+        [Test]
+        [Category("Database")]
+        public void TestCreateCommand()
         {
-            AssertImplementsInterface(typeof (IDatabaseConnection), typeof (DatabaseConnection));
+            const string commandString = "command to do stuff";
+
+            var connectionName = new DatabaseName {Name = DatabaseFileName};
+            var connection = new DatabaseConnection(connectionName);
+
+            var command = AssertIsOfTypeAndGet<DatabaseCommand>(connection.CreateCommand(commandString));
+
+            var sqLiteCommand = AssertIsOfTypeAndGet<SQLiteCommand>(command.WrappedCommand);
+            Assert.AreEqual(commandString, sqLiteCommand.CommandText);
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestDatabaseConnectionNamePassedIn()
         {
             var connectionName = new DatabaseName();
@@ -38,7 +50,15 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreSame(connectionName, connection.DatabaseName);
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (IDatabaseConnection), typeof (DatabaseConnection));
+        }
+
+        [Test]
+        [Category("Database")]
         public void TestOpenCallsOpenOnWrappedConnection_CloseCallsClose()
         {
             if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
@@ -56,20 +76,6 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreEqual(ConnectionState.Open, wrappedConnection.State);
             connection.Close();
             Assert.AreEqual(ConnectionState.Closed, wrappedConnection.State);
-        }
-
-        [TestMethod, TestCategory("Database")]
-        public void TestCreateCommand()
-        {
-            const string commandString = "command to do stuff";
-
-            var connectionName = new DatabaseName {Name = DatabaseFileName};
-            var connection = new DatabaseConnection(connectionName);
-
-            var command = AssertIsOfTypeAndGet<DatabaseCommand>(connection.CreateCommand(commandString));
-
-            var sqLiteCommand = AssertIsOfTypeAndGet<SQLiteCommand>(command.WrappedCommand);
-            Assert.AreEqual(commandString, sqLiteCommand.CommandText);
         }
     }
 }

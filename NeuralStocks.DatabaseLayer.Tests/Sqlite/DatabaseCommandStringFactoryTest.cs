@@ -1,29 +1,17 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.Database;
+﻿using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseCommandStringFactoryTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Database")]
-        public void TestImplementsInterface()
-        {
-            AssertImplementsInterface(typeof (IDatabaseCommandStringFactory), typeof (DatabaseCommandStringFactory));
-        }
-
-        [TestMethod, TestCategory("Database")]
-        public void TestSingleton()
-        {
-            AssertPrivateContructor(typeof (DatabaseCommandStringFactory));
-            AssertIsOfTypeAndGet<DatabaseCommandStringFactory>(DatabaseCommandStringFactory.Singleton);
-            Assert.AreSame(DatabaseCommandStringFactory.Singleton, DatabaseCommandStringFactory.Singleton);
-        }
-
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestBuildCreateCompanyLookupTableCommandString()
         {
             const string expectedCommand =
@@ -33,7 +21,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreEqual(expectedCommand, factory.BuildCreateCompanyLookupTableCommandString());
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestBuildCreateQuoteHistoryTableCommandString()
         {
             var company1 = new CompanyLookupResponse {Symbol = "NFLX"};
@@ -51,7 +40,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreEqual(expectedCommand2, factory.BuildCreateQuoteHistoryTableCommandString(company2));
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestBuildInsertCompanyToLookupTableCommandString()
         {
             var company1 = new CompanyLookupResponse {Symbol = "NFLX", Name = "Netflix"};
@@ -69,7 +59,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreEqual(expectedCommand2, factory.BuildInsertCompanyToLookupTableCommandString(company2));
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestBuildInsertQuoteToHistoryTableCommandString()
         {
             var response1 = new QuoteLookupResponse
@@ -107,7 +98,35 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreEqual(expectedCommand2, factory.BuildInsertQuoteToHistoryTableCommandString(response2));
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
+        public void TestBuildSelectAllCompaniesFromLookupTableCommandString()
+        {
+            const string expectedCommand = "SELECT * FROM Company";
+
+            var factory = DatabaseCommandStringFactory.Singleton;
+            Assert.AreEqual(expectedCommand, factory.BuildSelectAllCompaniesFromLookupTableCommandString());
+        }
+
+        [Test]
+        [Category("Database")]
+        public void TestBuildSelectAllQuotesFromHistoryTableCommandString()
+        {
+            var company1 = new CompanyLookupEntry {Symbol = "NFLX"};
+            var company2 = new CompanyLookupEntry {Symbol = "AAPL"};
+
+            var expectedCommand1 =
+                string.Format("SELECT * FROM {0}", company1.Symbol);
+            var expectedCommand2 =
+                string.Format("SELECT * FROM {0}", company2.Symbol);
+
+            var factory = DatabaseCommandStringFactory.Singleton;
+            Assert.AreEqual(expectedCommand1, factory.BuildSelectAllQuotesFromHistoryTableCommandString(company1));
+            Assert.AreEqual(expectedCommand2, factory.BuildSelectAllQuotesFromHistoryTableCommandString(company2));
+        }
+
+        [Test]
+        [Category("Database")]
         public void TestBuildUpdateCompanyFirstTimestampCommandString()
         {
             var response1 = new QuoteLookupResponse {Symbol = "AAPL", Timestamp = "D06042012T00:00:00"};
@@ -127,7 +146,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreEqual(expectedCommand2, factory.BuildUpdateCompanyFirstDateCommandString(response2));
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestBuildUpdateCompanyRecentTimestampCommandString()
         {
             var response1 = new QuoteLookupResponse {Symbol = "AAPL", Timestamp = "D06042012T00:00:00"};
@@ -147,29 +167,20 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             Assert.AreEqual(expectedCommand2, factory.BuildUpdateCompanyRecentTimestampCommandString(response2));
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestBuildSelectAllCompaniesFromLookupTableCommandString()
+        [Test]
+        [Category("Database")]
+        public void TestImplementsInterface()
         {
-            const string expectedCommand = "SELECT * FROM Company";
-
-            var factory = DatabaseCommandStringFactory.Singleton;
-            Assert.AreEqual(expectedCommand, factory.BuildSelectAllCompaniesFromLookupTableCommandString());
+            AssertImplementsInterface(typeof (IDatabaseCommandStringFactory), typeof (DatabaseCommandStringFactory));
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestBuildSelectAllQuotesFromHistoryTableCommandString()
+        [Test]
+        [Category("Database")]
+        public void TestSingleton()
         {
-            var company1 = new CompanyLookupEntry {Symbol = "NFLX"};
-            var company2 = new CompanyLookupEntry {Symbol = "AAPL"};
-
-            var expectedCommand1 =
-                string.Format("SELECT * FROM {0}", company1.Symbol);
-            var expectedCommand2 =
-                string.Format("SELECT * FROM {0}", company2.Symbol);
-
-            var factory = DatabaseCommandStringFactory.Singleton;
-            Assert.AreEqual(expectedCommand1, factory.BuildSelectAllQuotesFromHistoryTableCommandString(company1));
-            Assert.AreEqual(expectedCommand2, factory.BuildSelectAllQuotesFromHistoryTableCommandString(company2));
+            AssertPrivateContructor(typeof (DatabaseCommandStringFactory));
+            AssertIsOfTypeAndGet<DatabaseCommandStringFactory>(DatabaseCommandStringFactory.Singleton);
+            Assert.AreSame(DatabaseCommandStringFactory.Singleton, DatabaseCommandStringFactory.Singleton);
         }
     }
 }

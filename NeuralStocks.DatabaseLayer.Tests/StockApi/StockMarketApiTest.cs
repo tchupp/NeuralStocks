@@ -1,12 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.StockApi;
+﻿using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.StockApi
 {
-    [TestClass]
+    [TestFixture]
     public class StockMarketApiTest : AssertTestClass
     {
         private const string JsonSchemaLookup =
@@ -38,20 +39,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.StockApi
             "\"Low\":{\"id\":\"/Low\",\"type\":\"number\"}," +
             "\"Open\":{\"id\":\"/Open\",\"type\":\"number\"}}}";
 
-        [TestMethod, TestCategory("StockApi")]
-        public void TestImplementsInterface()
-        {
-            AssertImplementsInterface(typeof (IStockMarketApi), typeof (StockMarketApi));
-        }
-
-        [TestMethod, TestCategory("StockApi")]
-        public void TestSingleton()
-        {
-            AssertPrivateContructor(typeof (StockMarketApi));
-            Assert.AreSame(StockMarketApi.Singleton, StockMarketApi.Singleton);
-        }
-
-        [TestMethod, TestCategory("StockApi")]
+        [Test]
+        [Category("StockApi")]
         public void TestCompanyLookup()
         {
             var schema = JsonSchema.Parse(JsonSchemaLookup);
@@ -69,7 +58,23 @@ namespace NeuralStocks.DatabaseLayer.Tests.StockApi
             Assert.IsTrue(parsedLookupNetflix.IsValid(schema));
         }
 
-        [TestMethod, TestCategory("StockApi")]
+        [Test]
+        [Category("StockApi")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (IStockMarketApi), typeof (StockMarketApi));
+        }
+
+        [Test]
+        [Category("StockApi")]
+        public void TestSingleton()
+        {
+            AssertPrivateContructor(typeof (StockMarketApi));
+            Assert.AreSame(StockMarketApi.Singleton, StockMarketApi.Singleton);
+        }
+
+        [Test]
+        [Category("StockApi")]
         public void TestStockQuote()
         {
             var schema = JsonSchema.Parse(JsonSchemaQuote);
@@ -87,7 +92,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.StockApi
             Assert.IsTrue(parsedQuoteNetflix.IsValid(schema));
         }
 
-        [TestMethod, TestCategory("StockApi")]
+        [Test]
+        [Category("StockApi")]
         public void TestStockRange()
         {
             var stockMarketApi = StockMarketApi.Singleton;

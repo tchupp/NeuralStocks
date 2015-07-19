@@ -1,28 +1,17 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Frontend.Tests.Controller
 {
-    [TestClass]
+    [TestFixture]
     public class DataTableFactoryTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Frontend")]
-        public void TestImplementsInterface()
-        {
-            AssertImplementsInterface(typeof (IDataTableFactory), typeof (DataTableFactory));
-        }
-
-        [TestMethod, TestCategory("Frontend")]
-        public void TestSingleton()
-        {
-            AssertPrivateContructor(typeof (DataTableFactory));
-            Assert.AreSame(DataTableFactory.Factory, DataTableFactory.Factory);
-        }
-
-        [TestMethod, TestCategory("Frontend")]
+        [Test]
+        [Category("Frontend")]
         public void TestBuildCompanySearchTable()
         {
             var lookupResponseList = new List<CompanyLookupResponse>
@@ -58,6 +47,21 @@ namespace NeuralStocks.Frontend.Tests.Controller
             Assert.AreEqual("CBOE Apple VIC", companySearchTable.Rows[3]["Name"]);
             Assert.AreEqual("VXAPL", companySearchTable.Rows[3]["Symbol"]);
             Assert.AreEqual("Market Data Express", companySearchTable.Rows[3]["Exchange"]);
+        }
+
+        [Test]
+        [Category("Frontend")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (IDataTableFactory), typeof (DataTableFactory));
+        }
+
+        [Test]
+        [Category("Frontend")]
+        public void TestSingleton()
+        {
+            AssertPrivateContructor(typeof (DataTableFactory));
+            Assert.AreSame(DataTableFactory.Factory, DataTableFactory.Factory);
         }
     }
 }

@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseCommandTest : AssertTestClass
     {
-        private const string DatabaseFileName = "TestStocksDatabase.sqlite";
-        private const string DatabaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
-        private const string SelectAllFromCompanyTableCommandString = "SELECT * FROM Company";
-
-        [TestCleanup, TestCategory("Database")]
+        [TearDown]
+        [Category("Database")]
         public void TearDown()
         {
             GC.Collect();
@@ -24,24 +22,83 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             GC.WaitForPendingFinalizers();
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestImplementsInterface()
+        private const string DatabaseFileName = "TestStocksDatabase.sqlite";
+        private const string DatabaseConnectionString = "Data Source=" + DatabaseFileName + ";Version=3;";
+        private const string SelectAllFromCompanyTableCommandString = "SELECT * FROM Company";
+
+        private static void SetupCleanTestingDatabase()
         {
-            AssertImplementsInterface(typeof (IDatabaseCommand), typeof (DatabaseCommand));
+            GC.Collect();
+            GC.WaitForFullGCComplete();
+
+            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
+            Assert.IsFalse(File.Exists(DatabaseFileName));
+            SQLiteConnection.CreateFile(DatabaseFileName);
+            Assert.IsTrue(File.Exists(DatabaseFileName));
         }
 
-        [TestMethod, TestCategory("Database")]
-        public void TestGetsWrappedCommand()
+        private static void SetupCleanCompanyLookupTable(SQLiteConnection connection)
         {
-            using (var wrappedCommand = new SQLiteCommand())
+            const string commandString =
+                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT, collect INT)";
+            using (var command = new SQLiteCommand(commandString, connection))
             {
-                var command = new DatabaseCommand(wrappedCommand);
+                connection.Open();
+                command.ExecuteNonQuery();
 
-                Assert.AreSame(wrappedCommand, command.WrappedCommand);
+                connection.Close();
             }
         }
 
-        [TestMethod, TestCategory("Database Funcational Test")]
+        private static void SetupCleanQuoteHistoryTable(SQLiteConnection connection, string companySymbol)
+        {
+            var commandString = string.Format(
+                "CREATE TABLE {0} (name TEXT, symbol TEXT, timestamp TEXT, lastPrice REAL, change REAL, changePercent REAL)",
+                companySymbol);
+
+            using (var command = new SQLiteCommand(commandString, connection))
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
+        private static void InsertCompanyToLookupTable(SQLiteConnection connection, QuoteLookupResponse response)
+        {
+            var commandString = string.Format(
+                "INSERT INTO Company VALUES ('{0}', '{1}', 'null', 'null', 1)", response.Name, response.Symbol);
+
+
+            using (var command = new SQLiteCommand(commandString, connection))
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
+        private static void InsertQuoteToHistoryTable(SQLiteConnection connection, QuoteLookupResponse response)
+        {
+            var commandString =
+                string.Format(
+                    "INSERT INTO {0} VALUES ('{1}', '{2}', '{3}', {4}, {5}, {6})",
+                    response.Symbol, response.Name, response.Symbol, response.Timestamp,
+                    response.LastPrice, response.Change, response.ChangePercent);
+
+            using (var command = new SQLiteCommand(commandString, connection))
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
+        [Test]
+        [Category("Database Funcational Test")]
         public void TestCreateCompanyLookupTable()
         {
             SetupCleanTestingDatabase();
@@ -97,7 +154,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             }
         }
 
-        [TestMethod, TestCategory("Database Funcational Test")]
+        [Test]
+        [Category("Database Funcational Test")]
         public void TestCreateQuoteHistoryTable()
         {
             SetupCleanTestingDatabase();
@@ -188,7 +246,27 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             }
         }
 
-        [TestMethod, TestCategory("Database Funcational Test")]
+        [Test]
+        [Category("Database")]
+        public void TestGetsWrappedCommand()
+        {
+            using (var wrappedCommand = new SQLiteCommand())
+            {
+                var command = new DatabaseCommand(wrappedCommand);
+
+                Assert.AreSame(wrappedCommand, command.WrappedCommand);
+            }
+        }
+
+        [Test]
+        [Category("Database")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (IDatabaseCommand), typeof (DatabaseCommand));
+        }
+
+        [Test]
+        [Category("Database Funcational Test")]
         public void TestInsertCompanyToLookupTable()
         {
             SetupCleanTestingDatabase();
@@ -243,7 +321,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             }
         }
 
-        [TestMethod, TestCategory("Database Funcational Test")]
+        [Test]
+        [Category("Database Funcational Test")]
         public void TestInsertQuoteToHistoryTable()
         {
             SetupCleanTestingDatabase();
@@ -327,131 +406,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             }
         }
 
-        [TestMethod, TestCategory("Database Funcational Test")]
-        public void TestUpdateCompanyFirstTimestamp()
-        {
-            SetupCleanTestingDatabase();
-            using (var connection = new SQLiteConnection(DatabaseConnectionString))
-            {
-                SetupCleanCompanyLookupTable(connection);
-
-                var response1 = new QuoteLookupResponse {Name = "Apple", Symbol = "AAPL", Timestamp = "Jun 4 00:00:00"};
-                var response2 = new QuoteLookupResponse {Name = "Netflix", Symbol = "NFLX", Timestamp = "Jun 1 2:51:43"};
-
-                InsertCompanyToLookupTable(connection, response1);
-                InsertCompanyToLookupTable(connection, response2);
-
-                var command1 = connection.CreateCommand();
-                var command2 = connection.CreateCommand();
-
-                var factory = DatabaseCommandStringFactory.Singleton;
-                command1.CommandText = factory.BuildUpdateCompanyFirstDateCommandString(response1);
-                command2.CommandText = factory.BuildUpdateCompanyFirstDateCommandString(response2);
-
-                var databaseCommand1 = new DatabaseCommand(command1);
-                var databaseCommand2 = new DatabaseCommand(command2);
-
-                connection.Open();
-                databaseCommand1.ExecuteNonQuery();
-                databaseCommand2.ExecuteNonQuery();
-                connection.Close();
-
-                using (var command = new SQLiteCommand(SelectAllFromCompanyTableCommandString, connection))
-                {
-                    connection.Open();
-                    var selectAllFromCompanyTableCommandReader = command.ExecuteReader();
-
-                    try
-                    {
-                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
-                        Assert.AreEqual(response1.Name, selectAllFromCompanyTableCommandReader["name"]);
-                        Assert.AreEqual(response1.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
-                        Assert.AreEqual(response1.Timestamp, selectAllFromCompanyTableCommandReader["firstDate"]);
-                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["recentDate"]);
-                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
-
-                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
-                        Assert.AreEqual(response2.Name, selectAllFromCompanyTableCommandReader["name"]);
-                        Assert.AreEqual(response2.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
-                        Assert.AreEqual(response2.Timestamp, selectAllFromCompanyTableCommandReader["firstDate"]);
-                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["recentDate"]);
-                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
-
-                        Assert.IsFalse(selectAllFromCompanyTableCommandReader.Read());
-                    }
-                    finally
-                    {
-                        connection.Close();
-                    }
-                }
-            }
-        }
-
-        [TestMethod, TestCategory("Database Funcational Test")]
-        public void TestUpdateCompanyRecentTimestamp()
-        {
-            SetupCleanTestingDatabase();
-
-            using (var connection = new SQLiteConnection(DatabaseConnectionString))
-            {
-                SetupCleanCompanyLookupTable(connection);
-
-                var response1 = new QuoteLookupResponse {Name = "Apple", Symbol = "AAPL", Timestamp = "Jun 4 00:00:00"};
-                var response2 = new QuoteLookupResponse {Name = "Netflix", Symbol = "NFLX", Timestamp = "Jun 1 2:51:43"};
-                InsertCompanyToLookupTable(connection, response1);
-                InsertCompanyToLookupTable(connection, response2);
-
-                var command1 = connection.CreateCommand();
-                var command2 = connection.CreateCommand();
-
-                var factory = DatabaseCommandStringFactory.Singleton;
-                command1.CommandText = factory.BuildUpdateCompanyRecentTimestampCommandString(response1);
-                command2.CommandText = factory.BuildUpdateCompanyRecentTimestampCommandString(response2);
-
-                var databaseCommand1 = new DatabaseCommand(command1);
-                var databaseCommand2 = new DatabaseCommand(command2);
-
-                connection.Open();
-                databaseCommand1.ExecuteNonQuery();
-                databaseCommand2.ExecuteNonQuery();
-                connection.Close();
-
-                using (var command = new SQLiteCommand(SelectAllFromCompanyTableCommandString, connection))
-                {
-                    connection.Open();
-                    var selectAllFromCompanyTableCommandReader = command.ExecuteReader();
-
-                    try
-                    {
-                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
-                        Assert.AreEqual(response1.Name, selectAllFromCompanyTableCommandReader["name"]);
-                        Assert.AreEqual(response1.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
-                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["firstDate"]);
-                        Assert.AreEqual(response1.Timestamp, selectAllFromCompanyTableCommandReader["recentDate"]);
-                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
-
-                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
-                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
-                        Assert.AreEqual(response2.Name, selectAllFromCompanyTableCommandReader["name"]);
-                        Assert.AreEqual(response2.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
-                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["firstDate"]);
-                        Assert.AreEqual(response2.Timestamp, selectAllFromCompanyTableCommandReader["recentDate"]);
-                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
-
-                        Assert.IsFalse(selectAllFromCompanyTableCommandReader.Read());
-                    }
-                    finally
-                    {
-                        connection.Close();
-                    }
-                }
-            }
-        }
-
-        [TestMethod, TestCategory("Database Funcational Test")]
+        [Test]
+        [Category("Database Funcational Test")]
         public void TestSelectAllCompaniesFromLookupTable()
         {
             SetupCleanTestingDatabase();
@@ -498,7 +454,8 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             }
         }
 
-        [TestMethod, TestCategory("Database Funcational Test")]
+        [Test]
+        [Category("Database Funcational Test")]
         public void TestSelectAllQuotesFromHistoryTable()
         {
             SetupCleanTestingDatabase();
@@ -562,74 +519,129 @@ namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
             }
         }
 
-        private static void SetupCleanTestingDatabase()
+        [Test]
+        [Category("Database Funcational Test")]
+        public void TestUpdateCompanyFirstTimestamp()
         {
-            GC.Collect();
-            GC.WaitForFullGCComplete();
-
-            if (File.Exists(DatabaseFileName)) File.Delete(DatabaseFileName);
-            Assert.IsFalse(File.Exists(DatabaseFileName));
-            SQLiteConnection.CreateFile(DatabaseFileName);
-            Assert.IsTrue(File.Exists(DatabaseFileName));
-        }
-
-        private static void SetupCleanCompanyLookupTable(SQLiteConnection connection)
-        {
-            const string commandString =
-                "CREATE TABLE Company (name TEXT, symbol TEXT, firstDate TEXT, recentDate TEXT, collect INT)";
-            using (var command = new SQLiteCommand(commandString, connection))
+            SetupCleanTestingDatabase();
+            using (var connection = new SQLiteConnection(DatabaseConnectionString))
             {
-                connection.Open();
-                command.ExecuteNonQuery();
+                SetupCleanCompanyLookupTable(connection);
 
+                var response1 = new QuoteLookupResponse {Name = "Apple", Symbol = "AAPL", Timestamp = "Jun 4 00:00:00"};
+                var response2 = new QuoteLookupResponse {Name = "Netflix", Symbol = "NFLX", Timestamp = "Jun 1 2:51:43"};
+
+                InsertCompanyToLookupTable(connection, response1);
+                InsertCompanyToLookupTable(connection, response2);
+
+                var command1 = connection.CreateCommand();
+                var command2 = connection.CreateCommand();
+
+                var factory = DatabaseCommandStringFactory.Singleton;
+                command1.CommandText = factory.BuildUpdateCompanyFirstDateCommandString(response1);
+                command2.CommandText = factory.BuildUpdateCompanyFirstDateCommandString(response2);
+
+                var databaseCommand1 = new DatabaseCommand(command1);
+                var databaseCommand2 = new DatabaseCommand(command2);
+
+                connection.Open();
+                databaseCommand1.ExecuteNonQuery();
+                databaseCommand2.ExecuteNonQuery();
                 connection.Close();
+
+                using (var command = new SQLiteCommand(SelectAllFromCompanyTableCommandString, connection))
+                {
+                    connection.Open();
+                    var selectAllFromCompanyTableCommandReader = command.ExecuteReader();
+
+                    try
+                    {
+                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
+                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
+                        Assert.AreEqual(response1.Name, selectAllFromCompanyTableCommandReader["name"]);
+                        Assert.AreEqual(response1.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
+                        Assert.AreEqual(response1.Timestamp, selectAllFromCompanyTableCommandReader["firstDate"]);
+                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["recentDate"]);
+                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
+
+                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
+                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
+                        Assert.AreEqual(response2.Name, selectAllFromCompanyTableCommandReader["name"]);
+                        Assert.AreEqual(response2.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
+                        Assert.AreEqual(response2.Timestamp, selectAllFromCompanyTableCommandReader["firstDate"]);
+                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["recentDate"]);
+                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
+
+                        Assert.IsFalse(selectAllFromCompanyTableCommandReader.Read());
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
             }
         }
 
-        private static void SetupCleanQuoteHistoryTable(SQLiteConnection connection, string companySymbol)
+        [Test]
+        [Category("Database Funcational Test")]
+        public void TestUpdateCompanyRecentTimestamp()
         {
-            var commandString = string.Format(
-                "CREATE TABLE {0} (name TEXT, symbol TEXT, timestamp TEXT, lastPrice REAL, change REAL, changePercent REAL)",
-                companySymbol);
+            SetupCleanTestingDatabase();
 
-            using (var command = new SQLiteCommand(commandString, connection))
+            using (var connection = new SQLiteConnection(DatabaseConnectionString))
             {
+                SetupCleanCompanyLookupTable(connection);
+
+                var response1 = new QuoteLookupResponse {Name = "Apple", Symbol = "AAPL", Timestamp = "Jun 4 00:00:00"};
+                var response2 = new QuoteLookupResponse {Name = "Netflix", Symbol = "NFLX", Timestamp = "Jun 1 2:51:43"};
+                InsertCompanyToLookupTable(connection, response1);
+                InsertCompanyToLookupTable(connection, response2);
+
+                var command1 = connection.CreateCommand();
+                var command2 = connection.CreateCommand();
+
+                var factory = DatabaseCommandStringFactory.Singleton;
+                command1.CommandText = factory.BuildUpdateCompanyRecentTimestampCommandString(response1);
+                command2.CommandText = factory.BuildUpdateCompanyRecentTimestampCommandString(response2);
+
+                var databaseCommand1 = new DatabaseCommand(command1);
+                var databaseCommand2 = new DatabaseCommand(command2);
+
                 connection.Open();
-                command.ExecuteNonQuery();
-
+                databaseCommand1.ExecuteNonQuery();
+                databaseCommand2.ExecuteNonQuery();
                 connection.Close();
-            }
-        }
 
-        private static void InsertCompanyToLookupTable(SQLiteConnection connection, QuoteLookupResponse response)
-        {
-            var commandString = string.Format(
-                "INSERT INTO Company VALUES ('{0}', '{1}', 'null', 'null', 1)", response.Name, response.Symbol);
+                using (var command = new SQLiteCommand(SelectAllFromCompanyTableCommandString, connection))
+                {
+                    connection.Open();
+                    var selectAllFromCompanyTableCommandReader = command.ExecuteReader();
 
+                    try
+                    {
+                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
+                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
+                        Assert.AreEqual(response1.Name, selectAllFromCompanyTableCommandReader["name"]);
+                        Assert.AreEqual(response1.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
+                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["firstDate"]);
+                        Assert.AreEqual(response1.Timestamp, selectAllFromCompanyTableCommandReader["recentDate"]);
+                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
 
-            using (var command = new SQLiteCommand(commandString, connection))
-            {
-                connection.Open();
-                command.ExecuteNonQuery();
+                        Assert.IsTrue(selectAllFromCompanyTableCommandReader.Read());
+                        Assert.AreEqual(5, selectAllFromCompanyTableCommandReader.FieldCount);
+                        Assert.AreEqual(response2.Name, selectAllFromCompanyTableCommandReader["name"]);
+                        Assert.AreEqual(response2.Symbol, selectAllFromCompanyTableCommandReader["symbol"]);
+                        Assert.AreEqual("null", selectAllFromCompanyTableCommandReader["firstDate"]);
+                        Assert.AreEqual(response2.Timestamp, selectAllFromCompanyTableCommandReader["recentDate"]);
+                        Assert.AreEqual(1, selectAllFromCompanyTableCommandReader["collect"]);
 
-                connection.Close();
-            }
-        }
-
-        private static void InsertQuoteToHistoryTable(SQLiteConnection connection, QuoteLookupResponse response)
-        {
-            var commandString =
-                string.Format(
-                    "INSERT INTO {0} VALUES ('{1}', '{2}', '{3}', {4}, {5}, {6})",
-                    response.Symbol, response.Name, response.Symbol, response.Timestamp,
-                    response.LastPrice, response.Change, response.ChangePercent);
-
-            using (var command = new SQLiteCommand(commandString, connection))
-            {
-                connection.Open();
-                command.ExecuteNonQuery();
-
-                connection.Close();
+                        Assert.IsFalse(selectAllFromCompanyTableCommandReader.Read());
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
             }
         }
     }

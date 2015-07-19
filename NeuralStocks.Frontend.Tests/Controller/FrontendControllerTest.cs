@@ -1,24 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Frontend.Tests.Controller
 {
-    [TestClass]
+    [TestFixture]
     public class FrontendControllerTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Frontend")]
-        public void TestImplementsInterface()
+        [Test]
+        [Category("Frontend")]
+        public void TestConstructorSetsStockCommunicatorAndTableFactory_AsSingletons()
         {
-            AssertImplementsInterface(typeof (IFrontendController), typeof (FrontendController));
+            var controller = new FrontendController(null);
+
+            Assert.AreSame(StockMarketApiCommunicator.Singleton, controller.StockCommunicator);
+            Assert.AreSame(DataTableFactory.Factory, controller.TableFactory);
         }
 
-        [TestMethod, TestCategory("Frontend")]
+        [Test]
+        [Category("Frontend")]
         public void TestGetsDatabaseCommunicator()
         {
             var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
@@ -28,16 +34,34 @@ namespace NeuralStocks.Frontend.Tests.Controller
             Assert.AreSame(expected, controller.DatabaseCommunicator);
         }
 
-        [TestMethod, TestCategory("Frontend")]
-        public void TestConstructorSetsStockCommunicatorAndTableFactory_AsSingletons()
+        [Test]
+        [Category("Frontend")]
+        public void TestGetSearchResultsForCurrentCompany()
         {
-            var controller = new FrontendController(null);
+            var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
 
-            Assert.AreSame(StockMarketApiCommunicator.Singleton, controller.StockCommunicator);
-            Assert.AreSame(DataTableFactory.Factory, controller.TableFactory);
+            const string expectedSearch = "Apple";
+            var expectedDataTable = new DataTable();
+
+            var lookupEntry = new CompanyLookupEntry
+            {
+                Symbol = expectedSearch
+            };
+
+            mockDatabaseCommunicator.Setup(
+                c => c.SelectCompanyQuoteHistoryTable(It.Is<CompanyLookupEntry>(
+                    e => e.Symbol == expectedSearch))).Returns(expectedDataTable);
+
+            var controller = new FrontendController(mockDatabaseCommunicator.Object);
+
+            var dataTable = controller.GetSearchResultsForCurrentCompany(lookupEntry);
+            Assert.AreSame(expectedDataTable, dataTable);
+
+            mockDatabaseCommunicator.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Frontend")]
+        [Test]
+        [Category("Frontend")]
         public void TestGetSearchResultsForNewCompany()
         {
             var mockApiCommunicator = new Mock<IStockMarketApiCommunicator>();
@@ -65,29 +89,11 @@ namespace NeuralStocks.Frontend.Tests.Controller
             mockTableFactory.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Frontend")]
-        public void TestGetSearchResultsForCurrentCompany()
+        [Test]
+        [Category("Frontend")]
+        public void TestImplementsInterface()
         {
-            var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
-
-            const string expectedSearch = "Apple";
-            var expectedDataTable = new DataTable();
-
-            var lookupEntry = new CompanyLookupEntry
-            {
-                Symbol = expectedSearch
-            };
-
-            mockDatabaseCommunicator.Setup(
-                c => c.SelectCompanyQuoteHistoryTable(It.Is<CompanyLookupEntry>(
-                    e => e.Symbol == expectedSearch))).Returns(expectedDataTable);
-
-            var controller = new FrontendController(mockDatabaseCommunicator.Object);
-
-            var dataTable = controller.GetSearchResultsForCurrentCompany(lookupEntry);
-            Assert.AreSame(expectedDataTable, dataTable);
-
-            mockDatabaseCommunicator.VerifyAll();
+            AssertImplementsInterface(typeof (IFrontendController), typeof (FrontendController));
         }
     }
 }

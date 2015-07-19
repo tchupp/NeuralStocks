@@ -1,13 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.Sqlite;
+﻿using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseNameTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestGetsNameAndConnectionString()
         {
             const string databaseName1 = "TestDatabase.sqlite";

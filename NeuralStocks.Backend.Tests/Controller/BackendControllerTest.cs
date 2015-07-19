@@ -1,43 +1,19 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NeuralStocks.Backend.Controller;
 using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Backend.Tests.Controller
 {
-    [TestClass]
+    [TestFixture]
     public class BackendControllerTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Backend")]
-        public void TestImplementsInterface()
-        {
-            AssertImplementsInterface(typeof (IBackendController), typeof (BackendController));
-        }
-
-        [TestMethod, TestCategory("Backend")]
-        public void TestGetsStockMarketApiCommunicatorPassedIn()
-        {
-            var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
-
-            var controller = new BackendController(mockCommunicator.Object, null);
-
-            Assert.AreSame(mockCommunicator.Object, controller.StockCommunicator);
-        }
-
-        [TestMethod, TestCategory("Backend")]
-        public void TestGetsSqlDatabaseCommandRunnerPassedIn()
-        {
-            var mockCommandRunner = new Mock<IDatabaseCommunicator>();
-
-            var controller = new BackendController(null, mockCommandRunner.Object);
-
-            Assert.AreSame(mockCommandRunner.Object, controller.DatabaseCommunicator);
-        }
-
-        [TestMethod, TestCategory("Backend")]
+        [Test]
+        [Category("Backend")]
         public void TestConstructorSetsUpBackendTimer()
         {
             var controller = new BackendController(null, null);
@@ -48,18 +24,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             Assert.AreEqual(60000, timer.Interval);
         }
 
-        [TestMethod, TestCategory("Backend")]
-        public void TestStartTimerCallsStartOnTimer()
-        {
-            var mockTimer = new Mock<IBackendTimer>();
-            var controller = new BackendController(null, null) {BackendTimer = mockTimer.Object};
-
-            mockTimer.Verify(t => t.Start(), Times.Never);
-            controller.StartTimer();
-            mockTimer.Verify(t => t.Start(), Times.Once);
-        }
-
-        [TestMethod, TestCategory("Backend")]
+        [Test]
+        [Category("Backend")]
         public void TestDisposeCallsStopOnTimer()
         {
             var mockTimer = new Mock<IBackendTimer>();
@@ -70,7 +36,49 @@ namespace NeuralStocks.Backend.Tests.Controller
             mockTimer.Verify(t => t.Stop(), Times.Once);
         }
 
-        [TestMethod, TestCategory("Backend")]
+        [Test]
+        [Category("Backend")]
+        public void TestGetsSqlDatabaseCommandRunnerPassedIn()
+        {
+            var mockCommandRunner = new Mock<IDatabaseCommunicator>();
+
+            var controller = new BackendController(null, mockCommandRunner.Object);
+
+            Assert.AreSame(mockCommandRunner.Object, controller.DatabaseCommunicator);
+        }
+
+        [Test]
+        [Category("Backend")]
+        public void TestGetsStockMarketApiCommunicatorPassedIn()
+        {
+            var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
+
+            var controller = new BackendController(mockCommunicator.Object, null);
+
+            Assert.AreSame(mockCommunicator.Object, controller.StockCommunicator);
+        }
+
+        [Test]
+        [Category("Backend")]
+        public void TestImplementsInterface()
+        {
+            AssertImplementsInterface(typeof (IBackendController), typeof (BackendController));
+        }
+
+        [Test]
+        [Category("Backend")]
+        public void TestStartTimerCallsStartOnTimer()
+        {
+            var mockTimer = new Mock<IBackendTimer>();
+            var controller = new BackendController(null, null) {BackendTimer = mockTimer.Object};
+
+            mockTimer.Verify(t => t.Start(), Times.Never);
+            controller.StartTimer();
+            mockTimer.Verify(t => t.Start(), Times.Once);
+        }
+
+        [Test]
+        [Category("Backend")]
         public void TestUpdateCompanyQuotes_RecentDateDifferentThanTimestamp()
         {
             const string company1 = "NFLX";
@@ -106,7 +114,8 @@ namespace NeuralStocks.Backend.Tests.Controller
             mockCommandRunner.VerifyAll();
         }
 
-        [TestMethod, TestCategory("Backend")]
+        [Test]
+        [Category("Backend")]
         public void TestUpdateCompanyQuotes_RecentDateSameAsTimestamp()
         {
             const string company1 = "NFLX";

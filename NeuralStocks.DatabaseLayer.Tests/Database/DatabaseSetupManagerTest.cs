@@ -1,20 +1,22 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+﻿using Moq;
 using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Database
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseSetupManagerTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestImplementsInterface()
         {
             AssertImplementsInterface(typeof (IDatabaseSetupManager), typeof (DatabaseSetupManager));
         }
 
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestInitializeDatabaseCreatesInitialDatabaseWithEmptyTable()
         {
             const string databaseFileName = "TestStocksDatabase.sqlite";

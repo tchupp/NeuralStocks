@@ -1,13 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralStocks.DatabaseLayer.Database;
+﻿using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
+using NUnit.Framework;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Database
 {
-    [TestClass]
+    [TestFixture]
     public class CompanyLookupEntryTest : AssertTestClass
     {
-        [TestMethod, TestCategory("Database")]
+        [Test]
+        [Category("Database")]
         public void TestGetsValuesSet()
         {
             const string expectedSymbol = "AAPL";
@@ -33,4 +35,3 @@ namespace NeuralStocks.DatabaseLayer.Tests.Database
         }
     }
 }
-
