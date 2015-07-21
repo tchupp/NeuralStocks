@@ -22,6 +22,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FDD500
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.WebApp", "NeuralStocks.WebApp\NeuralStocks.WebApp.csproj", "{06719E2C-5904-4C14-B4F1-C89BFC55BE68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralStocks.WebApp.Tests", "NeuralStocks.WebApp.Tests\NeuralStocks.WebApp.Tests.csproj", "{39EBDBD9-4F24-481E-BE7A-180BABEA7D7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,14 @@ Global
 		{28B26226-3FB6-429B-8D5D-BB0A58C2E9FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28B26226-3FB6-429B-8D5D-BB0A58C2E9FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28B26226-3FB6-429B-8D5D-BB0A58C2E9FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06719E2C-5904-4C14-B4F1-C89BFC55BE68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06719E2C-5904-4C14-B4F1-C89BFC55BE68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06719E2C-5904-4C14-B4F1-C89BFC55BE68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06719E2C-5904-4C14-B4F1-C89BFC55BE68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39EBDBD9-4F24-481E-BE7A-180BABEA7D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39EBDBD9-4F24-481E-BE7A-180BABEA7D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39EBDBD9-4F24-481E-BE7A-180BABEA7D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39EBDBD9-4F24-481E-BE7A-180BABEA7D7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
