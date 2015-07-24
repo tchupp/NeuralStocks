@@ -3,7 +3,6 @@ using NeuralStocks.DatabaseLayer.Sqlite;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.DatabaseLayer.Tests.Sqlite
 {

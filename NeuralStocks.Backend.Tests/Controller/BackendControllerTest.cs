@@ -5,7 +5,6 @@ using NeuralStocks.DatabaseLayer.Database;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Backend.Tests.Controller
 {

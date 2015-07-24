@@ -3,7 +3,6 @@ using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Frontend.Tests.Controller
 {

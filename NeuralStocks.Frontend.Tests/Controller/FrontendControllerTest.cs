@@ -6,7 +6,6 @@ using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
 using NeuralStocks.Frontend.Controller;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace NeuralStocks.Frontend.Tests.Controller
 {
@@ -25,6 +24,25 @@ namespace NeuralStocks.Frontend.Tests.Controller
 
         [Test]
         [Category("Frontend")]
+        public void TestGetCompanyLookupTable()
+        {
+            var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
+
+            var expectedDataTable = new DataTable();
+
+            mockDatabaseCommunicator.Setup(
+                c => c.SelectCompanyLookupTable()).Returns(expectedDataTable);
+
+            var controller = new FrontendController(mockDatabaseCommunicator.Object);
+
+            var dataTable = controller.GetCompanyLookupTable();
+            Assert.AreSame(expectedDataTable, dataTable);
+
+            mockDatabaseCommunicator.VerifyAll();
+        }
+
+        [Test]
+        [Category("Frontend")]
         public void TestGetsDatabaseCommunicator()
         {
             var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
@@ -32,32 +50,6 @@ namespace NeuralStocks.Frontend.Tests.Controller
             var expected = mockDatabaseCommunicator.Object;
             var controller = new FrontendController(expected);
             Assert.AreSame(expected, controller.DatabaseCommunicator);
-        }
-
-        [Test]
-        [Category("Frontend")]
-        public void TestGetSummaryForCurrentCompany()
-        {
-            var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
-
-            const string expectedSearch = "Apple";
-            var expectedDataTable = new DataTable();
-
-            var lookupEntry = new CompanyLookupEntry
-            {
-                Symbol = expectedSearch
-            };
-
-            mockDatabaseCommunicator.Setup(
-                c => c.SelectCompanyQuoteHistoryTable(It.Is<CompanyLookupEntry>(
-                    e => e.Symbol == expectedSearch))).Returns(expectedDataTable);
-
-            var controller = new FrontendController(mockDatabaseCommunicator.Object);
-
-            var dataTable = controller.GetSummaryForCurrentCompany(lookupEntry);
-            Assert.AreSame(expectedDataTable, dataTable);
-
-            mockDatabaseCommunicator.VerifyAll();
         }
 
         [Test]
@@ -91,18 +83,25 @@ namespace NeuralStocks.Frontend.Tests.Controller
 
         [Test]
         [Category("Frontend")]
-        public void TestGetCompanyLookupTable()
+        public void TestGetSummaryForCurrentCompany()
         {
             var mockDatabaseCommunicator = new Mock<IDatabaseCommunicator>();
 
+            const string expectedSearch = "Apple";
             var expectedDataTable = new DataTable();
 
+            var lookupEntry = new CompanyLookupEntry
+            {
+                Symbol = expectedSearch
+            };
+
             mockDatabaseCommunicator.Setup(
-                c => c.SelectCompanyLookupTable()).Returns(expectedDataTable);
+                c => c.SelectCompanyQuoteHistoryTable(It.Is<CompanyLookupEntry>(
+                    e => e.Symbol == expectedSearch))).Returns(expectedDataTable);
 
             var controller = new FrontendController(mockDatabaseCommunicator.Object);
 
-            var dataTable = controller.GetCompanyLookupTable();
+            var dataTable = controller.GetSummaryForCurrentCompany(lookupEntry);
             Assert.AreSame(expectedDataTable, dataTable);
 
             mockDatabaseCommunicator.VerifyAll();

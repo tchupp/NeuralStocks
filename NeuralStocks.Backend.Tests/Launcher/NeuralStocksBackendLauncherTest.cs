@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using Moq;
 using NeuralStocks.Backend.Controller;
 using NeuralStocks.Backend.Launcher;
