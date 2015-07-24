@@ -69,9 +69,8 @@ namespace NeuralStocks.Backend.Tests.Launcher
         [Category("Backend")]
         public void TestStartBackendCallsInitializeDatabaseOnSetupManager_DatabaseDoesNotExist()
         {
-            var databaseFileName = TestDatabaseName;
-            File.Delete(databaseFileName);
-            Assert.IsFalse(File.Exists(databaseFileName));
+            File.Delete(TestDatabaseName);
+            Assert.IsFalse(File.Exists(TestDatabaseName));
 
             var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
@@ -85,13 +84,13 @@ namespace NeuralStocks.Backend.Tests.Launcher
                 BackendLock = mockBackendLock.Object
             };
 
-            AssertFieldIsOfTypeAndSet(launcher, "_databaseFileName", databaseFileName);
+            AssertFieldIsOfTypeAndSet(launcher, "_databaseFileName", TestDatabaseName);
 
             mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
 
             launcher.StartBackend();
 
-            mockSetupManager.Verify(m => m.InitializeDatabase(databaseFileName), Times.Once);
+            mockSetupManager.Verify(m => m.InitializeDatabase(TestDatabaseName), Times.Once);
             mockBackendLock.VerifyAll();
         }
 
@@ -153,11 +152,10 @@ namespace NeuralStocks.Backend.Tests.Launcher
 
         [Test]
         [Category("Backend")]
-        public void TestStartBackendDoesNotCallsInitializeDatabaseOnSetupManager_DatabaseExists()
+        public void TestStartBackendDoesNotCallInitializeDatabaseOnSetupManager_DatabaseExists()
         {
-            var databaseFileName = TestDatabaseName;
-            File.Create(databaseFileName);
-            Assert.IsTrue(File.Exists(databaseFileName));
+            File.Create(TestDatabaseName);
+            Assert.IsTrue(File.Exists(TestDatabaseName));
 
             var mockSetupManager = new Mock<IDatabaseSetupManager>();
             var mockController = new Mock<IBackendController>();
@@ -170,6 +168,8 @@ namespace NeuralStocks.Backend.Tests.Launcher
                 BackendController = mockController.Object,
                 BackendLock = mockBackendLock.Object
             };
+
+            AssertFieldIsOfTypeAndSet(launcher, "_databaseFileName", TestDatabaseName);
 
             mockSetupManager.Verify(m => m.InitializeDatabase(It.IsAny<string>()), Times.Never);
 

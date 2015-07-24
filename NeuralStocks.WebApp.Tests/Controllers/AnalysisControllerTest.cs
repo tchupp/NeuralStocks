@@ -9,6 +9,7 @@ namespace NeuralStocks.WebApp.Tests.Controllers
     public class AnalysisControllerTest : AssertTestClass
     {
         [Test]
+        [Category("Web App")]
         public void TestExtendsMvcController()
         {
             AssertExtendsClass(typeof (Controller), typeof (AnalysisController));

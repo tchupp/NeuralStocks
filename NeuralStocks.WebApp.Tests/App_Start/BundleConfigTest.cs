@@ -24,6 +24,7 @@ namespace NeuralStocks.WebApp.Tests
         }
 
         [Test]
+        [Category("Web App")]
         public void TestBundle()
         {
             var bundle = new BundleCollection();

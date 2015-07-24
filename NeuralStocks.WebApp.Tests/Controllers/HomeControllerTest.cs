@@ -8,6 +8,7 @@ namespace NeuralStocks.WebApp.Tests.Controllers
     public class HomeControllerTest
     {
         [Test]
+        [Category("Web App")]
         public void About()
         {
             // Arrange
@@ -21,6 +22,7 @@ namespace NeuralStocks.WebApp.Tests.Controllers
         }
 
         [Test]
+        [Category("Web App")]
         public void Contact()
         {
             // Arrange
@@ -34,6 +36,7 @@ namespace NeuralStocks.WebApp.Tests.Controllers
         }
 
         [Test]
+        [Category("Web App")]
         public void Index()
         {
             // Arrange
