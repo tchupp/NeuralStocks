@@ -1,5 +1,5 @@
-﻿/// <reference path="../../TestHelper/TestHelper.js" />
-/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/ajaxrequesthandler.js" />
+﻿/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/ajaxrequesthandler.js" />
+/// <reference path="../../TestHelper/TestHelper.js" />
 
 describe("AjaxRequestHandlerTest", function() {
     describe("RequestGet", function() {

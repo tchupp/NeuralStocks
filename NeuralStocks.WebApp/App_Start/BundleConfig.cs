@@ -11,30 +11,28 @@ namespace NeuralStocks.WebApp
 
         private static void RegisterExternalBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                "~/Scripts/jquery-{version}.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                "~/Scripts/jquery.validate*"));
-
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                 "~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                "~/Scripts/bootstrap.js",
-                "~/Scripts/respond.js"));
-
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.css",
                 "~/Content/site.css"));
 
-            bundles.Add(new ScriptBundle("~/bundles/sinon").Include(
-                "~/Scripts/sinon-1.15.4.js"));
+            bundles.Add(new ScriptBundle("~/bundles/externalScripts").Include(
+                "~/Scripts/External/bootstrap.js",
+                "~/Scripts/External/respond.js",
+                "~/Scripts/External/jquery-{version}.js",
+                "~/Scripts/External/jquery.validate*",
+                "~/Scripts/External/bootstrap.js",
+                "~/Scripts/External/respond.js",
+                "~/Scripts/External/highstock.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/highchart").Include(
-                "~/Scripts/highstock.js"));
+            bundles.Add(new ScriptBundle("~/bundles/siteSpecificScripts").Include(
+                "~/Scripts/SiteSpecific/Analysis/AnalysisMain.js",
+
+                "~/Scripts/SiteSpecific/Util/AjaxRequestHandler.js"));
         }
     }
 }

@@ -1,11 +1,33 @@
-﻿@model dynamic
-
-@{
+﻿@{
     ViewBag.Title = "Analysis";
 }
 
-@section Scripts{
-}
-
 <h2>@ViewBag.Title</h2>
-<div id="container" style="height: 400px"></div>
+<div class="row">
+    <div class="col-lg-4">
+        <h4>Enter a company name or symbol</h4>
+        <hr/>
+        <div class="row" style="height: 24px;">
+            <div class="col-md-9">
+                <input class="form-control" id="CompanySearch"/>
+            </div>
+            <div class="col-md-3">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </div>
+        <div class="row">
+            <div id="companySearchTableDiv"></div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <h4>Company Stock Chart</h4>
+        <hr />
+        <div id="highchartContainerDiv" style="height: 400px"></div>
+    </div>
+</div>
+
+@section Scripts{
+    <script id="initialize">
+        $(document).ready(function () { AnalysisMain.main(); });
+    </script>
+}
