@@ -17,3 +17,16 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.stopselect{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+table.dataTable thead .sorting { background: url('images/sort_both.png') no-repeat center right; }
+table.dataTable thead .sorting.asc { background: url('images/sort_asc.png') no-repeat center right; }
+table.dataTable thead .sorting.desc { background: url('images/sort_desc.png') no-repeat center right; }
