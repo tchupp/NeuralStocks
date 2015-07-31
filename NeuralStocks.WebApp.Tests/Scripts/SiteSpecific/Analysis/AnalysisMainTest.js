@@ -17,20 +17,28 @@ describe("AnalysisTest", function() {
     describe("Main", function() {
         var addSortingToTableHeaderStub;
         var table;
+        var tableId;
+        var jQuerySelectorStub;
         beforeEach(function() {
-            addSortingToTableHeaderStub = sinon.stub(TableSortingManager, "addSortingToTableHeader");
+            addSortingToTableHeaderStub = sinon.stub(TableSortingManager, "addSortingToTable");
 
+            tableId = "companySearchTable";
             table = document.createElement("table");
-            table.setAttribute("id", "companySearchTable");
+            table.setAttribute("id", tableId);
             mockBody.appendChild(table);
+
+            jQuerySelectorStub = sinon.stub(window, "$");
         });
 
         afterEach(function() {
             addSortingToTableHeaderStub.restore();
+            jQuerySelectorStub.restore();
+
             $(mockBody).empty();
         });
 
-        it("testMainAppliesSortingManagerToCompanySearchTable", function() {
+        it("testMainAppliesSortingManagerToCompanySearchTable", function () {
+            jQuerySelectorStub.withArgs("#" + tableId).returns(table);
             assertFalse(addSortingToTableHeaderStub.called);
 
             AnalysisMain.main();

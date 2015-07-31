@@ -2,8 +2,7 @@
     var classAnalysisMain = {};
 
     classAnalysisMain.main = function () {
-        var companySearchTable = document.getElementById("companySearchTable");
-        TableSortingManager.addSortingToTableHeader(companySearchTable);
+        TableSortingManager.addSortingToTable($("#companySearchTable"));
     };
 
     return classAnalysisMain;

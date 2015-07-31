@@ -17,12 +17,14 @@ namespace NeuralStocks.WebApp
                 "~/Scripts/modernizr-*"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
+                "~/Content/jquery.dataTables.css",
                 "~/Content/bootstrap.css",
                 "~/Content/site.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/externalScripts").Include(
                 "~/Scripts/External/bootstrap.js",
                 "~/Scripts/External/respond.js",
+                "~/Scripts/External/jquery.dataTables.min.js",
                 "~/Scripts/External/jquery-{version}.js",
                 "~/Scripts/External/jquery.validate*",
                 "~/Scripts/External/bootstrap.js",
