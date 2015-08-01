@@ -1,16 +1,8 @@
 ﻿var TableSortingManager = (function() {
     var classTableSortingManager = {};
 
-    classTableSortingManager.addSortingToTable = function ($table) {
-        $table.DataTable({
-            info: false,
-            columnDefs: [
-                {
-                    targets: "datatable-nosort",
-                    orderable: false
-                }
-            ]
-        });
+    classTableSortingManager.initializeTable = function ($table, tableParameters) {
+        $table.DataTable(tableParameters);
     };
 
     return classTableSortingManager;

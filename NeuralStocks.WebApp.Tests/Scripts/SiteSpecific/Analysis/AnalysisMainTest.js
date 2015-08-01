@@ -15,12 +15,12 @@ describe("AnalysisTest", function() {
     });
 
     describe("Main", function() {
-        var addSortingToTableHeaderStub;
+        var initializeTableStub;
         var table;
         var tableId;
         var jQuerySelectorStub;
         beforeEach(function() {
-            addSortingToTableHeaderStub = sinon.stub(TableSortingManager, "addSortingToTable");
+            initializeTableStub = sinon.stub(TableSortingManager, "initializeTable");
 
             tableId = "companySearchTable";
             table = document.createElement("table");
@@ -31,7 +31,7 @@ describe("AnalysisTest", function() {
         });
 
         afterEach(function() {
-            addSortingToTableHeaderStub.restore();
+            initializeTableStub.restore();
             jQuerySelectorStub.restore();
 
             $(mockBody).empty();
@@ -39,13 +39,37 @@ describe("AnalysisTest", function() {
 
         it("testMainAppliesSortingManagerToCompanySearchTable", function () {
             jQuerySelectorStub.withArgs("#" + tableId).returns(table);
-            assertFalse(addSortingToTableHeaderStub.called);
+            assertFalse(initializeTableStub.called);
 
             AnalysisMain.main();
 
-            assertTrue(addSortingToTableHeaderStub.calledOnce);
-            assertEquals(1, addSortingToTableHeaderStub.getCall(0).args.length);
-            assertEquals(table, addSortingToTableHeaderStub.getCall(0).args[0]);
+            assertTrue(initializeTableStub.calledOnce);
+            assertEquals(2, initializeTableStub.getCall(0).args.length);
+            assertEquals(table, initializeTableStub.getCall(0).args[0]);
+        });
+
+        it("testMainCallsInitializeTableWithCorrectArgs", function() {
+            var expectedArgs = {};
+            expectedArgs.info = false;
+            expectedArgs.columns = [
+                { "title": "Name", "class": "col-sm-7" },
+                { "title": "Symbol", "class": "col-sm-3" },
+                { "title": "Show", "class": "col-sm-2 datatable-nosort" }
+            ];
+            expectedArgs.columnDefs = [
+                {
+                    targets: "datatable-nosort",
+                    orderable: false
+                }
+            ];
+
+            assertFalse(initializeTableStub.called);
+
+            AnalysisMain.main();
+
+            assertTrue(initializeTableStub.calledOnce);
+            assertEquals(2, initializeTableStub.getCall(0).args.length);
+            assertEquals(expectedArgs, initializeTableStub.getCall(0).args[1]);
         });
     });
 });

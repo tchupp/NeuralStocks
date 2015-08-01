@@ -13,7 +13,7 @@ describe("TableSortingManagerTest", function() {
         document.body = tempBody;
     });
 
-    describe("AddSortingToTable", function() {
+    describe("InitializeTable", function() {
         var $table;
         beforeEach(function() {
             $table = { DataTable: sinon.stub() };
@@ -25,16 +25,9 @@ describe("TableSortingManagerTest", function() {
         it("testSetsUpDataTable_WithCorrectColumnsDisabled", function() {
             assertFalse($table.DataTable.called);
 
-            TableSortingManager.addSortingToTable($table);
+            var expectedArgs = { id: "testingArguments"};
 
-            var expectedArgs = {};
-            expectedArgs.info = false;
-            expectedArgs.columnDefs = [
-                {
-                    targets: "datatable-nosort",
-                    orderable: false
-                }
-            ];
+            TableSortingManager.initializeTable($table, expectedArgs);
 
             assertTrue($table.DataTable.calledOnce);
             assertEquals(expectedArgs, $table.DataTable.getCall(0).args[0]);
