@@ -1,6 +1,6 @@
-﻿/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/tablesortingmanager.js" />
+﻿/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/TableSetupManager.js" />
 /// <reference path="../../TestHelper/TestHelper.js" />
-describe("TableSortingManagerTest", function() {
+describe("TableSetupManagerTest", function() {
     var mockBody;
     var tempBody;
     beforeEach(function() {
@@ -27,7 +27,7 @@ describe("TableSortingManagerTest", function() {
 
             var expectedArgs = { id: "testingArguments"};
 
-            TableSortingManager.initializeTable($table, expectedArgs);
+            TableSetupManager.initializeTable($table, expectedArgs);
 
             assertTrue($table.DataTable.calledOnce);
             assertEquals(expectedArgs, $table.DataTable.getCall(0).args[0]);

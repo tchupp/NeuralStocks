@@ -33,9 +33,10 @@ namespace NeuralStocks.WebApp
 
             bundles.Add(new ScriptBundle("~/bundles/siteSpecificScripts").Include(
                 "~/Scripts/SiteSpecific/Analysis/AnalysisMain.js",
+                "~/Scripts/SiteSpecific/Analysis/StockSearchPresenter.js",
 
                 "~/Scripts/SiteSpecific/Util/AjaxRequestHandler.js",
-                "~/Scripts/SiteSpecific/Util/TableSortingManager.js"));
+                "~/Scripts/SiteSpecific/Util/TableSetupManager.js"));
         }
     }
 }

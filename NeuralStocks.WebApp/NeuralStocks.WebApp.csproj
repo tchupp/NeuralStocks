@@ -199,9 +199,10 @@
     <Content Include="Scripts\External\respond.js" />
     <Content Include="Scripts\External\respond.min.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMain.js" />
+    <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenter.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandler.js" />
     <Content Include="Scripts\External\_references.js" />
-    <Content Include="Scripts\SiteSpecific\Util\TableSortingManager.js" />
+    <Content Include="Scripts\SiteSpecific\Util\TableSetupManager.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

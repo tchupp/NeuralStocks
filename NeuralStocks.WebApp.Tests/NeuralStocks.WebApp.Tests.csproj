@@ -118,8 +118,9 @@
     <Content Include="Scripts\jasmine\jasmine-html.js" />
     <Content Include="Scripts\jasmine\jasmine.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMainTest.js" />
+    <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenterTest.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandlerTest.js" />
-    <Content Include="Scripts\SiteSpecific\Util\TableSortingManagerTest.js" />
+    <Content Include="Scripts\SiteSpecific\Util\TableSetupManagerTest.js" />
     <Content Include="Scripts\TestHelper\sinon-1.15.4.js" />
     <Content Include="Scripts\TestHelper\TestHelper.js" />
   </ItemGroup>
