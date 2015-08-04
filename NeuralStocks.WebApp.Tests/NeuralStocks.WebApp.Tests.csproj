@@ -120,7 +120,10 @@
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMainTest.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenterTest.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandlerTest.js" />
-    <Content Include="Scripts\SiteSpecific\Util\TableSetupManagerTest.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartOptionsTest.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartSetupManagerTest.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Table\TableOptionsTest.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Table\TableSetupManagerTest.js" />
     <Content Include="Scripts\TestHelper\sinon-1.15.4.js" />
     <Content Include="Scripts\TestHelper\TestHelper.js" />
   </ItemGroup>

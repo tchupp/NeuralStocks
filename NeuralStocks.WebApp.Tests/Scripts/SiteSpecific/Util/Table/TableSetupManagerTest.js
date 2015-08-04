@@ -1,5 +1,6 @@
-﻿/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/TableSetupManager.js" />
-/// <reference path="../../TestHelper/TestHelper.js" />
+﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/util/table/tablesetupmanager.js" />
+/// <reference path="../../../TestHelper/TestHelper.js" />
+
 describe("TableSetupManagerTest", function() {
     var mockBody;
     var tempBody;
@@ -22,10 +23,10 @@ describe("TableSetupManagerTest", function() {
         afterEach(function() {
         });
 
-        it("testSetsUpDataTable_WithCorrectColumnsDisabled", function() {
+        it("testSetsUpDataTable_WithCorrectTableOptions", function() {
             assertFalse($table.DataTable.called);
 
-            var expectedArgs = { id: "testingArguments"};
+            var expectedArgs = { id: "testingArguments" };
 
             TableSetupManager.initializeTable($table, expectedArgs);
 

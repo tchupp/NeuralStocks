@@ -36,7 +36,12 @@ namespace NeuralStocks.WebApp
                 "~/Scripts/SiteSpecific/Analysis/StockSearchPresenter.js",
 
                 "~/Scripts/SiteSpecific/Util/AjaxRequestHandler.js",
-                "~/Scripts/SiteSpecific/Util/TableSetupManager.js"));
+
+                "~/Scripts/SiteSpecific/Util/Chart/ChartOptions.js",
+                "~/Scripts/SiteSpecific/Util/Chart/ChartSetupManager.js",
+
+                "~/Scripts/SiteSpecific/Util/Table/TableOptions.js",
+                "~/Scripts/SiteSpecific/Util/Table/TableSetupManager.js"));
         }
     }
 }

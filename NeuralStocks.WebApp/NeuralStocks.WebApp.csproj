@@ -202,7 +202,10 @@
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenter.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandler.js" />
     <Content Include="Scripts\External\_references.js" />
-    <Content Include="Scripts\SiteSpecific\Util\TableSetupManager.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartOptions.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartSetupManager.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Table\TableOptions.js" />
+    <Content Include="Scripts\SiteSpecific\Util\Table\TableSetupManager.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
