@@ -33,7 +33,7 @@ namespace NeuralStocks.WebApp
 
             bundles.Add(new ScriptBundle("~/bundles/siteSpecificScripts").Include(
                 "~/Scripts/SiteSpecific/Analysis/AnalysisMain.js",
-                "~/Scripts/SiteSpecific/Analysis/StockSearchPresenter.js",
+                "~/Scripts/SiteSpecific/Analysis/StockSearchView.js",
 
                 "~/Scripts/SiteSpecific/Util/AjaxRequestHandler.js",
 

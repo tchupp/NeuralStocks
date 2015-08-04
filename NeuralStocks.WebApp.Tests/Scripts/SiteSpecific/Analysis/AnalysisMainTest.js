@@ -1,6 +1,6 @@
 ﻿/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/analysis/analysismain.js" />
 /// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/TableSetupManager.js" />
-/// <reference path="../../../../NeuralStocks.WebApp/Scripts/SiteSpecific/Analysis/StockSearchPresenter.js" />
+/// <reference path="../../../../NeuralStocks.WebApp/Scripts/SiteSpecific/Analysis/StockSearchView.js" />
 /// <reference path="../../TestHelper/TestHelper.js" />
 describe("AnalysisTest", function() {
     var mockBody;
@@ -17,15 +17,15 @@ describe("AnalysisTest", function() {
 
     describe("Main", function() {
         var initializeViewStub;
-        var mockStockSearchPresenter;
+        var mockStockSearchView;
 
         beforeEach(function() {
             initializeViewStub = sinon.stub();
-            mockStockSearchPresenter = sinon.stub();
+            mockStockSearchView = sinon.stub();
 
-            window.StockSearchPresenter = function() {
-                mockStockSearchPresenter.initializeView = initializeViewStub;
-                return mockStockSearchPresenter;
+            window.StockSearchView = function() {
+                mockStockSearchView.initializeView = initializeViewStub;
+                return mockStockSearchView;
             };
         });
 

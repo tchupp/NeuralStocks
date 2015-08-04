@@ -2,8 +2,8 @@
     var classAnalysisMain = {};
 
     classAnalysisMain.main = function () {
-        var stockSearchPresenter = new StockSearchPresenter();
-        stockSearchPresenter.initializeView();
+        var stockSearchView = new StockSearchView();
+        stockSearchView.initializeView();
     };
 
     return classAnalysisMain;
