@@ -118,6 +118,7 @@
     <Content Include="Scripts\jasmine\jasmine-html.js" />
     <Content Include="Scripts\jasmine\jasmine.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMainTest.js" />
+    <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenterTest.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchViewTest.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandlerTest.js" />
     <Content Include="Scripts\SiteSpecific\Util\Chart\ChartOptionsTest.js" />

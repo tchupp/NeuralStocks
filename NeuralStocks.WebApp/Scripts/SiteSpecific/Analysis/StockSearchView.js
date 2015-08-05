@@ -1,15 +1,18 @@
 ﻿var StockSearchView = (function() {
-    var classStockSearchView = function() {
+    var classStockSearchView = function () {
+        this.searchTable = $("#companySearchTable");
+        this.stockChart = $("#companySearchChart");
+        this.searchButton = $("#companySearchButton");
     };
 
     classStockSearchView.prototype.initializeView = function(searchPresenter) {
-        TableSetupManager.initializeTable($("#companySearchTable"),
+        TableSetupManager.initializeTable(this.searchTable,
             TableOptions.analysisSearchTableOptions);
 
-        ChartSetupManager.initializeStockChart($("#companySearchChart"),
+        ChartSetupManager.initializeStockChart(this.stockChart,
             ChartOptions.analysisSearchChartOptions);
 
-        $("#companySearchButton").click(searchPresenter.searchButtonCallback);
+        this.searchButton.click(searchPresenter.searchButtonCallback);
     };
 
     return classStockSearchView;

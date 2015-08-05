@@ -199,6 +199,7 @@
     <Content Include="Scripts\External\respond.js" />
     <Content Include="Scripts\External\respond.min.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMain.js" />
+    <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenter.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchView.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandler.js" />
     <Content Include="Scripts\External\_references.js" />
