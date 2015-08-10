@@ -57,28 +57,22 @@ namespace NeuralStocks.Frontend.Tests.Controller
         public void TestGetSearchResultsForNewCompany()
         {
             var mockApiCommunicator = new Mock<IStockMarketApiCommunicator>();
-            var mockTableFactory = new Mock<IDataTableFactory>();
 
             const string expectedSearch = "Apple";
-            var lookupResponseList = new List<CompanyLookupResponse>();
             var expectedDataTable = new DataTable();
 
             mockApiCommunicator.Setup(
-                c => c.CompanyLookup(It.Is<CompanyLookupRequest>(
-                    r => r.Company == expectedSearch))).Returns(lookupResponseList);
-            mockTableFactory.Setup(f => f.BuildNewCompanySearchTable(lookupResponseList)).Returns(expectedDataTable);
+                c => c.CompanyLookup(expectedSearch)).Returns(expectedDataTable);
 
             var controller = new FrontendController(null)
             {
                 StockCommunicator = mockApiCommunicator.Object,
-                TableFactory = mockTableFactory.Object
             };
 
             var dataTable = controller.GetSearchResultsForNewCompany(expectedSearch);
             Assert.AreSame(expectedDataTable, dataTable);
 
             mockApiCommunicator.VerifyAll();
-            mockTableFactory.VerifyAll();
         }
 
         [Test]

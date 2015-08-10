@@ -3,7 +3,7 @@
 /// <reference path="../../../../NeuralStocks.WebApp/Scripts/SiteSpecific/Analysis/StockSearchPresenter.js" />
 /// <reference path="../../TestHelper/TestHelper.js" />
 
-describe("AnalysisTest", function() {
+describe("AnalysisMainTest", function() {
     var mockBody;
     var tempBody;
 

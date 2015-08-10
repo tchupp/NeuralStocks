@@ -1,9 +1,10 @@
 ﻿/// <reference path="../../../../NeuralStocks.WebApp/Scripts/SiteSpecific/Analysis/StockSearchView.js" />
-/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/table/tableoptions.js" />
-/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/table/tablesetupmanager.js" />
-/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/chart/chartoptions.js" />
-/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/util/chart/chartsetupmanager.js" />
+/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/components/table/tableoptions.js" />
+/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/components/table/tablesetupmanager.js" />
+/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/components/chart/chartoptions.js" />
+/// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/components/chart/chartsetupmanager.js" />
 /// <reference path="../../TestHelper/TestHelper.js" />
+
 describe("StockSearchViewTest", function() {
     var mockBody;
     var tempBody;

@@ -1,4 +1,4 @@
-﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/util/chart/chartsetupmanager.js" />
+﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/components/chart/chartsetupmanager.js" />
 /// <reference path="../../../TestHelper/TestHelper.js" />
 
 describe("ChartSetupManagerTest", function() {

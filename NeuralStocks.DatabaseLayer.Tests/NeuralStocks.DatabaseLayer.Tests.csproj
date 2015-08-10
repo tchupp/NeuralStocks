@@ -87,6 +87,7 @@
     <Compile Include="Sqlite\DatabaseConfigurationTest.cs" />
     <Compile Include="StockApi\CompanyLookupRequestTest.cs" />
     <Compile Include="StockApi\CompanyLookupResponseTest.cs" />
+    <Compile Include="StockApi\JsonConversionHelperTest.cs" />
     <Compile Include="StockApi\QuoteLookupRequestTest.cs" />
     <Compile Include="StockApi\QuoteLookupResponseTest.cs" />
     <Compile Include="StockApi\StockMarketApiCommunicatorTest.cs" />

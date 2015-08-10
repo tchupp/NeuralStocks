@@ -19,11 +19,7 @@ namespace NeuralStocks.Frontend.Controller
 
         public DataTable GetSearchResultsForNewCompany(string company)
         {
-            var lookupRequest = new CompanyLookupRequest {Company = company};
-            var lookupResponseList = StockCommunicator.CompanyLookup(lookupRequest);
-            var buildCompanySearchTable = TableFactory.BuildNewCompanySearchTable(lookupResponseList);
-
-            return buildCompanySearchTable;
+            return StockCommunicator.CompanyLookup(company);
         }
 
         public DataTable GetCompanyLookupTable()

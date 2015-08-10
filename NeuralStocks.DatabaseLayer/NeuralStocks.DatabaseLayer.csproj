@@ -72,9 +72,11 @@
     <Compile Include="Sqlite\DatabaseConfiguration.cs" />
     <Compile Include="StockApi\CompanyLookupRequest.cs" />
     <Compile Include="StockApi\CompanyLookupResponse.cs" />
+    <Compile Include="StockApi\IJsonConversionHelper.cs" />
     <Compile Include="StockApi\IStockMarketApi.cs" />
     <Compile Include="StockApi\IStockMarketApiCommunicator.cs" />
     <Compile Include="StockApi\ITimestampParser.cs" />
+    <Compile Include="StockApi\JsonConversionHelper.cs" />
     <Compile Include="StockApi\QuoteLookupRequest.cs" />
     <Compile Include="StockApi\QuoteLookupResponse.cs" />
     <Compile Include="StockApi\StockMarketApi.cs" />

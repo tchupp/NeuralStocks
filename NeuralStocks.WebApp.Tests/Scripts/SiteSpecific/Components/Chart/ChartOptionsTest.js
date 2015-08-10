@@ -1,5 +1,6 @@
-﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/util/chart/chartoptions.js" />
+﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/components/chart/chartoptions.js" />
 /// <reference path="../../../TestHelper/TestHelper.js" />
+
 describe("ChartOptionsTest", function() {
 
     var mockBody;

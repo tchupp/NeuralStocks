@@ -1,4 +1,4 @@
-﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/util/table/tablesetupmanager.js" />
+﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/components/table/tablesetupmanager.js" />
 /// <reference path="../../../TestHelper/TestHelper.js" />
 
 describe("TableSetupManagerTest", function() {

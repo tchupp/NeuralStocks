@@ -2,7 +2,7 @@
 /// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/analysis/stocksearchview.js" />
 /// <reference path="../../TestHelper/TestHelper.js" />
 
-describe("StockSearchPresenterTest", function () {
+describe("StockSearchPresenterTest", function() {
     var mockBody;
     var tempBody;
 
@@ -18,28 +18,28 @@ describe("StockSearchPresenterTest", function () {
 
     describe("SearchButtonCallback", function() {
         it("test", function() {
-            
+
         });
     });
 
-    describe("Initialize", function () {
+    describe("Initialize", function() {
         var initializeViewStub;
         var mockStockSearchView;
 
-        beforeEach(function () {
+        beforeEach(function() {
             initializeViewStub = sinon.stub();
             mockStockSearchView = sinon.stub();
 
-            window.StockSearchView = function () {
+            window.StockSearchView = function() {
                 mockStockSearchView.initializeView = initializeViewStub;
                 return mockStockSearchView;
             };
         });
 
-        afterEach(function () {
+        afterEach(function() {
         });
 
-        it("testCallsInitializeView", function () {
+        it("testCallsInitializeView", function() {
             assertFalse(initializeViewStub.calledOnce);
 
             var stockSearchPresenter = new StockSearchPresenter();

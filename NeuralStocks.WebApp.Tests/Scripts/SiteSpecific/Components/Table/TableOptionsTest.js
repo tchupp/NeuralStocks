@@ -1,5 +1,5 @@
-﻿/// <reference path="../../../TestHelper/TestHelper.js" />
-/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/util/table/tableoptions.js" />
+﻿/// <reference path="../../../../../neuralstocks.webapp/scripts/sitespecific/components/table/tableoptions.js" />
+/// <reference path="../../../TestHelper/TestHelper.js" />
 
 describe("TableOptionsTest", function() {
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Data;
 using Newtonsoft.Json;
 
 namespace NeuralStocks.DatabaseLayer.StockApi
@@ -8,24 +8,26 @@ namespace NeuralStocks.DatabaseLayer.StockApi
         public static readonly IStockMarketApiCommunicator Singleton = new StockMarketApiCommunicator();
         public IStockMarketApi StockApi { get; set; }
         public ITimestampParser Parser { get; set; }
+        public IJsonConversionHelper Helper { get; set; }
 
         private StockMarketApiCommunicator()
         {
             StockApi = StockMarketApi.Singleton;
             Parser = TimestampParser.Singleton;
+            Helper = JsonConversionHelper.Singleton;
         }
 
-        public List<CompanyLookupResponse> CompanyLookup(CompanyLookupRequest request)
+        public DataTable CompanyLookup(string company)
         {
-            var lookup = StockApi.CompanyLookup(request.Company);
-            var responses = JsonConvert.DeserializeObject<List<CompanyLookupResponse>>(lookup);
-            return responses;
+            var lookupJson = StockApi.CompanyLookup(company);
+            var lookupTable = Helper.Deserialize<DataTable>(lookupJson);
+            return lookupTable;
         }
 
         public QuoteLookupResponse QuoteLookup(QuoteLookupRequest lookupRequest)
         {
-            var lookup = StockApi.QuoteLookup(lookupRequest.Company);
-            var response = JsonConvert.DeserializeObject<QuoteLookupResponse>(lookup);
+            var lookupJson = StockApi.QuoteLookup(lookupRequest.Company);
+            var response = JsonConvert.DeserializeObject<QuoteLookupResponse>(lookupJson);
             response = Parser.Parse(response);
             return response;
         }

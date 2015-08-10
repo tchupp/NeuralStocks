@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Data;
+using System.Web.Mvc;
 using Moq;
 using NeuralStocks.DatabaseLayer.StockApi;
 using NeuralStocks.DatabaseLayer.Tests.Testing;
@@ -8,10 +9,10 @@ using NUnit.Framework;
 namespace NeuralStocks.WebApp.Tests.Controllers
 {
     [TestFixture]
+    [Category("Web App")]
     public class AnalysisControllerTest : AssertTestClass
     {
         [Test]
-        [Category("Web App")]
         public void TestExtendsMvcController()
         {
             AssertExtendsClass(typeof (Controller), typeof (AnalysisController));
@@ -20,15 +21,23 @@ namespace NeuralStocks.WebApp.Tests.Controllers
         [Test]
         public void TestGetCompanyLookup_CallsStockMarketApiCommunicator()
         {
-            const string companySearch = "";
+            const string companySearch = "i want to find a company";
             var mockCommunicator = new Mock<IStockMarketApiCommunicator>();
+            var mockHelper = new Mock<IJsonConversionHelper>();
 
-            mockCommunicator.Setup(c => c.CompanyLookup(It.Is<CompanyLookupRequest>(
-                r => r.Company == companySearch)));
+            var expectedTable = new DataTable();
+            const string expectedJson = "[{This is Json, can you here me?}]";
 
-            var controller = new AnalysisController(mockCommunicator.Object);
+            mockCommunicator.Setup(c => c.CompanyLookup(companySearch)).Returns(expectedTable);
+            mockHelper.Setup(c => c.Serialize(expectedTable)).Returns(expectedJson);
 
-            controller.GetCompanyLookup(companySearch);
+            var controller = new AnalysisController(mockCommunicator.Object, mockHelper.Object);
+
+            var actualJson = controller.GetCompanyLookup(companySearch);
+
+            Assert.AreEqual(expectedJson, actualJson);
+            mockCommunicator.VerifyAll();
+            mockHelper.VerifyAll();
         }
 
         [Test]
@@ -37,7 +46,6 @@ namespace NeuralStocks.WebApp.Tests.Controllers
             var method = typeof (AnalysisController).GetMethod("GetCompanyLookup");
 
             Assert.NotNull(method);
-
             AssertMethodHasAttribute(method, typeof (HttpGetAttribute));
         }
     }
