@@ -3,9 +3,9 @@
 /// <reference path="../../TestHelper/TestHelper.js" />
 
 describe("StockSearchPresenterTest", function () {
-
     var mockBody;
     var tempBody;
+
     beforeEach(function() {
         tempBody = document.body;
         mockBody = document.createElement("body");

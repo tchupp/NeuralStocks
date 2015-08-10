@@ -23,6 +23,11 @@ namespace NeuralStocks.DatabaseLayer.Tests.Testing
                 string.Format("{0} did not contain interface {1}", actual, expected));
         }
 
+        protected static void AssertMethodHasAttribute(MethodInfo method, Type attributeType)
+        {
+            Assert.IsTrue(method.GetCustomAttributes(attributeType, false).Any());
+        }
+
         protected static void AssertExtendsClass(Type expected, Type actual)
         {
             Assert.IsTrue(actual.IsClass, "Sub-class is not actually a class");

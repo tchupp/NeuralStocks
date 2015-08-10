@@ -201,12 +201,13 @@
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMain.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenter.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchView.js" />
+    <Content Include="Scripts\SiteSpecific\Services\CompanyLookupService.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandler.js" />
     <Content Include="Scripts\External\_references.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartOptions.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartSetupManager.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Table\TableOptions.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Table\TableSetupManager.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Chart\ChartOptions.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Chart\ChartSetupManager.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Table\TableOptions.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Table\TableSetupManager.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -253,6 +254,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NeuralStocks.DatabaseLayer\NeuralStocks.DatabaseLayer.csproj">
+      <Project>{8EE18FF9-194A-4670-874F-1CD12036DDDF}</Project>
+      <Name>NeuralStocks.DatabaseLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,11 +1,11 @@
 ﻿var StockSearchPresenter = (function() {
 
     var modualStockSearchPresenter = function() {
+        this.stockSearchView = new StockSearchView();
     };
 
     modualStockSearchPresenter.prototype.initialize = function() {
-        var stockSearchView = new StockSearchView();
-        stockSearchView.initializeView(this);
+        this.stockSearchView.initializeView(this);
     };
 
     modualStockSearchPresenter.searchButtonCallback = function() {

@@ -120,11 +120,12 @@
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMainTest.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenterTest.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchViewTest.js" />
+    <Content Include="Scripts\SiteSpecific\Services\CompanyServiceLookupTest.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandlerTest.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartOptionsTest.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Chart\ChartSetupManagerTest.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Table\TableOptionsTest.js" />
-    <Content Include="Scripts\SiteSpecific\Util\Table\TableSetupManagerTest.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Chart\ChartOptionsTest.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Chart\ChartSetupManagerTest.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Table\TableOptionsTest.js" />
+    <Content Include="Scripts\SiteSpecific\Components\Table\TableSetupManagerTest.js" />
     <Content Include="Scripts\TestHelper\sinon-1.15.4.js" />
     <Content Include="Scripts\TestHelper\TestHelper.js" />
   </ItemGroup>
@@ -136,6 +137,10 @@
     <ProjectReference Include="..\NeuralStocks.DatabaseLayer.Tests\NeuralStocks.DatabaseLayer.Tests.csproj">
       <Project>{28b26226-3fb6-429b-8d5d-bb0a58c2e9fa}</Project>
       <Name>NeuralStocks.DatabaseLayer.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NeuralStocks.DatabaseLayer\NeuralStocks.DatabaseLayer.csproj">
+      <Project>{8EE18FF9-194A-4670-874F-1CD12036DDDF}</Project>
+      <Name>NeuralStocks.DatabaseLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\NeuralStocks.WebApp\NeuralStocks.WebApp.csproj">
       <Project>{06719E2C-5904-4C14-B4F1-C89BFC55BE68}</Project>
