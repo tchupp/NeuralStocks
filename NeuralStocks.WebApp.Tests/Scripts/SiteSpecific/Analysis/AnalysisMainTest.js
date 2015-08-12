@@ -37,7 +37,8 @@ describe("AnalysisMainTest", function() {
         it("testMainCallsInitializePresenterOnPresenter", function() {
             assertFalse(initializeStub.calledOnce);
 
-            AnalysisMain.main();
+            var analysisMain = new AnalysisMain();
+            analysisMain.main();
 
             assertTrue(initializeStub.calledOnce);
         });

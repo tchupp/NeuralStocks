@@ -201,7 +201,6 @@
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMain.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenter.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchView.js" />
-    <Content Include="Scripts\SiteSpecific\Services\CompanyLookupService.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandler.js" />
     <Content Include="Scripts\External\_references.js" />
     <Content Include="Scripts\SiteSpecific\Components\Chart\ChartOptions.js" />
@@ -247,6 +246,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\SiteSpecific\Services\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

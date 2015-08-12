@@ -32,8 +32,6 @@ namespace NeuralStocks.WebApp
 
                 "~/Scripts/SiteSpecific/Util/AjaxRequestHandler.js",
 
-                "~/Scripts/SiteSpecific/Services/CompanyLookupService.js",
-
                 "~/Scripts/SiteSpecific/Components/Chart/ChartOptions.js",
                 "~/Scripts/SiteSpecific/Components/Chart/ChartSetupManager.js",
                 "~/Scripts/SiteSpecific/Components/Table/TableOptions.js",

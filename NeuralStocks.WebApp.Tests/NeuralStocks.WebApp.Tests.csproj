@@ -120,7 +120,6 @@
     <Content Include="Scripts\SiteSpecific\Analysis\AnalysisMainTest.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchPresenterTest.js" />
     <Content Include="Scripts\SiteSpecific\Analysis\StockSearchViewTest.js" />
-    <Content Include="Scripts\SiteSpecific\Services\CompanyServiceLookupTest.js" />
     <Content Include="Scripts\SiteSpecific\Util\AjaxRequestHandlerTest.js" />
     <Content Include="Scripts\SiteSpecific\Components\Chart\ChartOptionsTest.js" />
     <Content Include="Scripts\SiteSpecific\Components\Chart\ChartSetupManagerTest.js" />
@@ -149,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Start\" />
+    <Folder Include="Scripts\SiteSpecific\Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

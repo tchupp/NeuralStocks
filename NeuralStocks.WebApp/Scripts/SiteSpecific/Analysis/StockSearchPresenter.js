@@ -1,16 +1,25 @@
 ﻿var StockSearchPresenter = (function() {
 
-    var modualStockSearchPresenter = function() {
+    var classStockSearchPresenter = function() {
         this.stockSearchView = new StockSearchView();
     };
 
-    modualStockSearchPresenter.prototype.initialize = function() {
+    classStockSearchPresenter.prototype.initialize = function() {
         this.stockSearchView.initializeView(this);
     };
 
-    modualStockSearchPresenter.searchButtonCallback = function() {
+    classStockSearchPresenter.prototype.searchButtonCallback = function (event) {
+        debugger;
+        var view = event.data.context;
+        var searchText = view.searchTextBox.val();
+        var url = "/Analysis/GetCompanyLookup?searchString=" + searchText;
 
+        AjaxRequestHandler.requestGet(url, function (status, response) {
+            console.log(response);
+            var jsonData = JSON.parse(response);
+            view.setTableData(jsonData);
+        });
     };
 
-    return modualStockSearchPresenter;
+    return classStockSearchPresenter;
 })();

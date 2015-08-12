@@ -1,9 +1,10 @@
 ﻿var AnalysisMain = (function() {
-    var classAnalysisMain = {};
+    var classAnalysisMain = function() {
+        this.stockSearchPresenter = new StockSearchPresenter();
+    };
 
-    classAnalysisMain.main = function () {
-        var stockSearchPresenter = new StockSearchPresenter();
-        stockSearchPresenter.initialize();
+    classAnalysisMain.prototype.main = function() {
+        this.stockSearchPresenter.initialize();
     };
 
     return classAnalysisMain;

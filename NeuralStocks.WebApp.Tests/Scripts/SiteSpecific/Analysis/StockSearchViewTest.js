@@ -4,15 +4,15 @@
 /// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/components/chart/chartoptions.js" />
 /// <reference path="../../../../neuralstocks.webapp/scripts/sitespecific/components/chart/chartsetupmanager.js" />
 /// <reference path="../../TestHelper/TestHelper.js" />
-
 describe("StockSearchViewTest", function() {
     var mockBody;
     var tempBody;
     var jQuerySelectorStub;
 
     var initializeTableStub;
-    var table;
+    var $table;
     var tableId;
+    var mockDataTable;
 
     var initializeStockChartStub;
     var chart;
@@ -32,7 +32,9 @@ describe("StockSearchViewTest", function() {
         mockPresenter = { searchButtonCallback: sinon.stub() };
 
         tableId = "companySearchTable";
-        table = document.createElement("table");
+        mockDataTable = { fnAddData: sinon.stub() };
+        $table = { dataTable: sinon.stub() };
+        $table.dataTable.returns(mockDataTable);
 
         chartId = "companySearchChart";
         chart = document.createElement("div");
@@ -41,7 +43,7 @@ describe("StockSearchViewTest", function() {
         $button = { click: sinon.stub() };
 
         jQuerySelectorStub = sinon.stub(window, "$");
-        jQuerySelectorStub.withArgs("#" + tableId).returns(table);
+        jQuerySelectorStub.withArgs("#" + tableId).returns($table);
         jQuerySelectorStub.withArgs("#" + buttonId).returns($button);
         jQuerySelectorStub.withArgs("#" + chartId).returns(chart);
     });
@@ -63,7 +65,7 @@ describe("StockSearchViewTest", function() {
 
             assertEquals(1, initializeTableStub.callCount);
             assertEquals(2, initializeTableStub.getCall(0).args.length);
-            assertEquals(table, initializeTableStub.getCall(0).args[0]);
+            assertEquals($table, initializeTableStub.getCall(0).args[0]);
         });
 
         it("testCallsInitializeTableOnTable_WithAnalysisSearchTableOptions", function() {
@@ -76,6 +78,18 @@ describe("StockSearchViewTest", function() {
             assertEquals(2, initializeTableStub.getCall(0).args.length);
             assertEquals(TableOptions.analysisSearchTableOptions,
                 initializeTableStub.getCall(0).args[1]);
+        });
+
+        it("testSetTableData_SetsDataToTableRows", function () {
+            var expectedTableData = [{}, {}];
+            assertFalse(mockDataTable.fnAddData.called);
+
+            var view = new StockSearchView();
+            view.setTableData(expectedTableData);
+
+            assertEquals(1, mockDataTable.fnAddData.callCount);
+            assertEquals(1, mockDataTable.fnAddData.getCall(0).args.length);
+            assertEquals(expectedTableData, mockDataTable.fnAddData.getCall(0).args[0]);
         });
     });
 
@@ -111,9 +125,12 @@ describe("StockSearchViewTest", function() {
             var view = new StockSearchView();
             view.initializeView(mockPresenter);
 
+            var buttonClick = $button.click.getCall(0);
+
             assertEquals(1, $button.click.callCount);
-            assertEquals(1, $button.click.getCall(0).args.length);
-            assertEquals(mockPresenter.searchButtonCallback, $button.click.getCall(0).args[0]);
+            assertEquals(2, buttonClick.args.length);
+            assertEquals({ context: view }, buttonClick.args[0]);
+            assertEquals(mockPresenter.searchButtonCallback, buttonClick.args[1]);
         });
     });
 });

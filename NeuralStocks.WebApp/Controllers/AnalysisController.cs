@@ -26,9 +26,9 @@ namespace NeuralStocks.WebApp.Controllers
         }
 
         [HttpGet]
-        public string GetCompanyLookup(string companySearch)
+        public string GetCompanyLookup(string searchString)
         {
-            var responseList = _stockApiCommunicator.CompanyLookup(companySearch);
+            var responseList = _stockApiCommunicator.CompanyLookup(searchString);
             return _helper.Serialize(responseList);
         }
     }
