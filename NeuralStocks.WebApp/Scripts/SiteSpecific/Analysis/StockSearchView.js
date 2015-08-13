@@ -18,6 +18,7 @@
 
     classStockSearchView.prototype.setTableData = function(tableData) {
         var dataTable = this.searchTable.dataTable();
+        dataTable.fnClearTable();
         dataTable.fnAddData(tableData);
     };
 

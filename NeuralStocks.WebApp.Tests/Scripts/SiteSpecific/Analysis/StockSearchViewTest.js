@@ -32,7 +32,7 @@ describe("StockSearchViewTest", function() {
         mockPresenter = { searchButtonCallback: sinon.stub() };
 
         tableId = "companySearchTable";
-        mockDataTable = { fnAddData: sinon.stub() };
+        mockDataTable = { fnAddData: sinon.stub(), fnClearTable: sinon.stub() };
         $table = { dataTable: sinon.stub() };
         $table.dataTable.returns(mockDataTable);
 
@@ -78,6 +78,17 @@ describe("StockSearchViewTest", function() {
             assertEquals(2, initializeTableStub.getCall(0).args.length);
             assertEquals(TableOptions.analysisSearchTableOptions,
                 initializeTableStub.getCall(0).args[1]);
+        });
+
+        it("testSetTableData_ClearsCurrentTableData", function () {
+            var expectedTableData = [{}, {}];
+            assertFalse(mockDataTable.fnClearTable.called);
+
+            var view = new StockSearchView();
+            view.setTableData(expectedTableData);
+
+            assertEquals(1, mockDataTable.fnClearTable.callCount);
+            assertEquals(0, mockDataTable.fnClearTable.getCall(0).args.length);
         });
 
         it("testSetTableData_SetsDataToTableRows", function () {

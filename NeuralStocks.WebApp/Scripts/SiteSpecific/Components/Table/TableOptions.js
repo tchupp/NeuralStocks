@@ -4,9 +4,8 @@
     modualTableOptions.analysisSearchTableOptions = {
         info: false,
         columns: [
-            { "title": "Name", "class": "col-sm-7" },
-            { "title": "Symbol", "class": "col-sm-3" },
-            { "title": "Show", "class": "col-sm-2 datatable-nosort" }
+            { "title": "Symbol", "class": "col-sm-3 stopselect", "data": "Symbol" },
+            { "title": "Name", "class": "col-sm-9 stopselect", "data": "Name" }
         ],
         columnDefs: [
             {
